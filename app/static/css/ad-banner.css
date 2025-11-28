@@ -1,0 +1,483 @@
+/* Advertisement Banner Styles - 마케팅광장 광고분석 대시보드 */
+
+/* ========================================
+   Base Banner Container
+   ======================================== */
+.ad-banner {
+    width: 100%;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e4e4e4;
+    position: relative;
+    overflow: hidden;
+}
+
+.ad-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Advertisement Label */
+.ad-label {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 10px;
+    color: #9e9e9e;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* ========================================
+   Banner Size Variants
+   ======================================== */
+
+/* Top Banner - Leaderboard (970x90) */
+.ad-banner-top {
+    min-height: 90px;
+    max-width: 970px;
+    margin: 24px auto;
+}
+
+/* Middle Banner - Leaderboard (728x90) */
+.ad-banner-middle {
+    min-height: 90px;
+    max-width: 728px;
+    margin: 30px auto;
+}
+
+/* Bottom Banner - Leaderboard (728x90) */
+.ad-banner-bottom {
+    min-height: 80px;
+    max-width: 728px;
+    margin: 24px auto 40px;
+}
+
+/* Medium Rectangle Banner (336x280) */
+.ad-banner-rectangle {
+    min-height: 280px;
+    max-width: 336px;
+    margin: 30px auto;
+}
+
+/* ========================================
+   Sticky Sidebar Ad (300x600) Half Page
+   ======================================== */
+.sidebar-ad {
+    position: fixed;
+    right: 20px;
+    top: 150px;
+    width: 300px;
+    min-height: 600px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    z-index: 90;
+    border: 1px solid #e4e4e4;
+}
+
+.sidebar-ad .ad-label {
+    top: 10px;
+    right: 15px;
+}
+
+/* Hide sidebar ad on smaller screens */
+@media (max-width: 1600px) {
+    .sidebar-ad {
+        display: none;
+    }
+}
+
+/* ========================================
+   Ad Content Placeholder
+   ======================================== */
+.ad-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9e9e9e;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ad-content::before {
+    content: '📢 Advertisement';
+    display: block;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+/* Tablet - 768px ~ 1399px */
+@media (max-width: 1399px) {
+    .ad-banner-top {
+        max-width: 728px;
+        min-height: 90px;
+    }
+
+    .ad-banner-middle,
+    .ad-banner-bottom {
+        max-width: 468px;
+        min-height: 60px;
+    }
+}
+
+/* Mobile - Below 768px */
+@media (max-width: 768px) {
+    .ad-banner {
+        padding: 10px;
+        margin: 15px auto;
+        border-radius: 6px;
+    }
+
+    .ad-banner-top,
+    .ad-banner-middle,
+    .ad-banner-bottom {
+        max-width: 320px;
+        min-height: 100px;
+    }
+
+    .ad-banner-rectangle {
+        max-width: 300px;
+        min-height: 250px;
+    }
+
+    .ad-label {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+}
+
+/* ========================================
+   Loading State
+   ======================================== */
+.ad-banner.loading {
+    background: linear-gradient(
+        90deg,
+        #f8f9fa 0%,
+        #e9ecef 50%,
+        #f8f9fa 100%
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ========================================
+   Banner Wrapper (for spacing control)
+   ======================================== */
+.ad-banner-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* ========================================
+   Banner Grid System (2x4 for 8 banners)
+   ======================================== */
+
+/* Banner containers - hide when empty */
+#homeTopBanner:empty,
+#homeGridBanners:empty,
+#homeBottomBanner:empty,
+#generalGridBanners:empty,
+#coupangGridBanners:empty {
+    display: none;
+}
+
+/* Large banner containers */
+#homeTopBanner,
+#homeBottomBanner {
+    width: 100%;
+    max-width: 2264px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.banner-link {
+    display: block;
+    width: 100%;
+}
+
+.banner-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.banner-image:hover {
+    transform: scale(1.02);
+}
+
+/* Grid banner container - 홈페이지 2x2 그리드 (상단/하단 배너의 절반 크기) */
+#homeGridBanners {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 120px);
+    gap: 24px;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 2264px;  /* 상단/하단 배너와 동일 */
+}
+
+/* 대시보드 롤링 배너 컨테이너 */
+#generalGridBanners,
+#coupangGridBanners {
+    display: block !important;
+    width: 100%;
+    max-width: 2264px;
+    margin: 20px auto;
+}
+
+.grid-banner-item {
+    display: block;
+    width: 100%;  /* 그리드 셀에 맞춤 (약 1120px) */
+    height: 120px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.grid-banner-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.grid-banner-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive grid banners */
+@media (max-width: 1399px) {
+    #homeGridBanners {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: calc(100vw - 228px);  /* 180px sidebar + 48px padding */
+        padding: 0 24px;
+    }
+
+    .grid-banner-item {
+        width: 100%;
+        height: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    #homeGridBanners {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 100px);
+        padding: 0 16px;
+    }
+
+    .grid-banner-item {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+/* ========================================
+   대형 롤링 배너 (일반/쿠팡 대시보드)
+   ======================================== */
+
+/* 롤링 배너 컨테이너 */
+.rolling-banner-container {
+    position: relative;
+    width: 100%;
+    max-width: 2264px;
+    height: 250px;  /* 모든 대시보드 동일 높이 */
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: #f8f9fa;
+}
+
+/* 배너 래퍼 (실제 배너들을 담는 컨테이너) */
+.rolling-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 개별 배너 아이템 */
+.rolling-banner-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: opacity;
+}
+
+.rolling-banner-item.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.rolling-banner-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.rolling-banner-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* 인디케이터 (하단 점) */
+.rolling-indicators {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(4px);
+}
+
+.rolling-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rolling-indicator.active {
+    background: #ffffff;
+    width: 24px;
+    border-radius: 4px;
+}
+
+.rolling-indicator:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* 롤링 배너 호버 시 일시 정지 표시 */
+.rolling-banner-container:hover::after {
+    content: '⏸';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 20;
+    backdrop-filter: blur(2px);
+}
+
+/* 반응형 - 대형 롤링 배너 */
+@media (max-width: 1399px) {
+    .rolling-banner-container {
+        max-width: calc(100vw - 228px);  /* 180px sidebar + 48px padding */
+        height: 120px;
+    }
+
+    #coupangGridBanners .rolling-banner-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .rolling-banner-container {
+        max-width: calc(100vw - 48px);
+        height: 100px;
+        margin: 16px auto;
+    }
+
+    #coupangGridBanners .rolling-banner-container {
+        height: 150px;
+    }
+
+    .rolling-indicators {
+        bottom: 4px;
+        gap: 6px;
+    }
+
+    .rolling-indicator {
+        width: 6px;
+        height: 6px;
+    }
+
+    .rolling-indicator.active {
+        width: 18px;
+    }
+}
+
+/* 로딩 상태 */
+.rolling-banner-container.loading {
+    background: linear-gradient(
+        90deg,
+        #e0e0e0 0%,
+        #f0f0f0 50%,
+        #e0e0e0 100%
+    );
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 배너 없을 때 숨기기 */
+.rolling-banner-container:empty {
+    display: none;
+}
+
+/* ========================================
+   Print - Hide all ads
+   ======================================== */
+@media print {
+    .ad-banner,
+    .sidebar-ad,
+    .ad-banner-wrapper,
+    #homeTopBanner,
+    #homeGridBanners,
+    #homeBottomBanner,
+    #generalGridBanners,
+    #coupangGridBanners {
+        display: none !important;
+    }
+}

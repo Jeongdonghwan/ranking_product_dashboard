@@ -1,0 +1,2272 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠팡 광고 분석 대시보드 | Insight</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+    <!-- XLSX for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Header CSS -->
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <link rel="stylesheet" href="/static/css/ad-banner.css">
+
+    <style>
+        /* ========================================
+           Looker Studio Style - Professional Design
+           ======================================== */
+
+        :root {
+            /* Looker Studio Color Palette */
+            --primary-blue: #1a73e8;
+            --primary-blue-dark: #1557b0;
+            --secondary-blue: #4285f4;
+            --accent-green: #0f9d58;
+            --accent-orange: #f9ab00;
+            --accent-red: #ea4335;
+            --coupang-red: #e43e2b;
+            --coupang-red-dark: #c42d1f;
+
+            /* Neutral Colors */
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-hover: #f1f3f4;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --text-tertiary: #80868b;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+            --shadow-md: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+            --shadow-lg: 0 2px 6px 2px rgba(60,64,67,.3), 0 8px 16px 4px rgba(60,64,67,.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           Layout
+           ======================================== */
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 180px;
+            margin-top: 56.5px;
+            min-height: calc(100vh - 56.5px);
+            background: var(--bg-primary);
+            padding: 24px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-left h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a73e8;
+            margin-bottom: 6px;
+        }
+
+        .page-header-left p {
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .page-header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-link {
+            padding: 10px 20px;
+            background: #f1f3f4;
+            color: #5f6368;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .header-link:hover {
+            background: #1a73e8;
+            color: white;
+        }
+
+        /* Top Navigation */
+        .top-navigation {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .top-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .top-nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            background: #fce8e6;
+            color: var(--coupang-red);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-secondary);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--coupang-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--coupang-red-dark);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .filter-input {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100px;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .summary-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .summary-card.highlight-green {
+            border-left-color: var(--accent-green);
+        }
+
+        .summary-card.highlight-blue {
+            border-left-color: var(--primary-blue);
+        }
+
+        .summary-card.highlight-red {
+            border-left-color: var(--coupang-red);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .summary-unit {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-hover);
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--bg-hover);
+        }
+
+        /* 키워드 컬럼 고정 너비 */
+        .keyword-cell {
+            width: 405px;
+            max-width: 405px;
+            min-width: 270px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: help;
+        }
+
+        .keyword-cell:hover {
+            background-color: #f0f7ff;
+        }
+
+        /* 테이블 고정 레이아웃 */
+        #keywordTable,
+        #recommendationTable {
+            table-layout: auto;
+        }
+
+        /* ROAS Highlighting */
+        .roas-excellent {
+            background: #e8f5e9 !important;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .roas-good {
+            background: #fff9e6 !important;
+            color: #f57f17;
+        }
+
+        .roas-poor {
+            background: #fee !important;
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--coupang-red);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========================================
+           Enhanced Loading Overlay
+           ======================================== */
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .spinner-wrapper {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .spinner-ring {
+            border: 4px solid transparent;
+            border-top: 4px solid var(--secondary-blue);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .loading-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+            width: 0%;
+            transition: width 0.3s ease;
+            background-size: 200% 100%;
+            animation: progress-shimmer 1.5s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { background-position: -100% 0; }
+            100% { background-position: 100% 0; }
+        }
+
+        .loading-step {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Table Controls */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            width: 300px;
+        }
+
+        /* Recommendation Section */
+        .priority-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .priority-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .priority-tab:hover {
+            color: var(--primary);
+            background: var(--bg-hover);
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .priority-critical {
+            background: #fee;
+            color: #c00;
+            font-weight: 700;
+        }
+
+        .priority-high {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .priority-medium {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .priority-low {
+            background: #dfe6e9;
+            color: #636e72;
+        }
+
+        .text-danger {
+            color: #ea4335;
+            font-weight: 600;
+        }
+
+        .rec-checkbox {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Tablet Responsive (1024px 이하) */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Mobile Responsive (768px 이하) */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 12px;
+                width: 100% !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            /* 테이블 가로 스크롤 */
+            .card:has(table) {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            /* 버튼 그룹 세로 배치 */
+            .button-group,
+            div[style*="display: flex"][style*="gap"] {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* 매우 작은 화면 (480px 이하) */
+        @media (max-width: 480px) {
+            .top-header {
+                padding: 8px 12px;
+            }
+
+            .header-left h1,
+            .header-left .logo-text {
+                font-size: 16px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <h1 class="logo-text">📊 마케팅광장 광고분석</h1>
+            <span class="logo-subtitle">쿠팡광고분석</span>
+        </div>
+        <div class="header-right">
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn">📘 제휴문의</a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn">🏢 마케팅광장 바로가기</a>
+            <div class="user-info">
+                <span class="user-nickname">👤 닉네임</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>메뉴</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="/" class="menu-item">
+                <span class="icon">🏠</span>
+                <span class="label">대시보드</span>
+            </a>
+            <a href="/guide" class="menu-item">
+                <span class="icon">📘</span>
+                <span class="label">이용안내</span>
+            </a>
+            <a href="/ad-dashboard" class="menu-item">
+                <span class="icon">📈</span>
+                <span class="label">광고분석</span>
+            </a>
+            <a href="/ad-dashboard/coupang" class="menu-item active">
+                <span class="icon">🛒</span>
+                <span class="label">쿠팡광고분석</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1>🛒 쿠팡 광고 분석 대시보드</h1>
+                <p>키워드별 성과 분석 및 ROAS 최적화</p>
+            </div>
+            <div class="page-header-right">
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #1a73e8; color: white; font-size: 14px; font-weight: 500; transition: all 0.2s;">
+                    <span>📤</span>
+                    <span>쿠팡 광고 파일 업로드</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden File Input -->
+        <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+
+        <!-- 그리드 배너 2x4 (200x60 x 8개) -->
+        <div id="coupangGridBanners"></div>
+
+        <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <span class="filter-label">🔍 ROAS 필터:</span>
+                    <input type="number" id="roasThreshold" class="filter-input" placeholder="예: 50" value="">
+                    <span class="filter-label">% 이하</span>
+                    <button class="btn btn-secondary" onclick="filterByROAS()">
+                        적용
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilter()">
+                        초기화
+                    </button>
+                    <button class="btn btn-primary" onclick="getRecommendations()" style="margin-left: 16px;">
+                        🎯 제외 키워드 추천받기
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAllData()" style="padding: 8px 16px;">
+                        🗑️ 초기화
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid" id="summaryGrid">
+                <div class="summary-card highlight-red">
+                    <div class="summary-label">총 광고비</div>
+                    <div class="summary-value" id="summarySpend">-</div>
+                    <div class="summary-unit">원</div>
+                </div>
+                <div class="summary-card highlight-green">
+                    <div class="summary-label">총 매출액</div>
+                    <div class="summary-value" id="summaryRevenue">-</div>
+                    <div class="summary-unit">원</div>
+                </div>
+                <div class="summary-card highlight-blue">
+                    <div class="summary-label">평균 ROAS</div>
+                    <div class="summary-value" id="summaryROAS">-</div>
+                    <div class="summary-unit">%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">총 클릭수</div>
+                    <div class="summary-value" id="summaryClicks">-</div>
+                    <div class="summary-unit">회</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">평균 클릭률</div>
+                    <div class="summary-value" id="summaryCTR">-</div>
+                    <div class="summary-unit">%</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📊 ROAS TOP 10</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="roasBarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">💰 광고비 vs 매출액 분포</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 새로운 차트: 매출액 TOP 10, 광고비낭비 TOP 10 -->
+            <div class="charts-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">💰 매출액 TOP 10 키워드</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueTopChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">⚠️ 광고비낭비 TOP 10 키워드</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="wasteTopChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keyword Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🔍 키워드 상세 분석</div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="downloadExcel()">
+                            <span>📥</span>
+                            <span>Excel 다운로드</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-controls">
+                    <input
+                        type="text"
+                        id="searchKeyword"
+                        class="search-box"
+                        placeholder="키워드 검색..."
+                        onkeyup="searchKeywords()"
+                    >
+                    <div id="tableSummary" style="font-size: 13px; color: var(--text-secondary);">
+                        전체 0개 키워드
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table id="keywordTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">키워드 ↕</th>
+                                <th onclick="sortTable(1)">노출 지면 ↕</th>
+                                <th onclick="sortTable(2)">노출수 ↕</th>
+                                <th onclick="sortTable(3)">클릭수 ↕</th>
+                                <th onclick="sortTable(4)">광고비 ↕</th>
+                                <th onclick="sortTable(5)">CTR ↕</th>
+                                <th onclick="sortTable(6)">주문수 ↕</th>
+                                <th onclick="sortTable(7)">판매수량 ↕</th>
+                                <th onclick="sortTable(8)">매출액 ↕</th>
+                                <th onclick="sortTable(9)">CPC ↕</th>
+                                <th onclick="sortTable(10)">ROAS ↕</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keywordTableBody">
+                            <tr>
+                                <td colspan="11" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                    데이터를 업로드해주세요
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Keyword Exclusion Recommendations Section -->
+            <div class="section" id="recommendationSection" style="display: none;">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom: 0;">🎯 키워드 제외 추천</h2>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="exportRecommendations()">
+                            <span>📥</span>
+                            <span>추천 목록 다운로드</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="applyExclusions()">
+                            <span>❌</span>
+                            <span>선택 키워드 제외</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-grid" style="margin-bottom: 24px;">
+                    <div class="summary-card highlight-red">
+                        <div class="summary-label">낭비 광고비</div>
+                        <div class="summary-value" id="recWaste">-</div>
+                        <div class="summary-unit">원</div>
+                    </div>
+                    <div class="summary-card highlight-orange">
+                        <div class="summary-label">제외 추천 키워드</div>
+                        <div class="summary-value" id="recCount">-</div>
+                        <div class="summary-unit">개</div>
+                    </div>
+                    <div class="summary-card highlight-green">
+                        <div class="summary-label">절감 가능 비율</div>
+                        <div class="summary-value" id="recSavings">-</div>
+                        <div class="summary-unit">%</div>
+                    </div>
+                </div>
+
+                <!-- Priority Tabs -->
+                <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color);">
+                    <button class="priority-tab active" onclick="filterRecommendations('all')" data-priority="all">
+                        전체 (<span id="allCount">0</span>)
+                    </button>
+                    <button class="priority-tab" onclick="filterRecommendations('critical')" data-priority="critical">
+                        🔴 즉시제외 (<span id="criticalCount">0</span>)
+                    </button>
+                    <button class="priority-tab" onclick="filterRecommendations('high')" data-priority="high">
+                        🟠 조속히제외 (<span id="highCount">0</span>)
+                    </button>
+                    <button class="priority-tab" onclick="filterRecommendations('medium')" data-priority="medium">
+                        🟡 검토필요 (<span id="mediumCount">0</span>)
+                    </button>
+                    <button class="priority-tab" onclick="filterRecommendations('low')" data-priority="low">
+                        🟢 모니터링 (<span id="lowCount">0</span>)
+                    </button>
+                </div>
+
+                <!-- Recommendations Table -->
+                <div class="table-wrapper">
+                    <table id="recommendationTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAllRec" onchange="toggleSelectAll()">
+                                </th>
+                                <th onclick="sortRecommendations('score')" style="cursor: pointer;">
+                                    점수 <span id="sortScore">↓</span>
+                                </th>
+                                <th onclick="sortRecommendations('priority')" style="cursor: pointer;">
+                                    우선순위 <span id="sortPriority">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('keyword')" style="cursor: pointer;">
+                                    키워드 <span id="sortKeyword">↕</span>
+                                </th>
+                                <th>제외 사유</th>
+                                <th onclick="sortRecommendations('spend')" style="cursor: pointer;">
+                                    광고비 <span id="sortSpend">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('revenue')" style="cursor: pointer;">
+                                    매출 <span id="sortRevenue">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('roas')" style="cursor: pointer;">
+                                    ROAS <span id="sortRoas">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('waste')" style="cursor: pointer;">
+                                    낭비비용 <span id="sortWaste">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('waste_rate')" style="cursor: pointer;">
+                                    낭비율 <span id="sortWaste_rate">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('opportunity_loss')" style="cursor: pointer;">
+                                    기회비용 <span id="sortOpportunity_loss">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('clicks')" style="cursor: pointer;">
+                                    클릭수 <span id="sortClicks">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('ctr')" style="cursor: pointer;">
+                                    CTR <span id="sortCtr">↕</span>
+                                </th>
+                                <th onclick="sortRecommendations('cpc')" style="cursor: pointer;">
+                                    CPC <span id="sortCpc">↕</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="recommendationTableBody">
+                            <tr>
+                                <td colspan="14" style="text-align: center; padding: 40px;">
+                                    추천 데이터가 없습니다
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <!-- Loading Overlay (Enhanced) -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="loading-content">
+                <div class="spinner-wrapper">
+                    <div class="spinner"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <h3 id="loadingTitle" class="loading-title">데이터 처리 중...</h3>
+                <p id="loadingMessage" class="loading-message">파일을 분석하고 있습니다.</p>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <p id="loadingStep" class="loading-step">1/3 단계 진행 중</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /* ========================================
+           Global Variables
+           ======================================== */
+
+        const COUPANG_STORAGE_KEY = 'coupang_ad_data';
+        const COUPANG_DATA_VERSION = '2.0';  // 데이터 구조 버전 (집계 데이터 필수)
+        let globalData = [];
+        let filteredData = [];
+        let currentSortColumn = 9; // Default sort by ROAS
+        let currentSortOrder = 'desc';
+
+        /* ========================================
+           Loading State Manager
+           ======================================== */
+
+        const LoadingState = {
+            show(title, message, step = null) {
+                const overlay = document.getElementById('loadingOverlay');
+                const titleEl = document.getElementById('loadingTitle');
+                const messageEl = document.getElementById('loadingMessage');
+                const stepEl = document.getElementById('loadingStep');
+                const progressBar = document.getElementById('progressBar');
+
+                overlay.classList.remove('hidden');
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+
+                if (step) {
+                    stepEl.textContent = step;
+                    stepEl.style.display = 'block';
+                } else {
+                    stepEl.style.display = 'none';
+                }
+
+                // 진행률 애니메이션 시작
+                progressBar.style.width = '0%';
+                setTimeout(() => progressBar.style.width = '30%', 100);
+            },
+
+            update(message, progress) {
+                const messageEl = document.getElementById('loadingMessage');
+                const progressBar = document.getElementById('progressBar');
+
+                messageEl.textContent = message;
+                progressBar.style.width = `${progress}%`;
+            },
+
+            hide() {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        /* ========================================
+           Page Initialization
+           ======================================== */
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data
+            loadCoupangData();
+
+            // Setup file input
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        });
+
+        /* ========================================
+           File Upload
+           ======================================== */
+
+        async function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            console.log('=== 파일 업로드 시작 ===');
+            console.log('파일명:', file.name);
+            console.log('파일 크기:', file.size);
+
+            // Show loading with step 1
+            LoadingState.show('파일 업로드 중', '파일을 검증하고 있습니다...', '1/4 단계');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                console.log('Fetch 요청 시작...');
+
+                // Step 2: 서버 업로드
+                LoadingState.update('서버에 업로드 중...', 25);
+
+                const response = await fetch('/api/ad-analysis/upload-coupang', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                console.log('응답 받음:', response.status, response.statusText);
+                console.log('응답 헤더:', [...response.headers.entries()]);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                console.log('Content-Type:', contentType);
+
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('JSON이 아닌 응답:', text.substring(0, 200));
+                    throw new Error('서버 응답이 JSON 형식이 아닙니다');
+                }
+
+                // Step 3: 데이터 처리
+                LoadingState.update('데이터 처리 중...', 50);
+
+                const result = await response.json();
+                console.log('파싱 성공:', result);
+
+                if (result.success) {
+                    // Save data
+                    globalData = result.data;
+                    filteredData = [...globalData];
+                    saveCoupangData(globalData);
+
+                    console.log('데이터 저장 완료:', globalData.length, '개');
+
+                    // Step 4: 차트 렌더링
+                    LoadingState.update('차트 생성 중...', 75);
+
+                    // Display results
+                    displaySummary(result.summary);
+                    displayKeywordTable(filteredData);
+
+                    // 완료
+                    LoadingState.update('완료!', 100);
+
+                    // 짧은 지연 후 차트 표시 및 로딩 숨김
+                    setTimeout(() => {
+                        displayCharts(filteredData);
+                        LoadingState.hide();
+
+                        // 알림 메시지 생성
+                        let message = `✅ 업로드 완료!\n\n`;
+                        message += `총 ${globalData.length}개 키워드 분석 완료 (${result.data_type} 데이터)\n\n`;
+                        message += `총광고비: ${result.summary['총광고비'].toLocaleString()}원\n`;
+                        message += `총매출액: ${result.summary['총매출액'].toLocaleString()}원\n`;
+                        message += `평균 ROAS: ${result.summary['평균ROAS']}%`;
+
+                        // 경고 메시지가 있으면 추가
+                        if (result.warning) {
+                            message += `\n\n${result.warning}`;
+                        }
+
+                        alert(message);
+                    }, 500);
+                } else {
+                    alert(`❌ 업로드 실패\n\n${result.error}`);
+                }
+            } catch (error) {
+                console.error('=== 업로드 오류 상세 ===');
+                console.error('오류 타입:', error.name);
+                console.error('오류 메시지:', error.message);
+                console.error('오류 스택:', error.stack);
+
+                alert(`❌ 업로드 중 오류가 발생했습니다.\n\n${error.message}\n\n 상단의 제휴문의를 통해 문의해주세요`);
+            } finally {
+                LoadingState.hide();
+                e.target.value = ''; // Reset file input
+            }
+        }
+
+        /* ========================================
+           Data Storage
+           ======================================== */
+
+        function saveCoupangData(data) {
+            const storageData = {
+                version: COUPANG_DATA_VERSION,
+                timestamp: Date.now(),
+                data: data
+            };
+            localStorage.setItem(COUPANG_STORAGE_KEY, JSON.stringify(storageData));
+            console.log('[Storage] Saved data with version:', COUPANG_DATA_VERSION);
+        }
+
+        function loadCoupangData() {
+            const stored = localStorage.getItem(COUPANG_STORAGE_KEY);
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+
+                    // 버전 체크
+                    if (!parsed.version || parsed.version !== COUPANG_DATA_VERSION) {
+                        console.warn('[Storage] Version mismatch or old format. Clearing cache.');
+                        console.warn('[Storage] Stored version:', parsed.version, 'Current version:', COUPANG_DATA_VERSION);
+                        localStorage.removeItem(COUPANG_STORAGE_KEY);
+                        globalData = [];
+                        filteredData = [];
+                        return;
+                    }
+
+                    // 유효한 데이터 로드
+                    globalData = parsed.data || [];
+                    filteredData = [...globalData];
+
+                    // Recalculate summary
+                    const summary = calculateSummary(globalData);
+                    displaySummary(summary);
+                    displayKeywordTable(filteredData);
+                    displayCharts(filteredData);
+
+                    console.log('[Storage] Loaded data with version:', parsed.version);
+                } catch (error) {
+                    console.error('[Storage] Failed to parse stored data:', error);
+                    localStorage.removeItem(COUPANG_STORAGE_KEY);
+                    globalData = [];
+                    filteredData = [];
+                }
+            }
+        }
+
+        function calculateSummary(data) {
+            if (!data || data.length === 0) {
+                return {
+                    총광고비: 0,
+                    총매출액: 0,
+                    평균ROAS: 0,
+                    총클릭수: 0,
+                    평균CTR: 0
+                };
+            }
+
+            const totalSpend = data.reduce((sum, row) => sum + (row.광고비 || 0), 0);
+            const totalRevenue = data.reduce((sum, row) => sum + (row['총 전환매출액'] || 0), 0);
+            const totalClicks = data.reduce((sum, row) => sum + (row.클릭수 || 0), 0);
+            const avgROAS = data.reduce((sum, row) => sum + (row.ROAS || 0), 0) / data.length;
+            const avgCTR = data.reduce((sum, row) => sum + (row.클릭률 || 0), 0) / data.length;
+
+            return {
+                총광고비: Math.round(totalSpend),
+                총매출액: Math.round(totalRevenue),
+                평균ROAS: avgROAS.toFixed(2),
+                총클릭수: totalClicks,
+                평균CTR: avgCTR.toFixed(2)
+            };
+        }
+
+        /* ========================================
+           Display Functions
+           ======================================== */
+
+        function displaySummary(summary) {
+            document.getElementById('summarySpend').textContent = formatNumber(summary.총광고비);
+            document.getElementById('summaryRevenue').textContent = formatNumber(summary.총매출액);
+            document.getElementById('summaryROAS').textContent = summary.평균ROAS;
+            document.getElementById('summaryClicks').textContent = formatNumber(summary.총클릭수);
+            document.getElementById('summaryCTR').textContent = summary.평균CTR;
+        }
+
+        function displayKeywordTable(data) {
+            const tbody = document.getElementById('keywordTableBody');
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                            데이터가 없습니다
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('tableSummary').textContent = '전체 0개 키워드';
+                return;
+            }
+
+            // Sort data
+            const sorted = [...data].sort((a, b) => {
+                const colName = getColumnName(currentSortColumn);
+                const aVal = a[colName] || 0;
+                const bVal = b[colName] || 0;
+
+                if (currentSortOrder === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            tbody.innerHTML = sorted.map(row => {
+                const roas = row.ROAS || 0;
+                let roasClass = '';
+                if (roas >= 150) roasClass = 'roas-excellent';
+                else if (roas >= 50) roasClass = 'roas-good';
+                else roasClass = 'roas-poor';
+
+                // 노출 지면 배지 색상
+                const adArea = row['광고 노출 지면'] || '검색 영역';
+                let areaBadge = '';
+                if (adArea === '검색 영역') {
+                    areaBadge = '<span style="background:#e3f2fd;color:#1976d2;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">검색</span>';
+                } else if (adArea === '비검색영역 (통합)' || adArea.includes('비검색')) {
+                    areaBadge = '<span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">비검색 (통합)</span>';
+                } else if (adArea === '리타겟팅 (통합)' || adArea.includes('리타겟팅')) {
+                    areaBadge = '<span style="background:#f3e5f5;color:#7b1fa2;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">리타겟팅 (통합)</span>';
+                } else {
+                    areaBadge = `<span style="background:#f5f5f5;color:#666;padding:2px 8px;border-radius:4px;font-size:11px;">${adArea}</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td class="keyword-cell" title="${row.키워드 || '-'}">${row.키워드 || '-'}</td>
+                        <td>${areaBadge}</td>
+                        <td>${formatNumber(row.노출수)}</td>
+                        <td>${formatNumber(row.클릭수)}</td>
+                        <td>${formatNumber(row.광고비)}</td>
+                        <td>${(row.클릭률 || 0).toFixed(2)}%</td>
+                        <td>${formatNumber(row['총 주문수'])}</td>
+                        <td>${formatNumber(row['총 판매수량'])}</td>
+                        <td>${formatNumber(row['총 전환매출액'])}</td>
+                        <td>${formatNumber(row.CPC)}</td>
+                        <td class="${roasClass}">${roas.toFixed(2)}%</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('tableSummary').textContent = `전체 ${data.length}개 키워드`;
+        }
+
+        function displayCharts(data) {
+            if (!data || data.length === 0) return;
+
+            // Sort by ROAS (높은 순)
+            const sortedByROAS = [...data].sort((a, b) => {
+                const roasA = parseFloat(a.ROAS) || 0;
+                const roasB = parseFloat(b.ROAS) || 0;
+                return roasB - roasA;
+            });
+
+            // Get top 10 only
+            const chartData = sortedByROAS.slice(0, 10);
+
+            // ROAS Bar Chart
+            displayROASBarChart(chartData);
+
+            // Scatter Chart
+            displayScatterChart(data);
+
+            // Revenue Top 10 Chart
+            displayRevenueTopChart(data);
+
+            // Waste Top 10 Chart
+            displayWasteTopChart(data);
+        }
+
+        function displayROASBarChart(data) {
+            const ctx = document.getElementById('roasBarChart').getContext('2d');
+
+            // Destroy existing chart
+            if (window.roasChart && typeof window.roasChart.destroy === 'function') {
+                window.roasChart.destroy();
+            }
+
+            // 키워드 레이블 정리 (최대 30자)
+            const labels = data.map(d => {
+                let keyword = d.키워드 || '-';
+                // 문자열로 변환
+                keyword = String(keyword);
+                // 30자 넘으면 자르고 ... 추가
+                if (keyword.length > 30) {
+                    keyword = keyword.substring(0, 30) + '...';
+                }
+                return keyword;
+            });
+
+            window.roasChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'ROAS (%)',
+                        data: data.map(d => parseFloat(d.ROAS) || 0),
+                        backgroundColor: data.map(d => {
+                            const roas = parseFloat(d.ROAS) || 0;
+                            if (roas >= 150) return 'rgba(15, 157, 88, 0.7)';
+                            if (roas >= 50) return 'rgba(245, 171, 0, 0.7)';
+                            return 'rgba(234, 67, 53, 0.7)';
+                        }),
+                        borderColor: data.map(d => {
+                            const roas = parseFloat(d.ROAS) || 0;
+                            if (roas >= 150) return 'rgba(15, 157, 88, 1)';
+                            if (roas >= 50) return 'rgba(245, 171, 0, 1)';
+                            return 'rgba(234, 67, 53, 1)';
+                        }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'ROAS TOP 10',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `ROAS: ${context.parsed.x.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'ROAS (%)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayScatterChart(data) {
+            console.log('[Scatter Chart] Data length:', data.length);
+
+            const ctx = document.getElementById('scatterChart');
+            if (!ctx) {
+                console.error('[Scatter Chart] Canvas element not found');
+                return;
+            }
+
+            const context = ctx.getContext('2d');
+
+            // Destroy existing chart
+            if (window.scatterChart && typeof window.scatterChart.destroy === 'function') {
+                window.scatterChart.destroy();
+            }
+
+            // Filter data with spend or revenue > 0
+            const points = data
+                .filter(d => (d.광고비 || 0) > 0 || (d['총 전환매출액'] || 0) > 0)
+                .map(d => ({
+                    x: d.광고비 || 0,
+                    y: d['총 전환매출액'] || 0,
+                    keyword: d.키워드 || '-'
+                }));
+
+            console.log('[Scatter Chart] Filtered points:', points.length);
+
+            if (points.length === 0) {
+                ctx.parentElement.innerHTML = '<p style="text-align:center; padding:60px; color:#999; font-size:14px;">데이터가 부족합니다. 매출이 발생한 키워드가 없습니다.</p>';
+                return;
+            }
+
+            window.scatterChart = new Chart(context, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '키워드',
+                        data: points,
+                        backgroundColor: 'rgba(26, 115, 232, 0.6)',
+                        borderColor: 'rgba(26, 115, 232, 1)',
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBorderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '광고비 vs 매출액 분포',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return [
+                                        `키워드: ${point.keyword}`,
+                                        `광고비: ${formatNumber(point.x)}원`,
+                                        `매출: ${formatNumber(point.y)}원`,
+                                        `ROAS: ${point.x > 0 ? ((point.y / point.x) * 100).toFixed(1) : 0}%`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '광고비 (원)',
+                                font: { size: 12, weight: 'bold' }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatNumber(value);
+                                }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '매출액 (원)',
+                                font: { size: 12, weight: 'bold' }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatNumber(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            console.log('[Scatter Chart] Created successfully');
+        }
+
+        // 매출액 TOP 10 차트
+        function displayRevenueTopChart(data) {
+            if (!data || data.length === 0) {
+                console.log('[Revenue Top Chart] No data');
+                return;
+            }
+
+            // 매출액 기준 정렬 (내림차순)
+            const sorted = [...data].sort((a, b) => {
+                const revA = parseFloat(a['총 전환매출액']) || 0;
+                const revB = parseFloat(b['총 전환매출액']) || 0;
+                return revB - revA;
+            });
+
+            const top10 = sorted.slice(0, 10);
+
+            // 키워드명 (최대 30자)
+            const labels = top10.map(d => {
+                let keyword = String(d.키워드 || '-');
+                if (keyword.length > 30) {
+                    keyword = keyword.substring(0, 30) + '...';
+                }
+                return keyword;
+            });
+
+            // 매출액 데이터
+            const revenues = top10.map(d => parseFloat(d['총 전환매출액']) || 0);
+
+            // 차트 생성
+            const ctx = document.getElementById('revenueTopChart').getContext('2d');
+
+            // 기존 차트 제거
+            if (window.revenueChart && typeof window.revenueChart.destroy === 'function') {
+                window.revenueChart.destroy();
+            }
+
+            window.revenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '매출액 (원)',
+                        data: revenues,
+                        backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: '매출액 TOP 10',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '매출액: ' + formatNumber(context.parsed.x) + '원';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatNumber(value) + '원';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            console.log('[Revenue Top Chart] Created successfully');
+        }
+
+        // 광고비낭비 TOP 10 차트
+        function displayWasteTopChart(data) {
+            if (!data || data.length === 0) {
+                console.log('[Waste Top Chart] No data');
+                return;
+            }
+
+            // 낭비비용 계산 (광고비 - 매출액)
+            const withWaste = data.map(row => {
+                const spend = parseFloat(row.광고비) || 0;
+                const revenue = parseFloat(row['총 전환매출액']) || 0;
+                const waste = spend - revenue;
+
+                return {
+                    keyword: row.키워드,
+                    waste: waste,
+                    spend: spend,
+                    revenue: revenue
+                };
+            }).filter(row => row.waste > 0); // 손실만 표시 (waste > 0)
+
+            // 낭비비용 기준 정렬 (내림차순)
+            const sorted = withWaste.sort((a, b) => b.waste - a.waste);
+            const top10 = sorted.slice(0, 10);
+
+            if (top10.length === 0) {
+                console.log('[Waste Top Chart] No waste data (all profitable)');
+                // 빈 차트 표시
+                const ctx = document.getElementById('wasteTopChart').getContext('2d');
+                if (window.wasteChart && typeof window.wasteChart.destroy === 'function') {
+                    window.wasteChart.destroy();
+                }
+                return;
+            }
+
+            // 키워드명 (최대 30자)
+            const labels = top10.map(d => {
+                let keyword = String(d.keyword || '-');
+                if (keyword.length > 30) {
+                    keyword = keyword.substring(0, 30) + '...';
+                }
+                return keyword;
+            });
+
+            // 낭비비용 데이터
+            const wastes = top10.map(d => d.waste);
+
+            // 차트 생성
+            const ctx = document.getElementById('wasteTopChart').getContext('2d');
+
+            // 기존 차트 제거
+            if (window.wasteChart && typeof window.wasteChart.destroy === 'function') {
+                window.wasteChart.destroy();
+            }
+
+            window.wasteChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '낭비비용 (원)',
+                        data: wastes,
+                        backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: '광고비낭비 TOP 10',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    const item = top10[idx];
+                                    return [
+                                        '낭비비용: ' + formatNumber(item.waste) + '원',
+                                        '광고비: ' + formatNumber(item.spend) + '원',
+                                        '매출액: ' + formatNumber(item.revenue) + '원'
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatNumber(value) + '원';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            console.log('[Waste Top Chart] Created successfully');
+        }
+
+        /* ========================================
+           Filter & Search Functions
+           ======================================== */
+
+        function filterByROAS() {
+            const threshold = parseFloat(document.getElementById('roasThreshold').value);
+
+            if (isNaN(threshold)) {
+                alert('ROAS 기준값을 입력해주세요.');
+                return;
+            }
+
+            filteredData = globalData.filter(row => (row.ROAS || 0) <= threshold);
+
+            if (filteredData.length === 0) {
+                alert(`ROAS ${threshold}% 이하인 키워드가 없습니다.`);
+                filteredData = [...globalData];
+            } else {
+                alert(`✅ ROAS ${threshold}% 이하 키워드: ${filteredData.length}개`);
+            }
+
+            displayKeywordTable(filteredData);
+            displayCharts(filteredData);
+        }
+
+        function resetFilter() {
+            document.getElementById('roasThreshold').value = '';
+            filteredData = [...globalData];
+            displayKeywordTable(filteredData);
+            displayCharts(filteredData);
+        }
+
+        function searchKeywords() {
+            const query = document.getElementById('searchKeyword').value.toLowerCase();
+
+            if (query === '') {
+                filteredData = [...globalData];
+            } else {
+                filteredData = globalData.filter(row =>
+                    (row.키워드 || '').toLowerCase().includes(query)
+                );
+            }
+
+            displayKeywordTable(filteredData);
+        }
+
+        /* ========================================
+           Table Sorting
+           ======================================== */
+
+        function sortTable(columnIndex) {
+            if (currentSortColumn === columnIndex) {
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = columnIndex;
+                currentSortOrder = 'desc';
+            }
+
+            displayKeywordTable(filteredData);
+        }
+
+        function getColumnName(index) {
+            const columns = [
+                '키워드', '광고 노출 지면', '노출수', '클릭수', '광고비', '클릭률',
+                '총 주문수', '총 판매수량', '총 전환매출액', 'CPC', 'ROAS'
+            ];
+            return columns[index];
+        }
+
+        /* ========================================
+           Excel Download
+           ======================================== */
+
+        function downloadExcel() {
+            if (!filteredData || filteredData.length === 0) {
+                alert('다운로드할 데이터가 없습니다.');
+                return;
+            }
+
+            // Prepare data for export
+            const exportData = filteredData.map(row => ({
+                '키워드': row.키워드 || '-',
+                '광고 노출 지면': row['광고 노출 지면'] || '검색 영역',
+                '노출수': row.노출수 || 0,
+                '클릭수': row.클릭수 || 0,
+                '광고비': row.광고비 || 0,
+                '클릭률(%)': (row.클릭률 || 0).toFixed(2),
+                '총주문수': row['총 주문수'] || 0,
+                '총판매수량': row['총 판매수량'] || 0,
+                '총매출액': row['총 전환매출액'] || 0,
+                'CPC': (row.CPC || 0).toFixed(0),
+                'ROAS(%)': (row.ROAS || 0).toFixed(2)
+            }));
+
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "쿠팡광고분석");
+
+            // Download
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `쿠팡광고분석_${today}.xlsx`);
+        }
+
+        /* ========================================
+           Recommendation Functions
+           ======================================== */
+
+        let allRecommendations = [];
+        let currentRecommendations = [];
+
+        async function getRecommendations() {
+            if (!globalData || globalData.length === 0) {
+                alert('먼저 데이터를 업로드하세요.');
+                return;
+            }
+
+            // 중복 키워드 검증 (집계되지 않은 원본 데이터 감지)
+            const keywordCount = {};
+            globalData.forEach(row => {
+                const keyword = row.키워드;
+                if (keyword) {
+                    keywordCount[keyword] = (keywordCount[keyword] || 0) + 1;
+                }
+            });
+
+            const duplicates = Object.entries(keywordCount)
+                .filter(([k, count]) => count > 1)
+                .map(([k, count]) => `${k}(${count}개)`);
+
+            if (duplicates.length > 0) {
+                const msg = '⚠️ 중복된 키워드가 발견되었습니다!\n\n' +
+                            '집계되지 않은 원본 데이터로 보입니다.\n' +
+                            '파일을 다시 업로드해주세요.\n\n' +
+                            '중복 키워드 예시:\n' + duplicates.slice(0, 5).join(', ') +
+                            (duplicates.length > 5 ? ` 외 ${duplicates.length - 5}개` : '');
+                alert(msg);
+                console.warn('[Recommendations] Duplicate keywords detected:', duplicates.length);
+                return;
+            }
+
+            try {
+                console.log('[Recommendations] Fetching recommendations...');
+
+                // Show loading
+                LoadingState.show('AI 분석 중', 'AI가 키워드를 분석하고 있습니다...', '분석 중');
+
+                const response = await fetch('/api/ad-analysis/coupang-recommendations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        data: globalData,
+                        criteria: {
+                            min_roas: 50,
+                            max_cpc_multiplier: 2.0,
+                            min_ctr_multiplier: 0.5
+                        }
+                    })
+                });
+
+                // Update progress
+                LoadingState.update('추천 생성 중...', 80);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    LoadingState.update('완료!', 100);
+
+                    setTimeout(() => {
+                        allRecommendations = result.recommendations;
+                        currentRecommendations = result.recommendations;
+                        displayRecommendations(result.recommendations, result.summary);
+                        document.getElementById('recommendationSection').style.display = 'block';
+                        LoadingState.hide();
+
+                        // Scroll to recommendations
+                        document.getElementById('recommendationSection').scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+
+                        console.log('[Recommendations] Success:', result.recommendations.length, 'keywords');
+                    }, 300);
+                } else {
+                    LoadingState.hide();
+                    alert('추천 생성 실패: ' + (result.error || '알 수 없는 오류'));
+                }
+            } catch (error) {
+                LoadingState.hide();
+                console.error('[Recommendations] Error:', error);
+                alert('추천 가져오기 실패: ' + error.message);
+            }
+        }
+
+        function displayRecommendations(recommendations, summary) {
+            // Update summary cards
+            document.getElementById('recWaste').textContent = formatNumber(summary.total_waste);
+            document.getElementById('recCount').textContent = summary.keywords_to_exclude;
+            document.getElementById('recSavings').textContent = summary.potential_savings.replace('%', '');
+
+            // Update priority counts
+            document.getElementById('allCount').textContent = recommendations.length;
+            document.getElementById('criticalCount').textContent = summary.critical_priority || 0;
+            document.getElementById('highCount').textContent = summary.high_priority;
+            document.getElementById('mediumCount').textContent = summary.medium_priority;
+            document.getElementById('lowCount').textContent = summary.low_priority;
+
+            // Render table
+            renderRecommendationTable(recommendations);
+        }
+
+        function renderRecommendationTable(recommendations) {
+            const tbody = document.getElementById('recommendationTableBody');
+
+            if (!recommendations || recommendations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="13" style="text-align: center; padding: 40px;">
+                            추천 데이터가 없습니다
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = recommendations.map((rec) => {
+                const priorityBadge = {
+                    'critical': '<span class="priority-badge priority-critical">🔴 즉시제외</span>',
+                    'high': '<span class="priority-badge priority-high">🟠 조속히제외</span>',
+                    'medium': '<span class="priority-badge priority-medium">🟡 검토필요</span>',
+                    'low': '<span class="priority-badge priority-low">🟢 모니터링</span>'
+                }[rec.priority];
+
+                return `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="rec-checkbox" data-keyword="${rec.keyword}">
+                        </td>
+                        <td><strong>${rec.score || 0}</strong></td>
+                        <td>${priorityBadge}</td>
+                        <td class="keyword-cell" title="${rec.keyword}"><strong>${rec.keyword}</strong></td>
+                        <td style="font-size: 12px;">${rec.reason}</td>
+                        <td>${formatNumber(rec.spend)}원</td>
+                        <td>${formatNumber(rec.revenue)}원</td>
+                        <td>${rec.roas.toFixed(1)}%</td>
+                        <td class="text-danger">${formatNumber(rec.waste)}원</td>
+                        <td class="text-danger">${rec.waste_rate ? rec.waste_rate.toFixed(1) + '%' : '-'}</td>
+                        <td class="text-danger">${formatNumber(rec.opportunity_loss || 0)}원</td>
+                        <td>${formatNumber(rec.clicks)}</td>
+                        <td>${rec.ctr.toFixed(2)}%</td>
+                        <td>${formatNumber(rec.cpc || 0)}원</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterRecommendations(priority) {
+            if (!allRecommendations) return;
+
+            let filtered;
+            if (priority === 'all') {
+                filtered = allRecommendations;
+            } else {
+                filtered = allRecommendations.filter(r => r.priority === priority);
+            }
+
+            currentRecommendations = filtered;
+            renderRecommendationTable(filtered);
+
+            // Update active tab
+            document.querySelectorAll('.priority-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.priority === priority) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        // Sorting state for recommendations (reuse global variables)
+        // currentSortColumn and currentSortOrder are already declared globally
+
+        function sortRecommendations(column) {
+            if (!currentRecommendations) return;
+
+            // Toggle sort order if clicking same column
+            if (currentSortColumn === column) {
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = column;
+                // Default to descending for most columns, ascending for keyword
+                currentSortOrder = column === 'keyword' ? 'asc' : 'desc';
+            }
+
+            // Update sort indicators
+            document.querySelectorAll('[id^="sort"]').forEach(el => {
+                el.textContent = '↕';
+            });
+            const indicatorId = 'sort' + column.charAt(0).toUpperCase() + column.slice(1).replace('_', '_');
+            const indicator = document.getElementById(indicatorId);
+            if (indicator) {
+                indicator.textContent = currentSortOrder === 'asc' ? '↑' : '↓';
+            }
+
+            // Sort data
+            const sorted = [...currentRecommendations].sort((a, b) => {
+                let aVal, bVal;
+
+                // Handle priority sorting specially
+                if (column === 'priority') {
+                    const priorityOrder = { 'critical': 0, 'high': 1, 'medium': 2, 'low': 3 };
+                    aVal = priorityOrder[a.priority] || 999;
+                    bVal = priorityOrder[b.priority] || 999;
+                } else if (column === 'keyword') {
+                    // String sorting
+                    aVal = (a[column] || '').toLowerCase();
+                    bVal = (b[column] || '').toLowerCase();
+                    return currentSortOrder === 'asc'
+                        ? aVal.localeCompare(bVal)
+                        : bVal.localeCompare(aVal);
+                } else {
+                    // Numeric sorting
+                    aVal = a[column] || 0;
+                    bVal = b[column] || 0;
+                }
+
+                return currentSortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+            });
+
+            renderRecommendationTable(sorted);
+        }
+
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAllRec').checked;
+            document.querySelectorAll('.rec-checkbox').forEach(cb => {
+                cb.checked = checked;
+            });
+        }
+
+        function exportRecommendations() {
+            if (!allRecommendations || allRecommendations.length === 0) {
+                alert('다운로드할 추천이 없습니다.');
+                return;
+            }
+
+            const priorityLabels = {
+                'critical': '즉시제외',
+                'high': '조속히제외',
+                'medium': '검토필요',
+                'low': '모니터링'
+            };
+
+            const exportData = allRecommendations.map(rec => ({
+                '점수': rec.score || 0,
+                '우선순위': priorityLabels[rec.priority] || rec.priority,
+                '키워드': rec.keyword,
+                '제외 사유': rec.reason,
+                '광고비': rec.spend,
+                '매출': rec.revenue,
+                'ROAS(%)': rec.roas.toFixed(2),
+                '낭비비용': rec.waste,
+                '낭비율(%)': rec.waste_rate ? rec.waste_rate.toFixed(1) : 0,
+                '기회비용': rec.opportunity_loss || 0,
+                '클릭수': rec.clicks,
+                'CTR(%)': rec.ctr.toFixed(2),
+                'CPC': rec.cpc || 0
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "제외추천키워드");
+
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `쿠팡_제외추천키워드_${today}.xlsx`);
+        }
+
+        function applyExclusions() {
+            const selected = [];
+            document.querySelectorAll('.rec-checkbox:checked').forEach(cb => {
+                selected.push(cb.dataset.keyword);
+            });
+
+            if (selected.length === 0) {
+                alert('제외할 키워드를 선택하세요.');
+                return;
+            }
+
+            if (!confirm(`${selected.length}개 키워드를 제외하시겠습니까?\n\n제외된 키워드는 데이터에서 필터링됩니다.`)) {
+                return;
+            }
+
+            console.log('[Exclusions] Removing keywords:', selected);
+
+            // Remove from global data
+            globalData = globalData.filter(row => !selected.includes(row.키워드));
+            filteredData = [...globalData];
+
+            // Save updated data
+            saveCoupangData(globalData);
+
+            // Recalculate and display
+            const summary = calculateSummary(globalData);
+            displaySummary(summary);
+            displayKeywordTable(filteredData);
+            displayCharts(filteredData);
+
+            // Regenerate recommendations
+            getRecommendations();
+
+            alert(`✅ ${selected.length}개 키워드가 제외되었습니다.`);
+        }
+
+        /* ========================================
+           Utility Functions
+           ======================================== */
+
+        function formatNumber(num) {
+            if (num === null || num === undefined || num === '') return '-';
+            return Math.round(num).toLocaleString('ko-KR');
+        }
+
+        /* ========================================
+           Sidebar Toggle
+           ======================================== */
+
+        // Sidebar simple toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
+        }
+
+        // Active menu item
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Clear all data function
+        function clearAllData() {
+            if (confirm('모든 누적 데이터를 삭제하시겠습니까?')) {
+                localStorage.removeItem(COUPANG_STORAGE_KEY);
+                console.log('[STORAGE] All coupang data cleared');
+                alert('✅ 데이터가 삭제되었습니다');
+                location.reload();
+            }
+        }
+    </script>
+
+    <!-- 배너 로더 -->
+    <script src="/static/js/banner-loader.js"></script>
+</body>
+</html>

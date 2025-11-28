@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>쿠팡 대시보드 수동 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>쿠팡 광고 대시보드 - 수동 테스트</h1>
+
+    <div class="test-section">
+        <h2>1. 파일 업로드 테스트</h2>
+        <input type="file" id="fileInput" accept=".xlsx">
+        <button onclick="testUpload()">업로드</button>
+        <button onclick="clearLocalStorage()">localStorage 초기화</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2. 대시보드 열기</h2>
+        <button onclick="openDashboard()">쿠팡 대시보드 열기</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        async function testUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('파일을 선택하세요');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('result').textContent = '업로드 중...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8080/api/ad-analysis/upload-coupang', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                const result = await response.json();
+
+                document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+
+                if (result.success) {
+                    alert(`✅ 업로드 성공!\n\n총 ${result.data.length}개 키워드 분석 완료\n\n총 광고비: ${result.summary['총 광고비']}원\n총 매출액: ${result.summary['총 매출액']}원\n평균 ROAS: ${result.summary['평균ROAS']}%`);
+                } else {
+                    alert(`❌ 업로드 실패\n\n${result.error}`);
+                }
+            } catch (error) {
+                document.getElementById('result').textContent = '오류: ' + error.message;
+                alert('오류: ' + error.message);
+            }
+        }
+
+        function clearLocalStorage() {
+            localStorage.clear();
+            alert('✅ localStorage가 초기화되었습니다');
+        }
+
+        function openDashboard() {
+            window.open('http://127.0.0.1:8080/ad-dashboard/coupang', '_blank');
+        }
+    </script>
+</body>
+</html>

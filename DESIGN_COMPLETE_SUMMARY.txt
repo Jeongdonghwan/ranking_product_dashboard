@@ -1,0 +1,224 @@
+
+================================================================================
+        COMPREHENSIVE SINGLE-PAGE DASHBOARD LAYOUT - COMPLETE DESIGN
+================================================================================
+
+📄 DESIGN DOCUMENTS CREATED:
+
+1. UNIFIED_LAYOUT_DESIGN.md (243 lines)
+   - Overall structure and grid layout
+   - Main content sections (8 sections top-to-bottom)
+   - Right sidebar sections (3 collapsible panels)
+   - CSS classes reference
+   - JavaScript functions list
+   - Responsive breakpoints
+
+2. LAYOUT_IMPLEMENTATION_SUMMARY.md (294 lines)
+   - Quick implementation guide
+   - Physical structure diagrams
+   - Content composition breakdown
+   - CSS class mapping reference
+   - JavaScript function categories
+   - Color system specification
+   - Creative analysis emphasis details
+   - Implementation checklist (5 phases)
+
+3. VISUAL_LAYOUT_DIAGRAM.txt (In progress)
+   - ASCII visual representation
+   - Modal layouts
+   - Responsive transformations
+   - Scroll flow visualization
+
+================================================================================
+🎯 KEY DESIGN HIGHLIGHTS
+================================================================================
+
+LAYOUT STRUCTURE:
+  Grid: 1fr (main scrollable) + 320px (sticky sidebar)
+  Header: Sticky top (z-index: 100)
+  Content: Max-width 1200px, centered
+
+MAIN SECTIONS (8 total):
+  1. Metrics Grid (8 cards, auto-fit)
+  2. Daily Trend Chart (full width, 350px)
+  3. ROAS Distribution + Budget Pie (2x1)
+  4. Conversion Funnel + Campaign Comparison (2x1)
+  5. Weekday Heatmap (full width, ROAS + CTR)
+  6. CREATIVE ANALYSIS ⭐ (HIGHLIGHTED)
+     - Blue 2px border + gradient background
+     - 4 tabs: Top ROAS | Top CVR | All | Low Performers
+  7. Campaign Performance Table (full width, sortable)
+  8. AI Insights (full width, text + regenerate button)
+
+SIDEBAR (3 sections):
+  1. Saved Analyses (recent 2-3 + more button)
+  2. Period Comparison (select A/B + result area)
+  3. Goals & Budget Pacing (inputs + progress bar)
+
+STICKY HEADER:
+  - Title + subtitle
+  - Action buttons (Upload, Manual, Save, PDF, Excel)
+  - Date filters (Today/7d/30d/Custom)
+
+MODALS (5):
+  1. Upload (file drop + templates)
+  2. Manual Input (form + preview)
+  3. Save Analysis (name/tags/memo)
+  4. Saved Analyses List (full history)
+  5. Campaign Details (campaign-specific modal)
+
+================================================================================
+🎨 CREATIVE ANALYSIS EMPHASIS
+================================================================================
+
+WHY EMPHASIZED:
+  ✓ Most actionable insights
+  ✓ Direct optimization opportunities
+  ✓ Multi-perspective analysis
+  ✓ Impacts budget allocation
+
+HOW EMPHASIZED:
+  ✓ Blue 2px solid border
+  ✓ Light gradient background (#f5f7fa to #f9f9f9)
+  ✓ "⭐ CORE ANALYSIS" badge
+  ✓ Positioned after heatmap, before campaigns
+  ✓ 4-tab interface for depth
+  ✓ Color-coded status badges
+
+4 TAB PERSPECTIVES:
+  💎 Top ROAS: Which creatives drive revenue
+  🎯 Top CVR: Which creatives convert best
+  📋 All Creatives: Complete overview
+  ⚠️ Low Performers: Which to pause/optimize
+
+================================================================================
+📱 RESPONSIVE DESIGN
+================================================================================
+
+DESKTOP (>1400px):
+  - Grid: 1fr 320px (sidebar visible)
+  - Charts: 2 columns
+  - Metrics: auto-fit
+  - Full feature set
+
+TABLET (1200-1400px):
+  - Grid: 1fr (sidebar hidden)
+  - Charts: 1 column
+  - Metrics: auto-fit
+  - Reduced sidebar
+
+MOBILE (<768px):
+  - Full stack layout
+  - Metrics: 2 columns
+  - Header: icons only
+  - Sidebar: hidden/modal
+  - Touch-friendly
+
+================================================================================
+🛠️ CSS CLASSES SUMMARY
+================================================================================
+
+Layout:
+  .dashboard-wrapper: grid: 1fr 320px
+  .main-scroll: overflow-y: auto
+  .sidebar-panel: sticky top, 100vh height
+  .sticky-header: sticky top, z-index 100
+  .main-container: max-width 1200px
+
+Sections:
+  .section: white card, shadow, rounded
+  .section-header: padding, border, flex
+  .section-content: padding
+  .section-title: flex, gap
+  .section-icon: 18px font-size
+
+Metrics:
+  .metrics-grid: auto-fit, minmax(140px, 1fr)
+  .metric-card: gradient background
+  .metric-card.green/orange/red/purple: color variants
+
+Charts:
+  .charts-grid: grid-template-columns: 2fr
+  .chart-container: relative, 350px height
+  .full-width: grid-column: 1 / -1
+
+Creative:
+  .creative-analysis-highlight: blue border, gradient bg
+  .creative-analysis-badge: blue bg, white text
+  .section-tabs: flex, gap, overflow-x: auto
+  .section-tab.active: blue underline
+  .creative-tab: tab content, display control
+
+Tables:
+  .table-wrapper: overflow-x: auto
+  .badge-success/warning/danger/neutral: status colors
+
+Sidebar:
+  .sidebar-section: border-bottom
+  .sidebar-section-header: bg-hover, uppercase
+  .sidebar-section-content: flex column
+  .sidebar-item: hover, active states
+
+Heatmap:
+  .heatmap-container: grid 7 columns
+  .heatmap-cell.low/medium/high: color gradient
+
+Modals:
+  .modal: position fixed, z-index 1000
+  .modal.active: display flex
+  .modal-content: white bg, padding, shadow
+  .modal-header: flex, space-between
+
+================================================================================
+📋 IMPLEMENTATION CHECKLIST
+================================================================================
+
+Phase 1: Layout Structure
+  [ ] Grid wrapper (1fr 320px)
+  [ ] Sticky header positioning
+  [ ] Main container (max-width)
+  [ ] Sidebar sticky positioning
+
+Phase 2: Content Sections
+  [ ] Metrics grid (auto-fit)
+  [ ] 5 chart containers
+  [ ] Heatmap (7x2 grid)
+  [ ] Creative section (highlighted)
+  [ ] Campaign table
+  [ ] AI insights area
+
+Phase 3: Interactivity
+  [ ] Date filter toggle
+  [ ] Creative tabs (4 total)
+  [ ] Campaign sorting
+  [ ] Modal open/close
+  [ ] Sidebar section collapse
+
+Phase 4: Responsive Design
+  [ ] Desktop: all features
+  [ ] Tablet: hide sidebar, 1-col charts
+  [ ] Mobile: full stack, touch-friendly
+
+Phase 5: Data Integration
+  [ ] API data loading
+  [ ] Dynamic chart rendering
+  [ ] Table population
+  [ ] AI insights display
+
+================================================================================
+📚 FILES READY
+================================================================================
+
+Created:
+  ✓ UNIFIED_LAYOUT_DESIGN.md
+  ✓ LAYOUT_IMPLEMENTATION_SUMMARY.md
+
+To Create:
+  - ad_dashboard_unified.html (HTML skeleton + inline CSS)
+  - ad_dashboard_unified.js (JavaScript with all functions)
+
+Location:
+  /c/Users/JDH/Downloads/insight/
+
+================================================================================
+

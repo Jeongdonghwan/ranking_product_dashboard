@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # Flask 애플리케이션
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insight_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Flask 설정
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+
+      # 데이터베이스 설정
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+
+      # OpenAI 설정
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AI_INSIGHTS_ENABLED=${AI_INSIGHTS_ENABLED:-true}
+
+      # Gunicorn 설정
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-4}
+      - GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
+      - GUNICORN_WORKER_CLASS=${GUNICORN_WORKER_CLASS:-sync}
+      - GUNICORN_BIND=0.0.0.0:8080
+
+      # 세션 설정 (Redis 사용)
+      - SESSION_TYPE=redis
+      - REDIS_URL=redis://redis:6379/0
+
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/var/log/insight
+      - ./flask_session:/app/flask_session
+      - ./app/static/uploads/banners:/app/app/static/uploads/banners
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - insight_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # MariaDB 데이터베이스
+  db:
+    image: mariadb:10.11
+    container_name: insight_db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - TZ=Asia/Seoul
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - insight_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Redis (세션 저장소)
+  redis:
+    image: redis:7-alpine
+    container_name: insight_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+    volumes:
+      - redis_data:/data
+    networks:
+      - insight_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Nginx 리버스 프록시 (선택사항)
+  nginx:
+    image: nginx:alpine
+    container_name: insight_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./app/static:/var/www/static:ro
+    depends_on:
+      - app
+    networks:
+      - insight_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    profiles:
+      - with-nginx  # docker-compose --profile with-nginx up 으로 활성화
+
+networks:
+  insight_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local

@@ -1,0 +1,889 @@
+{
+  "home": {
+    "url": "http://127.0.0.1:8080/",
+    "page_name": "home",
+    "timestamp": "2025-11-20T23:16:18.692216",
+    "containers": {
+      "homeTopBanner": {
+        "id": "homeTopBanner",
+        "exists": true,
+        "visible": true,
+        "isEmpty": false,
+        "dimensions": {
+          "x": 556.5,
+          "y": 100.5,
+          "width": 970,
+          "height": 95
+        },
+        "styles": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": "970px",
+          "height": "95px",
+          "margin": "20px 352.5px",
+          "padding": "0px",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "gridTemplateColumns": "none",
+          "gridTemplateRows": "none",
+          "gap": "normal"
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_970x90.png",
+            "alt": "홈 상단 배너 샘플",
+            "width": 970,
+            "height": 90,
+            "naturalWidth": 970,
+            "naturalHeight": 90,
+            "complete": true
+          }
+        ],
+        "innerHTML_length": 229
+      },
+      "homeGridBanners": {
+        "id": "homeGridBanners",
+        "exists": true,
+        "visible": true,
+        "isEmpty": false,
+        "dimensions": {
+          "x": 611.5,
+          "y": 215.5,
+          "width": 860,
+          "height": 480
+        },
+        "styles": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": "860px",
+          "height": "480px",
+          "margin": "20px 407.5px",
+          "padding": "0px",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "gridTemplateColumns": "repeat(4, 200px)",
+          "gridTemplateRows": "repeat(2, 60px)",
+          "gap": "12px"
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 2",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 3",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 4",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 5",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 6",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 7",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 8",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "홈 그리드 배너 9",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          }
+        ],
+        "innerHTML_length": 1850
+      },
+      "homeBottomBanner": {
+        "id": "homeBottomBanner",
+        "exists": true,
+        "visible": true,
+        "isEmpty": false,
+        "dimensions": {
+          "x": 677.5,
+          "y": 1070.5,
+          "width": 728,
+          "height": 95
+        },
+        "styles": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": "728px",
+          "height": "95px",
+          "margin": "20px 473.5px",
+          "padding": "0px",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "gridTemplateColumns": "none",
+          "gridTemplateRows": "none",
+          "gap": "normal"
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_728x90.png",
+            "alt": "홈 하단 배너 샘플",
+            "width": 728,
+            "height": 90,
+            "naturalWidth": 728,
+            "naturalHeight": 90,
+            "complete": true
+          }
+        ],
+        "innerHTML_length": 230
+      }
+    },
+    "network_requests": [
+      {
+        "url": "http://127.0.0.1:8080/api/banners/home_top",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/home_grid",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/home_bottom",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/10/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_728x90.png",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/2/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/3/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/4/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/5/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/6/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/7/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/8/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/9/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/1/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_970x90.png",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/grid_general",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 304,
+        "status_text": "NOT MODIFIED"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/11/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/12/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/13/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/14/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/15/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/16/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/17/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/18/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/grid_coupang",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 304,
+        "status_text": "NOT MODIFIED"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/19/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/20/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/21/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/22/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/23/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/24/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/25/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/26/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      }
+    ],
+    "console_messages": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (NOT FOUND)",
+        "location": "{'url': 'http://127.0.0.1:8080/favicon.ico', 'lineNumber': 0, 'columnNumber': 0}"
+      }
+    ],
+    "javascript_state": {
+      "loadBannersExists": true,
+      "displayBannersExists": true,
+      "bannerLoaderScriptLoaded": true
+    }
+  },
+  "ad_dashboard_general": {
+    "url": "http://127.0.0.1:8080/ad-dashboard",
+    "page_name": "ad_dashboard_general",
+    "timestamp": "2025-11-20T23:16:24.218888",
+    "containers": {
+      "generalGridBanners": {
+        "id": "generalGridBanners",
+        "exists": true,
+        "visible": true,
+        "isEmpty": false,
+        "dimensions": {
+          "x": 204,
+          "y": 196,
+          "width": 1675,
+          "height": 65
+        },
+        "styles": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": "1675px",
+          "height": "65px",
+          "margin": "0px",
+          "padding": "0px",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "gridTemplateColumns": "none",
+          "gridTemplateRows": "none",
+          "gap": "normal"
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 1",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 2",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 3",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 4",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 5",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 6",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 7",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "일반+메타 배너 8",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          }
+        ],
+        "innerHTML_length": 1882
+      }
+    },
+    "network_requests": [
+      {
+        "url": "http://127.0.0.1:8080/api/banners/grid_general",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 304,
+        "status_text": "NOT MODIFIED"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/11/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/12/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/13/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/14/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/15/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/16/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/17/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/18/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/grid_coupang",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 304,
+        "status_text": "NOT MODIFIED"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/19/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/20/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/21/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/22/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/23/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/24/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/25/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/26/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      }
+    ],
+    "console_messages": [],
+    "javascript_state": {
+      "loadBannersExists": true,
+      "displayBannersExists": true,
+      "bannerLoaderScriptLoaded": true
+    }
+  },
+  "ad_dashboard_coupang": {
+    "url": "http://127.0.0.1:8080/ad-dashboard/coupang",
+    "page_name": "ad_dashboard_coupang",
+    "timestamp": "2025-11-20T23:16:28.838885",
+    "containers": {
+      "coupangGridBanners": {
+        "id": "coupangGridBanners",
+        "exists": true,
+        "visible": true,
+        "isEmpty": false,
+        "dimensions": {
+          "x": 611.5,
+          "y": 208.5,
+          "width": 860,
+          "height": 480
+        },
+        "styles": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": "860px",
+          "height": "480px",
+          "margin": "20px 407.5px",
+          "padding": "0px",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "gridTemplateColumns": "repeat(4, 200px)",
+          "gridTemplateRows": "repeat(2, 60px)",
+          "gap": "12px"
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 1",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 2",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 3",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 4",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 5",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 6",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 7",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          },
+          {
+            "src": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+            "alt": "쿠팡 배너 8",
+            "width": 200,
+            "height": 60,
+            "naturalWidth": 200,
+            "naturalHeight": 60,
+            "complete": true
+          }
+        ],
+        "innerHTML_length": 1858
+      }
+    },
+    "network_requests": [
+      {
+        "url": "http://127.0.0.1:8080/api/banners/grid_coupang",
+        "method": "GET",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/static/images/mock/banner_200x60.png",
+        "method": "GET",
+        "type": "response",
+        "status": 304,
+        "status_text": "NOT MODIFIED"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/19/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/20/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/21/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/22/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/23/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/24/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/25/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      },
+      {
+        "url": "http://127.0.0.1:8080/api/banners/26/impression",
+        "method": "POST",
+        "type": "response",
+        "status": 200,
+        "status_text": "OK"
+      }
+    ],
+    "console_messages": [],
+    "javascript_state": {
+      "loadBannersExists": true,
+      "displayBannersExists": true,
+      "bannerLoaderScriptLoaded": true
+    }
+  }
+}

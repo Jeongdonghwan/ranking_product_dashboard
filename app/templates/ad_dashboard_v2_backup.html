@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>광고 분석 대시보드 | Insight</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ========================================
+           Looker Studio Style - Professional Design
+           ======================================== */
+
+        :root {
+            /* Looker Studio Color Palette */
+            --primary-blue: #1a73e8;
+            --primary-blue-dark: #1557b0;
+            --secondary-blue: #4285f4;
+            --accent-green: #0f9d58;
+            --accent-orange: #f9ab00;
+            --accent-red: #ea4335;
+
+            /* Neutral Colors */
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-hover: #f1f3f4;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --text-tertiary: #80868b;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+            --shadow-md: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+            --shadow-lg: 0 2px 6px 2px rgba(60,64,67,.3), 0 8px 16px 4px rgba(60,64,67,.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           Layout
+           ======================================== */
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 16px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-menu {
+            padding: 16px 0;
+        }
+
+        .menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .menu-item.active {
+            background: #e8f0fe;
+            border-left-color: var(--primary-blue);
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            padding: 24px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-secondary);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-blue-dark);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Summary Section - Top 8 Key Metrics */
+        .summary-section {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .summary-card:hover {
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .summary-card.highlight-green {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: var(--accent-green);
+        }
+
+        .summary-card.highlight-blue {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: var(--primary-blue);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .summary-unit {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .metric-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .metric-card.blue {
+            border-left-color: var(--primary-blue);
+        }
+
+        .metric-card.green {
+            border-left-color: var(--accent-green);
+        }
+
+        .metric-card.orange {
+            border-left-color: var(--accent-orange);
+        }
+
+        .metric-card.red {
+            border-left-color: var(--accent-red);
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .metric-change.positive {
+            color: var(--accent-green);
+        }
+
+        .metric-change.negative {
+            color: var(--accent-red);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 48px;
+            text-align: center;
+            background: var(--bg-hover);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background: #e8f0fe;
+        }
+
+        .upload-area.dragging {
+            border-color: var(--accent-green);
+            background: #e6f4ea;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-hover);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-excellent {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .status-good {
+            background: #fef7e0;
+            color: #ea8600;
+        }
+
+        .status-poor {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--bg-hover);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        /* Filter Buttons */
+        .filter-btn {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span>📊</span>
+                    <span>Insight</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-item active" data-page="overview">
+                    <span class="menu-icon">📈</span>
+                    <span>개요</span>
+                </div>
+                <div class="menu-item" data-page="upload">
+                    <span class="menu-icon">📤</span>
+                    <span>데이터 입력</span>
+                </div>
+                <div class="menu-item" data-page="campaigns">
+                    <span class="menu-icon">🎯</span>
+                    <span>캠페인 분석</span>
+                </div>
+                <div class="menu-item" data-page="creatives">
+                    <span class="menu-icon">🎨</span>
+                    <span>소재 분석</span>
+                </div>
+                <div class="menu-item" data-page="compare">
+                    <span class="menu-icon">🔄</span>
+                    <span>기간 비교</span>
+                </div>
+                <div class="menu-item" data-page="saved">
+                    <span class="menu-icon">📂</span>
+                    <span>저장된 분석</span>
+                </div>
+                <div class="menu-item" data-page="goals">
+                    <span class="menu-icon">🎯</span>
+                    <span>목표 관리</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div>
+                    <div class="page-title">광고 분석 대시보드</div>
+                    <div class="page-subtitle">실시간 광고 성과 분석 및 인사이트</div>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn btn-secondary">
+                        <span>⚙️</span>
+                        <span>설정</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="openUploadModal()">
+                        <span>➕</span>
+                        <span>데이터 추가</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page: Overview -->
+            <div id="page-overview" class="page-content">
+                <!-- Date Filter Section -->
+                <div class="card" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-weight: 600; color: var(--text-primary); margin-right: 8px;">📅 기간 선택:</span>
+                            <button class="filter-btn active" data-filter="all" onclick="applyDateFilter('all')">전체</button>
+                            <button class="filter-btn" data-filter="today" onclick="applyDateFilter('today')">오늘</button>
+                            <button class="filter-btn" data-filter="week" onclick="applyDateFilter('week')">최근 7일</button>
+                            <button class="filter-btn" data-filter="month" onclick="applyDateFilter('month')">최근 30일</button>
+                            <button class="filter-btn" data-filter="custom" onclick="openCustomDateModal()">커스텀 기간</button>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="date" id="dateStart" class="form-input" style="width: 140px; padding: 6px 10px;">
+                            <span style="color: var(--text-secondary);">~</span>
+                            <input type="date" id="dateEnd" class="form-input" style="width: 140px; padding: 6px 10px;">
+                            <button class="btn btn-primary" onclick="applyCustomDateRange()" style="padding: 6px 16px;">적용</button>
+                        </div>
+                    </div>
+                    <div id="currentDateRange" style="margin-top: 8px; color: var(--text-secondary); font-size: 13px;">
+                        현재 기간: 전체 데이터
+                    </div>
+                </div>
+
+                <!-- Top Summary Section - 8 Key Metrics -->
+                <div class="summary-section">
+                    <h3 style="margin-bottom: 15px; font-size: 18px; color: var(--text-primary);">📊 핵심 지표 요약</h3>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-label">총 비용</div>
+                            <div class="summary-value" id="summarySpend">-</div>
+                            <div class="summary-unit">원</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">전환수</div>
+                            <div class="summary-value" id="summaryConversions">-</div>
+                            <div class="summary-unit">건</div>
+                        </div>
+
+                        <div class="summary-card highlight-green">
+                            <div class="summary-label">총 매출</div>
+                            <div class="summary-value" id="summaryRevenue">-</div>
+                            <div class="summary-unit">원</div>
+                        </div>
+
+                        <div class="summary-card highlight-blue">
+                            <div class="summary-label">ROAS</div>
+                            <div class="summary-value" id="summaryRoas">-</div>
+                            <div class="summary-unit">%</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">노출수</div>
+                            <div class="summary-value" id="summaryImpressions">-</div>
+                            <div class="summary-unit">회</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">클릭수</div>
+                            <div class="summary-value" id="summaryClicks">-</div>
+                            <div class="summary-unit">회</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">클릭률 (CTR)</div>
+                            <div class="summary-value" id="summaryCtr">-</div>
+                            <div class="summary-unit">%</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">전환율 (CVR)</div>
+                            <div class="summary-value" id="summaryCvr">-</div>
+                            <div class="summary-unit">%</div>
+                        </div>
+                    </div>
+
+                    <!-- 계산 공식 설명 -->
+                    <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 6px; font-size: 11px; color: #5f6368; line-height: 1.6;">
+                        <strong>📐 계산 공식:</strong><br>
+                        • ROAS = (매출 ÷ 비용) × 100<br>
+                        • CTR = (클릭수 ÷ 노출수) × 100<br>
+                        • CVR = (전환수 ÷ 클릭수) × 100
+                    </div>
+                </div>
+
+                <!-- Metrics Grid (기존 4개 카드 - 하위 섹션) -->
+                <div class="metrics-grid" id="metricsGrid">
+                    <div class="metric-card blue">
+                        <div class="metric-label">평균 ROAS</div>
+                        <div class="metric-value">-</div>
+                        <div class="metric-change positive">
+                            <span>↑</span>
+                            <span>-</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card green">
+                        <div class="metric-label">클릭률 (CTR)</div>
+                        <div class="metric-value">-</div>
+                        <div class="metric-change positive">
+                            <span>↑</span>
+                            <span>-</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card orange">
+                        <div class="metric-label">전환당 비용 (CPA)</div>
+                        <div class="metric-value">-</div>
+                        <div class="metric-change negative">
+                            <span>↓</span>
+                            <span>-</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card red">
+                        <div class="metric-label">전환율 (CVR)</div>
+                        <div class="metric-value">-</div>
+                        <div class="metric-change positive">
+                            <span>↑</span>
+                            <span>-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid Layout -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <!-- Chart 1: 일별 성과 트렌드 (기존) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">📈 일별 성과 트렌드</div>
+                            <select class="btn btn-secondary">
+                                <option>최근 7일</option>
+                                <option>최근 30일</option>
+                                <option>최근 90일</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: ROAS 분포도 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">📊 ROAS 분포</div>
+                        </div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="roasDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Row of Charts -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <!-- Chart 3: 예산 배분 (Pie Chart) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">💰 캠페인별 예산 배분</div>
+                        </div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="budgetPieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 4: 전환 퍼널 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🔻 전환 퍼널</div>
+                            <span id="impressionsEstimatedBadge" class="badge badge-warning" style="display: none;">⚠️ 노출수 추정됨</span>
+                        </div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="conversionFunnelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Third Row of Charts -->
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <!-- Chart 5: 캠페인 비교 (Bar Chart) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🏆 캠페인 성과 비교</div>
+                            <select id="comparisonMetricSelect" class="btn btn-secondary" onchange="updateComparisonChart()">
+                                <option value="roas">ROAS</option>
+                                <option value="spend">지출액</option>
+                                <option value="revenue">매출액</option>
+                                <option value="conversions">전환수</option>
+                            </select>
+                        </div>
+                        <div class="chart-container" style="height: 350px;">
+                            <canvas id="campaignComparisonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 6: 요일별 성과 히트맵 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">📅 요일별 성과</div>
+                        </div>
+                        <div class="chart-container" style="height: 350px;">
+                            <canvas id="weekdayHeatmapChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaign Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">캠페인 성과</div>
+                    </div>
+                    <table id="campaignTable">
+                        <thead>
+                            <tr>
+                                <th>순위</th>
+                                <th>캠페인명</th>
+                                <th>ROAS</th>
+                                <th>CTR</th>
+                                <th>CPA</th>
+                                <th>지출액</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-secondary);">
+                                    데이터를 업로드하면 캠페인 분석이 표시됩니다
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Page: Upload -->
+            <div id="page-upload" class="page-content hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">데이터 업로드</div>
+                    </div>
+
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Excel 또는 CSV 파일을 드래그하거나 클릭하세요</div>
+                        <div class="upload-subtext">지원 형식: .xlsx, .xls, .csv (최대 10MB)</div>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+                        <button class="btn btn-secondary">📥 범용 템플릿</button>
+                        <button class="btn btn-secondary">📥 네이버 템플릿</button>
+                        <button class="btn btn-secondary">📥 메타 템플릿</button>
+                        <button class="btn btn-secondary">📥 구글 템플릿</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">수기 입력</div>
+                    </div>
+                    <button class="btn btn-primary">➕ 일별 데이터 직접 입력하기</button>
+                </div>
+            </div>
+
+            <!-- Page: Creative Analysis -->
+            <div id="page-creatives" class="page-content hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">🎨 소재 성과 분석</div>
+                        <div class="card-subtitle">광고 소재별 ROAS 및 전환율 순위</div>
+                    </div>
+
+                    <div id="creativesContainer">
+                        <!-- Grid for TOP 10 Tables -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <!-- ROAS TOP 10 -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title" style="font-size: 16px;">📊 ROAS TOP 10 소재</div>
+                                </div>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>순위</th>
+                                            <th>소재명</th>
+                                            <th>타입</th>
+                                            <th>ROAS</th>
+                                            <th>매출</th>
+                                            <th>지출</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="roasTopCreativesTable">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                                소재 데이터가 포함된 파일을 업로드하세요
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- CVR TOP 10 -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title" style="font-size: 16px;">🎯 전환율 TOP 10 소재</div>
+                                </div>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>순위</th>
+                                            <th>소재명</th>
+                                            <th>타입</th>
+                                            <th>CVR</th>
+                                            <th>전환수</th>
+                                            <th>클릭수</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cvrTopCreativesTable">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                                소재 데이터가 포함된 파일을 업로드하세요
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Full Creative Performance Table -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">전체 소재 성과</div>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>소재명</th>
+                                        <th>타입</th>
+                                        <th>플랫폼</th>
+                                        <th>ROAS</th>
+                                        <th>CVR</th>
+                                        <th>CTR</th>
+                                        <th>CPA</th>
+                                        <th>지출액</th>
+                                        <th>매출액</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allCreativesTable">
+                                    <tr>
+                                        <td colspan="10" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                            소재 데이터가 포함된 파일을 업로드하세요
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="creativesEmptyState" class="hidden">
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🎨</div>
+                            <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+                                소재 분석을 위한 데이터가 필요합니다
+                            </div>
+                            <div style="color: var(--text-secondary); margin-bottom: 24px;">
+                                '표준 템플릿' 또는 '고급 템플릿'을 사용하여 소재 정보를 업로드하세요
+                            </div>
+                            <button class="btn btn-primary" onclick="document.querySelector('[data-page=\\'upload\\']').click()">
+                                📤 데이터 업로드하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div>
+            <div class="spinner"></div>
+            <div style="margin-top: 16px; color: var(--text-secondary); font-weight: 500;">
+                데이터 처리 중...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Data Storage
+        let currentMetricsData = null;
+        let currentDailyData = null;
+        let currentCampaignData = null;
+        let currentDateFilter = 'all';
+
+        // LocalStorage Key
+        const STORAGE_KEY = 'ad_dashboard_accumulated_data';
+
+        // Save data to localStorage
+        function saveToLocalStorage(newDailyData) {
+            try {
+                // Get existing data
+                const existingData = loadFromLocalStorage();
+
+                // Merge new data with existing
+                const mergedData = mergeDataArrays(existingData, newDailyData);
+
+                // Save merged data
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedData));
+                console.log('[STORAGE] Saved data:', mergedData.length, 'days');
+
+                return mergedData;
+            } catch (error) {
+                console.error('[STORAGE] Save error:', error);
+                return newDailyData;
+            }
+        }
+
+        // Load data from localStorage
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const data = JSON.parse(stored);
+                    console.log('[STORAGE] Loaded data:', data.length, 'days');
+                    return data;
+                }
+            } catch (error) {
+                console.error('[STORAGE] Load error:', error);
+            }
+            return [];
+        }
+
+        // Merge daily data arrays (avoid duplicates by date + campaign)
+        function mergeDataArrays(existingData, newData) {
+            const merged = [...existingData];
+
+            newData.forEach(newItem => {
+                const existingIndex = merged.findIndex(item =>
+                    item.date === newItem.date && item.campaign_name === newItem.campaign_name
+                );
+
+                if (existingIndex >= 0) {
+                    // Update existing entry
+                    merged[existingIndex] = newItem;
+                    console.log('[MERGE] Updated:', newItem.date, newItem.campaign_name);
+                } else {
+                    // Add new entry
+                    merged.push(newItem);
+                    console.log('[MERGE] Added:', newItem.date, newItem.campaign_name);
+                }
+            });
+
+            // Sort by date
+            merged.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            return merged;
+        }
+
+        // Clear all accumulated data
+        function clearAllData() {
+            if (confirm('모든 누적 데이터를 삭제하시겠습니까?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                currentMetricsData = null;
+                currentDailyData = null;
+                currentCampaignData = null;
+                console.log('[STORAGE] All data cleared');
+                alert('✅ 데이터가 삭제되었습니다');
+
+                // Reload page to reset UI
+                location.reload();
+            }
+        }
+
+        // Recalculate metrics from daily data
+        function recalculateMetrics(dailyData) {
+            console.log('[RECALC] recalculateMetrics called with data:', dailyData);
+            if (!dailyData || dailyData.length === 0) {
+                console.log('[RECALC] No data, returning null');
+                return null;
+            }
+
+            // Aggregate totals
+            const totals = dailyData.reduce((acc, row) => {
+                acc.spend += row.spend || 0;
+                acc.revenue += row.revenue || 0;
+                acc.clicks += row.clicks || 0;
+                acc.conversions += row.conversions || 0;
+                acc.impressions += row.impressions || 0;
+                return acc;
+            }, { spend: 0, revenue: 0, clicks: 0, conversions: 0, impressions: 0 });
+
+            console.log('[RECALC] Totals:', totals);
+
+            // Calculate campaign metrics first
+            const campaigns = calculateCampaignMetrics(dailyData);
+            console.log('[RECALC] Campaigns:', campaigns);
+
+            // Calculate aggregate metrics
+            const metrics = {
+                total_spend: totals.spend,
+                total_revenue: totals.revenue,
+                total_clicks: totals.clicks,
+                total_conversions: totals.conversions,
+                total_impressions: totals.impressions,
+                avg_roas: totals.spend > 0 ? totals.revenue / totals.spend : 0,
+                avg_ctr: totals.impressions > 0 ? (totals.clicks / totals.impressions) * 100 : 0,
+                avg_cpc: totals.clicks > 0 ? totals.spend / totals.clicks : 0,
+                avg_cpa: totals.conversions > 0 ? totals.spend / totals.conversions : 0,
+                cvr: totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0,
+                avg_order_value: totals.conversions > 0 ? totals.revenue / totals.conversions : 0,
+                daily_trend: dailyData,
+                campaigns: campaigns
+            };
+
+            console.log('[RECALC] Final metrics:', metrics);
+            return metrics;
+        }
+
+        // Calculate campaign-level metrics
+        function calculateCampaignMetrics(dailyData) {
+            const campaignMap = {};
+
+            // Group by campaign
+            dailyData.forEach(row => {
+                const name = row.campaign_name;
+                if (!campaignMap[name]) {
+                    campaignMap[name] = {
+                        campaign_name: name,
+                        spend: 0,
+                        revenue: 0,
+                        clicks: 0,
+                        conversions: 0,
+                        impressions: 0
+                    };
+                }
+                campaignMap[name].spend += row.spend || 0;
+                campaignMap[name].revenue += row.revenue || 0;
+                campaignMap[name].clicks += row.clicks || 0;
+                campaignMap[name].conversions += row.conversions || 0;
+                campaignMap[name].impressions += row.impressions || 0;
+            });
+
+            // Convert to array and calculate derived metrics
+            const campaigns = Object.values(campaignMap).map(c => ({
+                ...c,
+                roas: c.spend > 0 ? c.revenue / c.spend : 0,
+                ctr: c.impressions > 0 ? (c.clicks / c.impressions) * 100 : 0,
+                cpa: c.conversions > 0 ? c.spend / c.conversions : 0,
+                cvr: c.clicks > 0 ? (c.conversions / c.clicks) * 100 : 0,
+                status: getStatusFromRoas(c.spend > 0 ? c.revenue / c.spend : 0)
+            }));
+
+            // Sort by ROAS and add rank
+            campaigns.sort((a, b) => b.roas - a.roas);
+            campaigns.forEach((c, index) => {
+                c.rank = index + 1;
+            });
+
+            return campaigns;
+        }
+
+        // Get status classification from ROAS
+        function getStatusFromRoas(roas) {
+            if (roas >= 4.0) return 'excellent';
+            if (roas >= 3.0) return 'good';
+            return 'poor';
+        }
+
+        // Update data summary badge
+        function updateDataSummaryBadge() {
+            const dailyData = loadFromLocalStorage();
+            if (dailyData.length === 0) {
+                return;
+            }
+
+            const dates = dailyData.map(d => d.date).sort();
+            const startDate = dates[0];
+            const endDate = dates[dates.length - 1];
+            const uniqueDays = new Set(dates).size;
+
+            // Create/update badge
+            let badge = document.getElementById('dataSummaryBadge');
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.id = 'dataSummaryBadge';
+                badge.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    font-size: 13px;
+                    z-index: 1000;
+                    cursor: pointer;
+                    transition: transform 0.3s;
+                `;
+                badge.addEventListener('click', clearAllData);
+                badge.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                badge.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+                document.body.appendChild(badge);
+            }
+
+            badge.innerHTML = `
+                <div style="font-weight: 600; margin-bottom: 4px;">📊 누적 데이터</div>
+                <div style="font-size: 12px; opacity: 0.9;">${startDate} ~ ${endDate}</div>
+                <div style="font-size: 12px; opacity: 0.9;">${uniqueDays}일치 데이터 저장됨</div>
+                <div style="font-size: 11px; opacity: 0.8; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 4px;">클릭하여 모두 삭제</div>
+            `;
+        }
+
+        // Page Initialization - Load existing data
+        function initializePage() {
+            console.log('[INIT] Initializing page...');
+
+            // Check for existing data in localStorage
+            const storedData = loadFromLocalStorage();
+            console.log('[INIT] Found stored data:', storedData.length, 'rows');
+
+            if (storedData.length > 0) {
+                // Recalculate metrics from stored data
+                const metrics = recalculateMetrics(storedData);
+                console.log('[INIT] Recalculated metrics:', metrics);
+
+                // Display stored data
+                displayMetrics(metrics);
+                displayChart(metrics.daily_trend);
+                displayCampaigns(metrics.campaigns);
+
+                // Update badge
+                updateDataSummaryBadge();
+
+                console.log('[INIT] Page initialized with stored data');
+            } else {
+                console.log('[INIT] No stored data found');
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('[INIT] DOM Content Loaded');
+            initializePage();
+        });
+
+        // Page Navigation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const page = this.dataset.page;
+
+                // Update active menu
+                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show page
+                document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+                document.getElementById(`page-${page}`).classList.remove('hidden');
+            });
+        });
+
+        // File Upload
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        console.log('[DEBUG] Upload area and file input initialized');
+
+        uploadArea.addEventListener('click', () => {
+            console.log('[DEBUG] Upload area clicked');
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragging');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragging');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+
+            if (e.dataTransfer.files.length > 0) {
+                uploadFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            console.log('[DEBUG] File input changed, files:', e.target.files.length);
+            if (e.target.files.length > 0) {
+                console.log('[DEBUG] Uploading file:', e.target.files[0].name);
+                uploadFile(e.target.files[0]);
+            }
+        });
+
+        // Upload File Function
+        async function uploadFile(file) {
+            console.log('[DEBUG] uploadFile called with:', file.name, file.size, 'bytes');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.remove('hidden');
+            console.log('[DEBUG] Loading overlay shown');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('snapshot_name', `분석 ${new Date().toLocaleDateString()}`);
+
+            try {
+                console.log('[DEBUG] Starting fetch request...');
+                const response = await fetch('/api/ad-analysis/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('[DEBUG] Response received, status:', response.status);
+                const result = await response.json();
+                console.log('[DEBUG] Result:', result);
+
+                if (result.success) {
+                    console.log('[DEBUG] Upload successful, processing data...');
+
+                    // Save new daily data to localStorage and merge with existing
+                    const newDailyData = result.metrics.daily_trend || [];
+                    const mergedDailyData = saveToLocalStorage(newDailyData);
+                    console.log('[DEBUG] Merged data count:', mergedDailyData.length);
+
+                    // Recalculate metrics from accumulated data
+                    const accumulatedMetrics = recalculateMetrics(mergedDailyData);
+                    console.log('[DEBUG] Accumulated metrics:', accumulatedMetrics);
+
+                    // Update data summary badge
+                    updateDataSummaryBadge();
+
+                    alert('✅ 업로드 및 분석 완료! 누적 데이터: ' + mergedDailyData.length + '행');
+
+                    // Switch to overview page
+                    document.querySelector('[data-page="overview"]').click();
+
+                    // Display accumulated results
+                    displayMetrics(accumulatedMetrics);
+                    displayChart(accumulatedMetrics.daily_trend);
+                    displayCampaigns(accumulatedMetrics.campaigns);
+                } else {
+                    alert('❌ 업로드 실패: ' + (result.error || '알 수 없는 오류'));
+                }
+            } catch (error) {
+                console.error('[DEBUG] Upload error:', error);
+                alert('❌ 업로드 중 오류가 발생했습니다 상단의 제휴문의를 통해 문의해주세요 : ' + error.message );
+            } finally {
+                console.log('[DEBUG] Hiding loading overlay');
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        // Display Metrics
+        function displayMetrics(metrics) {
+            // Store data globally for filtering
+            currentMetricsData = metrics;
+            currentDailyData = metrics.daily_trend || [];
+            currentCampaignData = metrics.campaigns || [];
+
+            // Update 8 Summary Cards (Top Section)
+            document.getElementById('summarySpend').textContent =
+                (metrics.total_spend / 10000).toFixed(0) + '만';
+            document.getElementById('summaryConversions').textContent =
+                (metrics.total_conversions || 0).toLocaleString();
+            document.getElementById('summaryRevenue').textContent =
+                (metrics.total_revenue / 10000).toFixed(0) + '만';
+            document.getElementById('summaryRoas').textContent =
+                ((metrics.avg_roas || 0) * 100).toFixed(0);
+            document.getElementById('summaryImpressions').textContent =
+                ((metrics.total_impressions || 0) / 1000).toFixed(0) + 'K';
+            document.getElementById('summaryClicks').textContent =
+                (metrics.total_clicks || 0).toLocaleString();
+            document.getElementById('summaryCtr').textContent =
+                (metrics.avg_ctr || 0).toFixed(0);
+            document.getElementById('summaryCvr').textContent =
+                (metrics.cvr || 0).toFixed(0);
+
+            // Update metric cards (existing 4 cards)
+            const cards = document.querySelectorAll('.metric-card');
+            if (cards.length >= 4) {
+                cards[0].querySelector('.metric-value').textContent = ((metrics.avg_roas || 0) * 100).toFixed(0) + '%' || '-';
+                cards[1].querySelector('.metric-value').textContent = (metrics.avg_ctr || 0).toFixed(0) + '%' || '-';
+                cards[2].querySelector('.metric-value').textContent = (metrics.avg_cpa || 0).toLocaleString() + '원' || '-';
+                cards[3].querySelector('.metric-value').textContent = (metrics.cvr || 0).toFixed(0) + '%' || '-';
+            }
+
+            // Display all charts
+            if (metrics.daily_trend) {
+                displayChart(metrics.daily_trend);
+            }
+
+            // Display new advanced charts
+            if (metrics.campaigns) {
+                displayCampaigns(metrics.campaigns);
+                displayROASDistribution(metrics.campaigns);
+                displayBudgetPieChart(metrics.campaigns);
+                displayConversionFunnel(metrics);
+                displayCampaignComparison(metrics.campaigns);
+                displayWeekdayHeatmap(metrics.daily_trend);
+            }
+
+            // Display creative analysis
+            if (metrics.creatives && metrics.creatives.length > 0) {
+                displayCreatives(metrics.creatives);
+            }
+        }
+
+        // Display Chart
+        let trendChart = null;
+        function displayChart(dailyData) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            const dates = dailyData.map(d => d.date);
+            const roasData = dailyData.map(d => d.roas);
+            const spendData = dailyData.map(d => d.spend / 10000);
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'ROAS',
+                            data: roasData,
+                            borderColor: '#1a73e8',
+                            backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '지출 (만원)',
+                            data: spendData,
+                            type: 'bar',
+                            backgroundColor: 'rgba(234, 67, 53, 0.2)',
+                            borderColor: '#ea4335',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'ROAS' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: '지출 (만원)' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart 2: ROAS Distribution (Doughnut Chart)
+        let roasDistChart = null;
+        function displayROASDistribution(campaigns) {
+            // Data validation
+            if (!campaigns || campaigns.length === 0) {
+                console.log('[displayROASDistribution] No campaign data to display');
+                return;
+            }
+
+            const ctx = document.getElementById('roasDistributionChart').getContext('2d');
+
+            if (roasDistChart) {
+                roasDistChart.destroy();
+            }
+
+            // ROAS 구간별 캠페인 개수
+            const excellent = campaigns.filter(c => c.roas >= 4.0).length;
+            const good = campaigns.filter(c => c.roas >= 3.0 && c.roas < 4.0).length;
+            const poor = campaigns.filter(c => c.roas < 3.0).length;
+
+            roasDistChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['우수 (≥4.0)', '보통 (3.0-4.0)', '개선필요 (<3.0)'],
+                    datasets: [{
+                        data: [excellent, good, poor],
+                        backgroundColor: ['#0f9d58', '#f4b400', '#ea4335'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart 3: Budget Pie Chart
+        let budgetPieChart = null;
+        function displayBudgetPieChart(campaigns) {
+            // Data validation
+            if (!campaigns || campaigns.length === 0) {
+                console.log('[displayBudgetPieChart] No campaign data to display');
+                return;
+            }
+
+            const ctx = document.getElementById('budgetPieChart').getContext('2d');
+
+            if (budgetPieChart) {
+                budgetPieChart.destroy();
+            }
+
+            // Top 5 campaigns by spend
+            const topCampaigns = [...campaigns]
+                .sort((a, b) => b.spend - a.spend)
+                .slice(0, 5);
+
+            const otherSpend = campaigns
+                .slice(5)
+                .reduce((sum, c) => sum + c.spend, 0);
+
+            const labels = topCampaigns.map(c => c.campaign_name);
+            const data = topCampaigns.map(c => c.spend / 10000);
+
+            if (otherSpend > 0) {
+                labels.push('기타');
+                data.push(otherSpend / 10000);
+            }
+
+            const colors = ['#1a73e8', '#0f9d58', '#f4b400', '#ea4335', '#9334e6', '#95a5a6'];
+
+            budgetPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value.toFixed(0)}만원 (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart 4: Conversion Funnel
+        let conversionFunnelChart = null;
+        function displayConversionFunnel(metrics) {
+            // Data validation
+            if (!metrics) {
+                console.log('[displayConversionFunnel] No metrics data to display');
+                return;
+            }
+
+            const ctx = document.getElementById('conversionFunnelChart').getContext('2d');
+
+            if (conversionFunnelChart) {
+                conversionFunnelChart.destroy();
+            }
+
+            const impressions = metrics.total_impressions || 0;
+            const clicks = metrics.total_clicks || 0;
+            const conversions = metrics.total_conversions || 0;
+
+            // Show/hide impression estimation badge
+            const badge = document.getElementById('impressionsEstimatedBadge');
+            if (metrics.impressions_estimated) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            conversionFunnelChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['노출수', '클릭수', '전환수'],
+                    datasets: [{
+                        label: '전환 퍼널',
+                        data: [impressions, clicks, conversions],
+                        backgroundColor: ['#1a73e8', '#0f9d58', '#ea4335'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.x;
+                                    return `${context.label}: ${value.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart 5: Campaign Comparison (Bar Chart)
+        let campaignComparisonChart = null;
+        function displayCampaignComparison(campaigns) {
+            // Data validation
+            if (!campaigns || campaigns.length === 0) {
+                console.log('[displayCampaignComparison] No campaign data to display');
+                return;
+            }
+
+            const ctx = document.getElementById('campaignComparisonChart').getContext('2d');
+
+            if (campaignComparisonChart) {
+                campaignComparisonChart.destroy();
+            }
+
+            // Top 8 campaigns by ROAS
+            const topCampaigns = [...campaigns]
+                .sort((a, b) => b.roas - a.roas)
+                .slice(0, 8);
+
+            const labels = topCampaigns.map(c => c.campaign_name.length > 15 ? c.campaign_name.substring(0, 15) + '...' : c.campaign_name);
+            const roasData = topCampaigns.map(c => c.roas);
+
+            campaignComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'ROAS',
+                        data: roasData,
+                        backgroundColor: roasData.map(r => r >= 4.0 ? '#0f9d58' : r >= 3.0 ? '#f4b400' : '#ea4335'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'ROAS' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update comparison chart based on selected metric
+        function updateComparisonChart() {
+            const metric = document.getElementById('comparisonMetricSelect').value;
+
+            if (!currentCampaignData || currentCampaignData.length === 0) {
+                return;
+            }
+
+            const topCampaigns = [...currentCampaignData]
+                .sort((a, b) => b[metric] - a[metric])
+                .slice(0, 8);
+
+            const labels = topCampaigns.map(c => c.campaign_name.length > 15 ? c.campaign_name.substring(0, 15) + '...' : c.campaign_name);
+
+            let data, label, color;
+
+            switch(metric) {
+                case 'roas':
+                    data = topCampaigns.map(c => c.roas);
+                    label = 'ROAS';
+                    color = data.map(r => r >= 4.0 ? '#0f9d58' : r >= 3.0 ? '#f4b400' : '#ea4335');
+                    break;
+                case 'spend':
+                    data = topCampaigns.map(c => c.spend / 10000);
+                    label = '지출액 (만원)';
+                    color = '#1a73e8';
+                    break;
+                case 'revenue':
+                    data = topCampaigns.map(c => c.revenue / 10000);
+                    label = '매출액 (만원)';
+                    color = '#0f9d58';
+                    break;
+                case 'conversions':
+                    data = topCampaigns.map(c => c.conversions);
+                    label = '전환수';
+                    color = '#f4b400';
+                    break;
+            }
+
+            if (campaignComparisonChart) {
+                campaignComparisonChart.data.labels = labels;
+                campaignComparisonChart.data.datasets[0].data = data;
+                campaignComparisonChart.data.datasets[0].label = label;
+                campaignComparisonChart.data.datasets[0].backgroundColor = color;
+                campaignComparisonChart.update();
+            }
+        }
+
+        // Chart 6: Weekday Heatmap (Bar Chart)
+        let weekdayHeatmapChart = null;
+        function displayWeekdayHeatmap(dailyData) {
+            // Data validation
+            if (!dailyData || dailyData.length === 0) {
+                console.log('[displayWeekdayHeatmap] No data to display');
+                return;
+            }
+
+            const ctx = document.getElementById('weekdayHeatmapChart').getContext('2d');
+
+            if (weekdayHeatmapChart) {
+                weekdayHeatmapChart.destroy();
+            }
+
+            // Group by day of week
+            const weekdayData = {
+                '일': { spend: 0, conversions: 0, count: 0 },
+                '월': { spend: 0, conversions: 0, count: 0 },
+                '화': { spend: 0, conversions: 0, count: 0 },
+                '수': { spend: 0, conversions: 0, count: 0 },
+                '목': { spend: 0, conversions: 0, count: 0 },
+                '금': { spend: 0, conversions: 0, count: 0 },
+                '토': { spend: 0, conversions: 0, count: 0 }
+            };
+
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+            dailyData.forEach(d => {
+                const date = new Date(d.date);
+                const dayName = dayNames[date.getDay()];
+                weekdayData[dayName].spend += d.spend || 0;
+                weekdayData[dayName].conversions += d.conversions || 0;
+                weekdayData[dayName].count += 1;
+            });
+
+            // Calculate average ROAS per weekday
+            const labels = dayNames;
+            const avgSpend = labels.map(day => weekdayData[day].count > 0 ? weekdayData[day].spend / weekdayData[day].count / 10000 : 0);
+            const avgConversions = labels.map(day => weekdayData[day].count > 0 ? weekdayData[day].conversions / weekdayData[day].count : 0);
+
+            weekdayHeatmapChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '평균 지출 (만원)',
+                            data: avgSpend,
+                            backgroundColor: 'rgba(26, 115, 232, 0.6)',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '평균 전환수',
+                            data: avgConversions,
+                            backgroundColor: 'rgba(15, 157, 88, 0.6)',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: '평균 지출 (만원)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: '평균 전환수' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Display Campaigns
+        function displayCampaigns(campaigns) {
+            const tbody = document.getElementById('campaignTableBody');
+
+            if (campaigns.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 48px; color: var(--text-secondary);">데이터가 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = campaigns.map((c, index) => {
+                let statusClass = 'status-excellent';
+                let statusText = '우수';
+
+                if (c.roas < 3.0) {
+                    statusClass = 'status-poor';
+                    statusText = '개선필요';
+                } else if (c.roas < 4.0) {
+                    statusClass = 'status-good';
+                    statusText = '보통';
+                }
+
+                return `
+                    <tr onclick="showCampaignDetail(${index})" style="cursor: pointer;" title="클릭하여 상세보기">
+                        <td>${c.rank || '-'}</td>
+                        <td style="font-weight: 500;">${c.campaign_name}</td>
+                        <td><strong>${((c.roas || 0) * 100).toFixed(0)}%</strong></td>
+                        <td>${(c.ctr || 0).toFixed(0)}%</td>
+                        <td>${(c.cpa || 0).toLocaleString()}원</td>
+                        <td>${((c.spend || 0) / 10000).toFixed(0)}만원</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Display Creatives
+        function displayCreatives(creatives) {
+            console.log('[Creative Analysis] Displaying creatives:', creatives);
+
+            if (!creatives || creatives.length === 0) {
+                console.log('[Creative Analysis] No creative data available');
+                return;
+            }
+
+            // Sort by ROAS for ROAS TOP 10
+            const roasTop = [...creatives].sort((a, b) => (b.roas || 0) - (a.roas || 0)).slice(0, 10);
+
+            // Sort by CVR for CVR TOP 10
+            const cvrTop = [...creatives].sort((a, b) => (b.cvr || 0) - (a.cvr || 0)).slice(0, 10);
+
+            // Update ROAS TOP 10 Table
+            const roasTableBody = document.getElementById('roasTopCreativesTable');
+            roasTableBody.innerHTML = roasTop.map((c, index) => `
+                <tr>
+                    <td style="font-weight: 600;">${index + 1}</td>
+                    <td style="font-weight: 500;">${c.ad_creative_name}</td>
+                    <td>${c.creative_type || '-'}</td>
+                    <td><strong style="color: var(--accent-green);">${((c.roas || 0) * 100).toFixed(0)}%</strong></td>
+                    <td>${((c.revenue || 0) / 10000).toFixed(0)}만</td>
+                    <td>${((c.spend || 0) / 10000).toFixed(0)}만</td>
+                </tr>
+            `).join('');
+
+            // Update CVR TOP 10 Table
+            const cvrTableBody = document.getElementById('cvrTopCreativesTable');
+            cvrTableBody.innerHTML = cvrTop.map((c, index) => `
+                <tr>
+                    <td style="font-weight: 600;">${index + 1}</td>
+                    <td style="font-weight: 500;">${c.ad_creative_name}</td>
+                    <td>${c.creative_type || '-'}</td>
+                    <td><strong style="color: var(--primary-blue);">${(c.cvr || 0).toFixed(1)}%</strong></td>
+                    <td>${(c.conversions || 0).toLocaleString()}</td>
+                    <td>${(c.clicks || 0).toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            // Update All Creatives Table
+            const allCreativesBody = document.getElementById('allCreativesTable');
+            allCreativesBody.innerHTML = creatives.map(c => {
+                let statusClass = 'status-excellent';
+                let statusText = '우수';
+
+                if (c.roas < 3.0) {
+                    statusClass = 'status-poor';
+                    statusText = '개선필요';
+                } else if (c.roas < 4.0) {
+                    statusClass = 'status-good';
+                    statusText = '보통';
+                }
+
+                return `
+                    <tr>
+                        <td style="font-weight: 500;">${c.ad_creative_name}</td>
+                        <td>${c.creative_type || '-'}</td>
+                        <td>${c.platform || '-'}</td>
+                        <td><strong>${((c.roas || 0) * 100).toFixed(0)}%</strong></td>
+                        <td>${(c.cvr || 0).toFixed(1)}%</td>
+                        <td>${(c.ctr || 0).toFixed(1)}%</td>
+                        <td>${(c.cpa || 0).toLocaleString()}원</td>
+                        <td>${((c.spend || 0) / 10000).toFixed(0)}만원</td>
+                        <td>${((c.revenue || 0) / 10000).toFixed(0)}만원</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            console.log('[Creative Analysis] Tables updated successfully');
+        }
+
+        // Campaign Detail Modal
+        function showCampaignDetail(index) {
+            const campaign = currentCampaignData[index];
+            if (!campaign) return;
+
+            const modalContent = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="margin: 0; color: var(--text-primary);">🎯 ${campaign.campaign_name}</h2>
+                        <button class="btn btn-secondary" onclick="closeCampaignDetailModal()">✕ 닫기</button>
+                    </div>
+
+                    <div class="summary-grid" style="margin-bottom: 24px;">
+                        <div class="summary-card highlight-blue">
+                            <div class="summary-label">ROAS</div>
+                            <div class="summary-value">${((campaign.roas || 0) * 100).toFixed(0)}</div>
+                            <div class="summary-unit">%</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">지출액</div>
+                            <div class="summary-value">${((campaign.spend || 0) / 10000).toFixed(0)}</div>
+                            <div class="summary-unit">만원</div>
+                        </div>
+                        <div class="summary-card highlight-green">
+                            <div class="summary-label">매출액</div>
+                            <div class="summary-value">${((campaign.revenue || 0) / 10000).toFixed(0)}</div>
+                            <div class="summary-unit">만원</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">전환수</div>
+                            <div class="summary-value">${(campaign.conversions || 0).toLocaleString()}</div>
+                            <div class="summary-unit">건</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: ${campaign.roas >= 4.0 ? '#e8f5e9' : campaign.roas < 3.0 ? '#ffebee' : '#fff3e0'}; padding: 20px;">
+                        <h3 style="margin-bottom: 12px; font-size: 16px;">💡 AI 권장사항</h3>
+                        <p style="margin: 0; line-height: 1.6;">
+                            ${getCampaignRecommendation(campaign)}
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            const modalDiv = document.getElementById('campaignDetailModal');
+            modalDiv.innerHTML = modalContent;
+            modalDiv.classList.remove('hidden');
+        }
+
+        function getCampaignRecommendation(campaign) {
+            const roas = campaign.roas || 0;
+            const roasPercent = (roas * 100).toFixed(0);
+            const ctr = campaign.ctr || 0;
+            const cvr = ((campaign.conversions || 0) / (campaign.clicks || 1)) * 100;
+
+            if (roas >= 4.0) {
+                return `✅ <strong>우수한 성과!</strong> ROAS ${roasPercent}%로 목표 초과달성 중입니다. 예산을 늘려 더 많은 수익을 창출하세요.`;
+            } else if (roas >= 3.0) {
+                if (ctr < 2.0) {
+                    return `⚠️ 클릭률 ${ctr.toFixed(0)}%로 낮습니다. 광고 소재 개선 또는 타겟팅 조정을 권장합니다.`;
+                } else {
+                    return `✅ 양호한 성과입니다. ROAS ${roasPercent}%를 유지하며 예산 확대를 고려하세요.`;
+                }
+            } else {
+                return `❌ ROAS ${roasPercent}%로 목표 미달입니다. 캠페인 전면 재검토 또는 일시 중지를 고려하세요.`;
+            }
+        }
+
+        function closeCampaignDetailModal() {
+            document.getElementById('campaignDetailModal').classList.add('hidden');
+        }
+        // Manual Input Modal
+        let manualDataBuffer = [];
+
+        document.querySelector('.btn-primary').addEventListener('click', () => {
+            document.getElementById('manualInputModal').classList.remove('hidden');
+            manualDataBuffer = [];
+            updateManualDataPreview();
+        });
+
+        function closeManualInputModal() {
+            document.getElementById('manualInputModal').classList.add('hidden');
+        }
+
+        function addManualDataRow() {
+            const date = document.getElementById('manualDate').value;
+            const campaign = document.getElementById('manualCampaign').value;
+            const spend = document.getElementById('manualSpend').value;
+            const clicks = document.getElementById('manualClicks').value;
+            const conversions = document.getElementById('manualConversions').value;
+            const revenue = document.getElementById('manualRevenue').value;
+            const impressions = document.getElementById('manualImpressions').value;
+
+            if (!date || !campaign || !spend || !clicks || !conversions || !revenue) {
+                alert('모든 필수 필드를 입력해주세요');
+                return;
+            }
+
+            manualDataBuffer.push({
+                date,
+                campaign_name: campaign,
+                spend: parseFloat(spend),
+                clicks: parseInt(clicks),
+                conversions: parseInt(conversions),
+                revenue: parseFloat(revenue),
+                impressions: impressions ? parseInt(impressions) : parseInt(clicks) * 50
+            });
+
+            // Clear inputs except date and campaign
+            document.getElementById('manualSpend').value = '';
+            document.getElementById('manualClicks').value = '';
+            document.getElementById('manualConversions').value = '';
+            document.getElementById('manualRevenue').value = '';
+            document.getElementById('manualImpressions').value = '';
+
+            updateManualDataPreview();
+            alert(`데이터 추가됨 (총 ${manualDataBuffer.length}건)`);
+        }
+
+        function updateManualDataPreview() {
+            const count = document.getElementById('manualDataCount');
+            const preview = document.getElementById('manualDataPreview');
+
+            count.textContent = manualDataBuffer.length;
+
+            if (manualDataBuffer.length > 0) {
+                const last = manualDataBuffer[manualDataBuffer.length - 1];
+                preview.innerHTML = `
+                    <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                        <strong>마지막 입력:</strong><br>
+                        ${last.date} | ${last.campaign_name} | 지출: ${last.spend.toLocaleString()}원 | 클릭: ${last.clicks}
+                    </div>
+                `;
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+
+        async function submitManualData() {
+            if (manualDataBuffer.length === 0) {
+                alert('입력된 데이터가 없습니다');
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/ad-analysis/manual-input', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        snapshot_name: `수기입력 ${new Date().toLocaleDateString()}`,
+                        data: manualDataBuffer
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    console.log('[DEBUG] Manual input successful, processing data...');
+                    console.log('[DEBUG] Result metrics:', result.metrics);
+                    console.log('[DEBUG] Result daily_trend:', result.metrics.daily_trend);
+
+                    // Save new daily data to localStorage and merge with existing
+                    const newDailyData = result.metrics.daily_trend || [];
+                    console.log('[DEBUG] newDailyData:', newDailyData);
+
+                    const mergedDailyData = saveToLocalStorage(newDailyData);
+                    console.log('[DEBUG] Merged data count:', mergedDailyData.length);
+                    console.log('[DEBUG] mergedDailyData:', mergedDailyData);
+
+                    // Recalculate metrics from accumulated data
+                    const accumulatedMetrics = recalculateMetrics(mergedDailyData);
+                    console.log('[DEBUG] Accumulated metrics:', accumulatedMetrics);
+
+                    // Only proceed if we have valid metrics
+                    if (!accumulatedMetrics) {
+                        console.error('[DEBUG] ERROR: accumulatedMetrics is null/undefined!');
+                        alert('데이터 계산 오류 발생');
+                        loadingOverlay.classList.add('hidden');
+                        return;
+                    }
+
+                    // Update data summary badge
+                    updateDataSummaryBadge();
+
+                    alert(`✅ 업로드 완료! (${manualDataBuffer.length}건) 누적 데이터: ${mergedDailyData.length}행`);
+                    closeManualInputModal();
+
+                    // Switch to overview and display accumulated results
+                    document.querySelector('[data-page="overview"]').click();
+                    displayMetrics(accumulatedMetrics);
+                    displayChart(accumulatedMetrics.daily_trend);
+                    displayCampaigns(accumulatedMetrics.campaigns);
+                } else {
+                    alert('업로드 실패: ' + (result.error || '알 수 없는 오류'));
+                }
+            } catch (error) {
+                console.error('Manual input error:', error);
+                alert('업로드 중 오류 발생: ' + error.message);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        // Date Filtering Functions
+        function applyDateFilter(filterType) {
+            currentDateFilter = filterType;
+
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filter="${filterType}"]`).classList.add('active');
+
+            if (!currentDailyData || currentDailyData.length === 0) {
+                return;
+            }
+
+            let filteredData = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            switch(filterType) {
+                case 'all':
+                    filteredData = currentDailyData;
+                    document.getElementById('currentDateRange').textContent = '현재 기간: 전체 데이터';
+                    break;
+
+                case 'today':
+                    const todayStr = today.toISOString().split('T')[0];
+                    filteredData = currentDailyData.filter(d => d.date === todayStr);
+                    document.getElementById('currentDateRange').textContent = `현재 기간: ${todayStr}`;
+                    break;
+
+                case 'week':
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(today.getDate() - 7);
+                    const weekAgoStr = weekAgo.toISOString().split('T')[0];
+                    filteredData = currentDailyData.filter(d => d.date >= weekAgoStr);
+                    document.getElementById('currentDateRange').textContent = `현재 기간: ${weekAgoStr} ~ ${today.toISOString().split('T')[0]}`;
+                    break;
+
+                case 'month':
+                    const monthAgo = new Date(today);
+                    monthAgo.setDate(today.getDate() - 30);
+                    const monthAgoStr = monthAgo.toISOString().split('T')[0];
+                    filteredData = currentDailyData.filter(d => d.date >= monthAgoStr);
+                    document.getElementById('currentDateRange').textContent = `현재 기간: ${monthAgoStr} ~ ${today.toISOString().split('T')[0]}`;
+                    break;
+            }
+
+            // Update ALL visualizations with filtered data
+            recalculateMetricsForPeriod(filteredData);
+        }
+
+        function applyCustomDateRange() {
+            const startDate = document.getElementById('dateStart').value;
+            const endDate = document.getElementById('dateEnd').value;
+
+            if (!startDate || !endDate) {
+                alert('시작일과 종료일을 모두 선택해주세요');
+                return;
+            }
+
+            if (startDate > endDate) {
+                alert('시작일은 종료일보다 이전이어야 합니다');
+                return;
+            }
+
+            currentDateFilter = 'custom';
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-filter="custom"]').classList.add('active');
+
+            const filteredData = currentDailyData.filter(d => d.date >= startDate && d.date <= endDate);
+            document.getElementById('currentDateRange').textContent = `현재 기간: ${startDate} ~ ${endDate}`;
+
+            recalculateMetricsForPeriod(filteredData);
+        }
+
+        function recalculateMetricsForPeriod(filteredData) {
+            if (!filteredData || filteredData.length === 0) {
+                alert('선택한 기간에 데이터가 없습니다');
+                return;
+            }
+
+            // Calculate totals from filtered daily data
+            const total_spend = filteredData.reduce((sum, d) => sum + (d.spend || 0), 0);
+            const total_revenue = filteredData.reduce((sum, d) => sum + (d.revenue || 0), 0);
+            const total_clicks = filteredData.reduce((sum, d) => sum + (d.clicks || 0), 0);
+            const total_conversions = filteredData.reduce((sum, d) => sum + (d.conversions || 0), 0);
+            const total_impressions = filteredData.reduce((sum, d) => sum + (d.impressions || 0), 0);
+
+            // Recalculate campaign metrics from filtered data
+            const filteredCampaigns = calculateCampaignMetricsFromDaily(filteredData);
+
+            const metrics = {
+                total_spend,
+                total_revenue,
+                total_clicks,
+                total_conversions,
+                total_impressions,
+                avg_roas: total_spend > 0 ? (total_revenue / total_spend) : 0,
+                avg_ctr: total_impressions > 0 ? ((total_clicks / total_impressions) * 100) : 0,
+                avg_cpa: total_conversions > 0 ? (total_spend / total_conversions) : 0,
+                cvr: total_clicks > 0 ? ((total_conversions / total_clicks) * 100) : 0,
+                daily_trend: filteredData,
+                campaigns: filteredCampaigns
+            };
+
+            // Update all visualizations
+            displayMetrics(metrics);
+            displayChart(filteredData);
+            displayROASDistribution(filteredCampaigns);
+            displayBudgetPieChart(filteredCampaigns);
+            displayConversionFunnel(metrics);
+            displayCampaignComparison(filteredCampaigns);
+            displayWeekdayHeatmap(filteredData);
+            displayCampaignTable(filteredCampaigns);
+        }
+
+        // Helper function to calculate campaign metrics from daily data
+        function calculateCampaignMetricsFromDaily(dailyData) {
+            const campaignMap = {};
+
+            // Group by campaign
+            dailyData.forEach(d => {
+                const name = d.campaign_name;
+                if (!campaignMap[name]) {
+                    campaignMap[name] = {
+                        campaign_name: name,
+                        spend: 0,
+                        revenue: 0,
+                        clicks: 0,
+                        conversions: 0,
+                        impressions: 0
+                    };
+                }
+                campaignMap[name].spend += (d.spend || 0);
+                campaignMap[name].revenue += (d.revenue || 0);
+                campaignMap[name].clicks += (d.clicks || 0);
+                campaignMap[name].conversions += (d.conversions || 0);
+                campaignMap[name].impressions += (d.impressions || 0);
+            });
+
+            // Calculate derived metrics
+            return Object.values(campaignMap).map(c => {
+                c.roas = c.spend > 0 ? (c.revenue / c.spend) : 0;
+                c.ctr = c.impressions > 0 ? ((c.clicks / c.impressions) * 100) : 0;
+                c.cpa = c.conversions > 0 ? (c.spend / c.conversions) : 0;
+                c.cvr = c.clicks > 0 ? ((c.conversions / c.clicks) * 100) : 0;
+                c.status = getStatusFromRoas(c.roas);
+                return c;
+            }).sort((a, b) => b.roas - a.roas); // Sort by ROAS descending
+        }
+
+        function openCustomDateModal() {
+            // Just focus on date inputs
+            document.getElementById('dateStart').focus();
+        }
+    </script>
+
+    <!-- Manual Input Modal -->
+    <div id="manualInputModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <h3 style="margin-bottom: 20px;">일별 데이터 수동 입력</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label>날짜 *</label>
+                    <input type="date" id="manualDate" class="form-input" required>
+                </div>
+                <div>
+                    <label>캠페인명 *</label>
+                    <input type="text" id="manualCampaign" class="form-input" placeholder="예: 블프_신규" required>
+                </div>
+                <div>
+                    <label>지출액 (원) *</label>
+                    <input type="number" id="manualSpend" class="form-input" placeholder="150000" required>
+                </div>
+                <div>
+                    <label>노출수</label>
+                    <input type="number" id="manualImpressions" class="form-input" placeholder="45000">
+                </div>
+                <div>
+                    <label>클릭수 *</label>
+                    <input type="number" id="manualClicks" class="form-input" placeholder="1200" required>
+                </div>
+                <div>
+                    <label>전환수 *</label>
+                    <input type="number" id="manualConversions" class="form-input" placeholder="48" required>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <label>매출액 (원) *</label>
+                    <input type="number" id="manualRevenue" class="form-input" placeholder="540000" required>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="addManualDataRow()">➕ 추가</button>
+                <button class="btn btn-success" onclick="submitManualData()">✅ 완료 (<span id="manualDataCount">0</span>건)</button>
+                <button class="btn btn-secondary" onclick="closeManualInputModal()">취소</button>
+            </div>
+
+            <div id="manualDataPreview"></div>
+        </div>
+    </div>
+
+    <!-- Campaign Detail Modal -->
+    <div id="campaignDetailModal" class="modal hidden"></div>
+</body>
+</html>

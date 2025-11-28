@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배너 관리 - Insight Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>배너 관리 시스템</h1>
+            <div class="admin-user">
+                <span>{{ admin.username }}님</span>
+                <form action="/admin/logout" method="post" style="display: inline;">
+                    <button type="submit" class="btn-secondary">로그아웃</button>
+                </form>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-type="home_top">홈 상단 대형</button>
+            <button class="tab" data-type="home_grid">홈 그리드 (2×2)</button>
+            <button class="tab" data-type="home_bottom">홈 하단 대형</button>
+            <button class="tab" data-type="grid_general">일반 대시보드 롤링</button>
+            <button class="tab" data-type="grid_coupang">쿠팡 대시보드 롤링</button>
+        </div>
+
+        <div class="banner-section">
+            <div class="section-header">
+                <h2 id="sectionTitle">홈 상단 대형 배너 (970x90px)</h2>
+                <button class="btn-primary" onclick="openUploadModal()">새 배너 업로드</button>
+            </div>
+
+            <div class="stats-grid" id="statsGrid">
+                <!-- 통계 카드 -->
+            </div>
+
+            <div class="banner-list" id="bannerList">
+                <div class="loading">로딩중...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 업로드 모달 -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>새 배너 업로드</h3>
+                <button class="close-btn" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>이미지 파일</label>
+                    <input type="file" id="imageFile" name="image" accept="image/*" required>
+                    <small id="sizeGuide">권장 크기: 970x90px</small>
+                </div>
+                <div class="form-group">
+                    <label>배너 제목</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>링크 URL</label>
+                    <input type="url" id="linkUrl" name="link_url" placeholder="https://">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>노출 순서</label>
+                        <input type="number" id="positionOrder" name="position_order" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>활성화</label>
+                        <select id="isActive" name="is_active">
+                            <option value="true">활성</option>
+                            <option value="false">비활성</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>시작일</label>
+                        <input type="date" id="startDate" name="start_date">
+                    </div>
+                    <div class="form-group">
+                        <label>종료일</label>
+                        <input type="date" id="endDate" name="end_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeUploadModal()">취소</button>
+                    <button type="submit" class="btn-primary">업로드</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 수정 모달 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>배너 수정</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editBannerId">
+                <div class="form-group">
+                    <label>이미지 변경 (선택)</label>
+                    <input type="file" id="editImageFile" name="image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>배너 제목</label>
+                    <input type="text" id="editTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>링크 URL</label>
+                    <input type="url" id="editLinkUrl" name="link_url">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>노출 순서</label>
+                        <input type="number" id="editPositionOrder" name="position_order" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>활성화</label>
+                        <select id="editIsActive" name="is_active">
+                            <option value="true">활성</option>
+                            <option value="false">비활성</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>시작일</label>
+                        <input type="date" id="editStartDate" name="start_date">
+                    </div>
+                    <div class="form-group">
+                        <label>종료일</label>
+                        <input type="date" id="editEndDate" name="end_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">취소</button>
+                    <button type="submit" class="btn-primary">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin-banners.js') }}"></script>
+</body>
+</html>

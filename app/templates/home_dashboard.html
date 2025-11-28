@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마케팅광장 광고분석 대시보드 - 마광</title>
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/ad-banner.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px 40px;
+            border-bottom: 1px solid #e0e0e0;
+            margin: -24px -24px 30px -24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+
+        .page-header-left p {
+            color: #5f6368;
+            font-size: 16px;
+        }
+
+        .page-header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-link {
+            padding: 10px 20px;
+            background: #f1f3f4;
+            color: #5f6368;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .header-link:hover {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding: 0 40px;
+            max-width: 2264px;
+            margin: 0 auto 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 200px;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: #1a73e8;
+        }
+
+        .card-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .dashboard-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #202124;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .dashboard-card.guide {
+            background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);
+        }
+
+        .dashboard-card.general {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        }
+
+        .dashboard-card.coupang {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+        }
+
+        .dashboard-card.products {
+            background: linear-gradient(135deg, #fa709a15 0%, #fee14015 100%);
+        }
+
+        /* Responsive - 2 columns on medium screens */
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 900px;
+            }
+        }
+
+        /* Responsive - 1 column on small screens */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <h1 class="logo-text">📊 마케팅광장 광고분석</h1>
+            <span class="logo-subtitle">마광</span>
+        </div>
+        <div class="header-right">
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn">📘 제휴문의</a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn">🏢 마케팅광장 바로가기</a>
+            <div class="user-info">
+                <span class="user-nickname">👤 닉네임</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>메뉴</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="/" class="menu-item active">
+                <span class="icon">🏠</span>
+                <span class="label">대시보드</span>
+            </a>
+            <a href="/guide" class="menu-item">
+                <span class="icon">📘</span>
+                <span class="label">이용안내</span>
+            </a>
+            <a href="/ad-dashboard" class="menu-item">
+                <span class="icon">📈</span>
+                <span class="label">광고분석</span>
+            </a>
+            <a href="/ad-dashboard/coupang" class="menu-item">
+                <span class="icon">🛒</span>
+                <span class="label">쿠팡광고분석</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- 상단 대형 배너 (970x90) -->
+        <div id="homeTopBanner"></div>
+
+        <!-- 그리드 배너 2x4 (200x60 x 8개) -->
+        <div id="homeGridBanners"></div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
+            <a href="/guide" class="dashboard-card guide">
+                <div class="card-icon">📘</div>
+                <h3>이용안내</h3>
+                <p>서비스 사용 방법 및 기능 설명을 확인하세요</p>
+            </a>
+
+            <a href="/ad-dashboard" class="dashboard-card general">
+                <div class="card-icon">📈</div>
+                <h3>광고분석</h3>
+                <p>네이버, 메타, 구글 광고 성과를 통합 분석하고 AI 인사이트를 받아보세요</p>
+            </a>
+
+            <a href="/ad-dashboard/coupang" class="dashboard-card coupang">
+                <div class="card-icon">🛒</div>
+                <h3>쿠팡광고분석</h3>
+                <p>쿠팡 키워드 성과 분석 및 제외 키워드 자동 추천으로 광고비를 최적화하세요</p>
+            </a>
+
+            <a href="https://mbizsquare.com/products" target="_blank" class="dashboard-card products">
+                <div class="card-icon">📦</div>
+                <h3>마케팅상품</h3>
+                <p>다양한 마케팅 솔루션을 확인하세요</p>
+            </a>
+        </div>
+
+        <!-- 하단 대형 배너 (728x90) -->
+        <div id="homeBottomBanner"></div>
+    </main>
+
+    <script>
+        // Active menu item
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- 배너 로더 -->
+    <script src="/static/js/banner-loader.js"></script>
+</body>
+</html>

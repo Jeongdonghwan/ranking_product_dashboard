@@ -77,75 +77,8 @@
             min-height: 100vh;
         }
 
-        /* Main Content */
-        .main-content {
-            margin-left: 180px; /* Match sidebar width */
-            margin-top: 56.5px; /* Match header height */
-            min-height: calc(100vh - 56.5px);
-            padding: 24px;
-            width: calc(100% - 180px); /* Prevent overflow beyond sidebar */
-            box-sizing: border-box;
-            background: #f8f8f8;
-        }
-
-        /* Top Navigation */
-        .top-navigation {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 24px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .top-nav-left {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .top-nav-logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .top-nav-tabs {
-            display: flex;
-            gap: 4px;
-        }
-
-        .nav-tab {
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: transparent;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .nav-tab:hover {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-
-        .nav-tab.active {
-            background: #e8f0fe;
-            color: var(--primary-blue);
-        }
+        /* Main Content - sidebar.css에서 기본 정의됨 */
+        /* 추가 스타일만 정의 */
 
         /* Top Bar */
         .top-bar {
@@ -755,16 +688,7 @@
 
         /* Tablet (max-width: 1024px) */
         @media (max-width: 1024px) {
-            /* Hide sidebar on tablets and below */
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-right: 0;
-                max-width: 100%;
-            }
+            /* Sidebar, main-content는 sidebar.css에서 관리 */
 
             .summary-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -803,49 +727,85 @@
 
         /* Mobile (max-width: 768px) */
         @media (max-width: 768px) {
-            /* Layout adjustments */
+            /* Layout - sidebar.css에서 관리 */
             .dashboard-container {
                 grid-template-columns: 1fr;
             }
 
-            .sidebar {
-                display: none;
+            /* Prevent horizontal overflow */
+            body {
+                overflow-x: hidden;
             }
 
             .main-content {
-                margin-left: 0;
-                margin-right: 0;
-                max-width: 100%;
-                width: 100%;
+                overflow-x: hidden;
+                padding: 12px !important;
             }
 
-            /* Mobile menu toggle button */
-            .mobile-menu-toggle {
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1001;
-                background: var(--primary-blue);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                padding: 10px 15px;
-                font-size: 20px;
-                cursor: pointer;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                display: block;
+            /* Top Bar 세로 배치 */
+            .top-bar {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                padding: 12px !important;
+            }
+
+            .top-bar-actions {
+                width: 100%;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+
+            .top-bar-actions .btn {
+                flex: 1 1 auto;
+                min-width: 80px;
+                justify-content: center;
+            }
+
+            /* Card 내부 flex 요소들 세로 배치 강제 */
+            .card > div[style*="display: flex"] {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+
+            .card > div > div[style*="display: flex"] {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+
+            /* 기간 선택 버튼들 wrap */
+            .filter-btn {
+                padding: 6px 10px !important;
+                font-size: 12px !important;
+            }
+
+            /* 데이터 관리 버튼들 */
+            .card .btn {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                white-space: nowrap;
+            }
+
+            /* Date input 크기 조정 */
+            .form-input[type="date"] {
+                width: 100% !important;
+                max-width: 150px !important;
+                padding: 8px !important;
+                font-size: 14px !important;
             }
 
             /* Page header responsive */
             .page-header {
-                padding: 60px 15px 15px 15px;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+                padding: 12px !important;
             }
 
             .page-title {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             .page-subtitle {
@@ -863,6 +823,18 @@
                 justify-content: center;
             }
 
+            /* Card Header 세로 배치 */
+            .card-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+            }
+
+            .card-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
             /* Date range picker responsive */
             .date-range-picker {
                 flex-direction: column;
@@ -873,18 +845,30 @@
                 font-size: 14px;
             }
 
-            /* Summary grid - single column */
+            /* Summary grid - 2열 배치 */
             .summary-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
             }
 
             .summary-card {
-                padding: 15px;
+                padding: 12px !important;
+            }
+
+            .summary-value {
+                font-size: 20px !important;
+            }
+
+            .summary-label {
+                font-size: 10px !important;
+            }
+
+            .summary-unit {
+                font-size: 10px !important;
             }
 
             .metric-value {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .metric-label {
@@ -893,6 +877,43 @@
 
             .metric-change {
                 font-size: 11px;
+            }
+
+            /* Metrics Grid 2열 */
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .metric-card {
+                padding: 12px !important;
+            }
+
+            /* 모든 인라인 2열 그리드를 1열로 변경 (핵심!) */
+            [style*="grid-template-columns: 1fr 1fr"],
+            [style*="grid-template-columns:1fr 1fr"],
+            div[style*="display: grid"][style*="1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            /* creativesContainer 내부 그리드 */
+            #creativesContainer > div[style*="display: grid"] {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            /* page-overview 내부 그리드들 */
+            #page-overview > div[style*="display: grid"] {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            /* 리드형 캠페인 내부 flex 세로 배치 */
+            div[style*="display: flex"][style*="justify-content: space-around"] {
+                flex-direction: column !important;
+                gap: 16px !important;
+                align-items: center !important;
             }
 
             /* Charts grid - stack vertically */
@@ -938,18 +959,30 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .data-table {
-                min-width: 600px;
-                font-size: 12px;
+            /* 카드 안에 테이블이 있으면 가로 스크롤 허용 */
+            .card:has(table),
+            .card:has(.data-table) {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .data-table,
+            #campaignTable {
+                min-width: 500px;
+                font-size: 11px;
             }
 
             .data-table th,
-            .data-table td {
-                padding: 8px 6px;
+            .data-table td,
+            #campaignTable th,
+            #campaignTable td {
+                padding: 6px 4px;
+                white-space: nowrap;
             }
 
-            .data-table th {
-                font-size: 11px;
+            .data-table th,
+            #campaignTable th {
+                font-size: 10px;
             }
 
             /* Hide less important columns on mobile */
@@ -1365,20 +1398,26 @@
     </style>
 </head>
 <body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">☰</button>
+
     <!-- Top Header -->
     <header class="top-header">
         <div class="header-left">
-            <h1 class="logo-text">📊 마케팅광장 광고분석</h1>
+            <h1 class="logo-text"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:brightness(0) invert(1);">마케팅광장 광고분석</h1>
             <span class="logo-subtitle">광고분석</span>
         </div>
         <div class="header-right">
-            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn">📘 제휴문의</a>
-            <a href="https://mbizsquare.com" target="_blank" class="header-btn">🏢 마케팅광장 바로가기</a>
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
             <div class="user-info">
-                <span class="user-nickname">👤 닉네임</span>
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> {{ (user.get('username') or user.get('user_id', 'User')) if user else '닉네임' }}</span>
             </div>
         </div>
     </header>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
@@ -1387,20 +1426,32 @@
         </div>
         <nav class="sidebar-menu">
             <a href="/" class="menu-item">
-                <span class="icon">🏠</span>
+                <span class="icon"><img src="/static/img/icons/dashboard.svg" alt=""></span>
                 <span class="label">대시보드</span>
             </a>
             <a href="/guide" class="menu-item">
-                <span class="icon">📘</span>
+                <span class="icon"><img src="/static/img/icons/guide.svg" alt=""></span>
                 <span class="label">이용안내</span>
             </a>
             <a href="/ad-dashboard" class="menu-item active">
-                <span class="icon">📈</span>
+                <span class="icon"><img src="/static/img/icons/chart.svg" alt=""></span>
                 <span class="label">광고분석</span>
             </a>
             <a href="/ad-dashboard/coupang" class="menu-item">
-                <span class="icon">🛒</span>
+                <span class="icon"><img src="/static/img/icons/cart.svg" alt=""></span>
                 <span class="label">쿠팡광고분석</span>
+            </a>
+            <a href="/ad-dashboard/profit-simulator" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
+                <span class="label">수익 시뮬레이터</span>
+            </a>
+            <a href="/ad-dashboard/ad-efficiency" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
+                <span class="label">손익분기 ROAS</span>
+            </a>
+            <a href="/ad-dashboard/keyword-combiner" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/combine.svg" alt=""></span>
+                <span class="label">키워드 조합기</span>
             </a>
         </nav>
     </aside>
@@ -1424,7 +1475,7 @@
                 <div class="card" style="margin-bottom: 16px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <span style="font-weight: 600; color: var(--text-primary); margin-right: 8px;">📅 기간 선택:</span>
+                            <span style="font-weight: 600; color: var(--text-primary); margin-right: 8px;"><img src="/static/img/icons/calendar.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 기간 선택:</span>
                             <button class="filter-btn active" data-filter="all" onclick="applyDateFilter('all')">전체</button>
                             <button class="filter-btn" data-filter="today" onclick="applyDateFilter('today')">오늘</button>
                             <button class="filter-btn" data-filter="week" onclick="applyDateFilter('week')">최근 7일</button>
@@ -1452,7 +1503,7 @@
                             <!-- 템플릿 다운로드 드롭다운 -->
                             <div style="position: relative; display: inline-block;">
                                 <button class="btn btn-secondary" id="templateDropdownBtn" onclick="toggleTemplateDropdown(event)" style="padding: 8px 16px;">
-                                    📥 템플릿 다운로드 ▼
+                                    <img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 템플릿 다운로드 ▼
                                 </button>
                                 <div id="templateDropdown" class="hidden" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; min-width: 180px; margin-top: 4px;">
                                     <a href="/api/ad-analysis/template/unified" style="display: block; padding: 10px 16px; color: var(--text-primary); text-decoration: none;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='white'">
@@ -1463,7 +1514,7 @@
 
                             <!-- 파일 업로드 버튼 -->
                             <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()" style="padding: 8px 16px;">
-                                📤 파일 업로드
+                                <img src="/static/img/icons/upload.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 파일 업로드
                             </button>
 
                             <!-- 수기 입력 버튼 -->
@@ -1480,7 +1531,7 @@
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <!-- 저장 버튼 (계정 연동 전까지 숨김)
                             <button class="btn btn-secondary" onclick="openSaveAnalysisModal()" style="padding: 8px 16px;">
-                                💾 저장
+                                <img src="/static/img/icons/save.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 저장
                             </button>
                             -->
 
@@ -1492,7 +1543,7 @@
 
                             <!-- PDF 내보내기 버튼 -->
                             <button class="btn btn-secondary" onclick="exportToPDF()" style="padding: 8px 16px;">
-                                📄 PDF 내보내기
+                                <img src="/static/img/icons/file.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> PDF 내보내기
                             </button>
                         </div>
                     </div>
@@ -1602,7 +1653,7 @@
                 <!-- Chart 1: 일별 성과 트렌드 (full width) -->
                 <div class="card" style="margin-bottom: 16px;">
                     <div class="card-header">
-                        <div class="card-title">📈 일별 성과 트렌드</div>
+                        <div class="card-title"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 일별 성과 트렌드</div>
                     </div>
                     <div class="chart-container">
                         <canvas id="trendChart"></canvas>
@@ -1614,7 +1665,7 @@
                     <!-- 매출형 캠페인 성과 (ROAS 기준) -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">📈 매출형 캠페인 성과</div>
+                            <div class="card-title"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 매출형 캠페인 성과</div>
                         </div>
                         <div class="chart-container" style="height: 200px;">
                             <canvas id="salesDistributionChart"></canvas>
@@ -1686,7 +1737,7 @@
                     <!-- Chart 5: 요일별 성과 히트맵 -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">📅 요일별 성과</div>
+                            <div class="card-title"><img src="/static/img/icons/calendar.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 요일별 성과</div>
                         </div>
                         <div class="chart-container" style="height: 280px;">
                             <canvas id="weekdayHeatmapChart"></canvas>
@@ -1770,7 +1821,7 @@
                             <!-- CVR TOP 10 -->
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title" style="font-size: 16px;">🎯 전환율 TOP 10 소재</div>
+                                    <div class="card-title" style="font-size: 16px;"><img src="/static/img/icons/target.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 전환율 TOP 10 소재</div>
                                 </div>
                                 <table class="data-table">
                                     <thead>
@@ -1837,7 +1888,7 @@
                                 '표준 템플릿' 또는 '고급 템플릿'을 사용하여 소재 정보를 업로드하세요
                             </div>
                             <button class="btn btn-primary" onclick="document.querySelector('[data-page=\\'upload\\']').click()">
-                                📤 데이터 업로드하기
+                                <img src="/static/img/icons/upload.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 데이터 업로드하기
                             </button>
                         </div>
                     </div>
@@ -3741,7 +3792,7 @@
             const modalContent = `
                 <div class="modal-content" style="max-width: 800px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <h2 style="margin: 0; color: var(--text-primary);">🎯 ${campaign.campaign_name}</h2>
+                        <h2 style="margin: 0; color: var(--text-primary);"><img src="/static/img/icons/target.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> ${campaign.campaign_name}</h2>
                         <button class="btn btn-secondary" onclick="closeCampaignDetailModal()">✕ 닫기</button>
                     </div>
 
@@ -3794,7 +3845,7 @@
                     </div>
 
                     <div class="card" style="background: ${bgColor}; padding: 20px;">
-                        <h3 style="margin-bottom: 12px; font-size: 16px;">💡 AI 권장사항</h3>
+                        <h3 style="margin-bottom: 12px; font-size: 16px;"><img src="/static/img/icons/lightbulb.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> AI 권장사항</h3>
                         <p style="margin: 0; line-height: 1.6;">
                             ${getCampaignRecommendation(campaign)}
                         </p>
@@ -4274,7 +4325,7 @@
             if (savedAnalyses.length === 0) {
                 listContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--text-tertiary);">
-                        저장된 분석이 없습니다. 현재 분석을 저장하려면 상단의 '💾 저장' 버튼을 클릭하세요.
+                        저장된 분석이 없습니다. 현재 분석을 저장하려면 상단의 '저장' 버튼을 클릭하세요.
                     </div>
                 `;
                 return;
@@ -4819,15 +4870,34 @@
     </div>
 
     <script>
-        // Sidebar simple toggle
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
         const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-            });
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            mobileToggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
         }
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', toggleSidebar);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+
+        // Close sidebar on menu item click (mobile)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('active');
+                    mobileToggle.textContent = '☰';
+                }
+            });
+        });
 
         // Active menu item
         const currentPath = window.location.pathname;

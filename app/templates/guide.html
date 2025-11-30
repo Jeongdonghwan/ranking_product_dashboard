@@ -2,8 +2,32 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이용안내 - 마케팅광장 광고분석</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>이용안내 - 마케팅광장 광고분석 대시보드</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="마케팅광장 광고분석 대시보드 사용 방법을 확인하세요. 네이버, 메타, 구글, 쿠팡 광고 분석 기능 안내.">
+    <meta name="keywords" content="광고분석, 이용안내, 마케팅광장, ROAS, 사용방법">
+    <meta name="author" content="마케팅광장">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dashboard.mbizsquare.com/guide">
+
+    <!-- Site Verification -->
+    <meta name="naver-site-verification" content="cc6eb66db82f1cef83861f978e49ca76d7a72caa">
+    <meta name="google-site-verification" content="i3kI5uL7O6tmcojS0WVBql-E5TUPPR1TkZt8Lwe5zyw">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="이용안내 - 마케팅광장 광고분석 대시보드">
+    <meta property="og:description" content="마케팅광장 광고분석 대시보드 사용 방법을 확인하세요.">
+    <meta property="og:url" content="https://dashboard.mbizsquare.com/guide">
+    <meta property="og:site_name" content="마케팅광장">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/img/favicon.svg">
+
     <link rel="stylesheet" href="/static/css/sidebar.css">
     <link rel="stylesheet" href="/static/css/header.css">
     <link rel="stylesheet" href="/static/css/ad-banner.css">
@@ -222,34 +246,104 @@
 
         @media (max-width: 768px) {
             .guide-section {
-                padding: 24px;
+                padding: 20px 16px;
             }
 
             .guide-section h2 {
-                font-size: 20px;
+                font-size: 18px;
+            }
+
+            .guide-section h3 {
+                font-size: 16px;
+            }
+
+            .guide-section p,
+            .guide-section li {
+                font-size: 14px;
+            }
+
+            .step-list li {
+                padding-left: 40px;
+            }
+
+            .step-list li::before {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
             }
 
             .btn-group {
                 flex-direction: column;
             }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .page-header {
+                margin: -16px -16px 20px -16px;
+                padding: 20px 16px;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 14px;
+            }
+
+            .guide-container {
+                padding: 0;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .guide-section {
+                padding: 16px 12px;
+            }
+
+            .guide-section h2 {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .guide-section h2 .icon {
+                font-size: 24px;
+            }
+
+            .highlight-box {
+                padding: 16px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">☰</button>
+
     <!-- Top Header -->
     <header class="top-header">
         <div class="header-left">
-            <h1 class="logo-text">📊 마케팅광장 광고분석</h1>
+            <h1 class="logo-text"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:brightness(0) invert(1);">마케팅광장 광고분석</h1>
             <span class="logo-subtitle">이용안내</span>
-        </div> 
+        </div>
         <div class="header-right">
-            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn active">📘 제휴문의</a>
-            <a href="https://mbizsquare.com" target="_blank" class="header-btn">🏢 마케팅광장 바로가기</a>
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn active"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
             <div class="user-info">
-                <span class="user-nickname">👤 닉네임</span>
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 닉네임</span>
             </div>
         </div>
     </header>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
@@ -258,20 +352,32 @@
         </div>
         <nav class="sidebar-menu">
             <a href="/" class="menu-item">
-                <span class="icon">🏠</span>
+                <span class="icon"><img src="/static/img/icons/dashboard.svg" alt=""></span>
                 <span class="label">대시보드</span>
             </a>
             <a href="/guide" class="menu-item active">
-                <span class="icon">📘</span>
+                <span class="icon"><img src="/static/img/icons/guide.svg" alt=""></span>
                 <span class="label">이용안내</span>
             </a>
             <a href="/ad-dashboard" class="menu-item">
-                <span class="icon">📈</span>
+                <span class="icon"><img src="/static/img/icons/chart.svg" alt=""></span>
                 <span class="label">광고분석</span>
             </a>
             <a href="/ad-dashboard/coupang" class="menu-item">
-                <span class="icon">🛒</span>
+                <span class="icon"><img src="/static/img/icons/cart.svg" alt=""></span>
                 <span class="label">쿠팡광고분석</span>
+            </a>
+            <a href="/ad-dashboard/profit-simulator" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
+                <span class="label">수익 시뮬레이터</span>
+            </a>
+            <a href="/ad-dashboard/ad-efficiency" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
+                <span class="label">손익분기 ROAS</span>
+            </a>
+            <a href="/ad-dashboard/keyword-combiner" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/combine.svg" alt=""></span>
+                <span class="label">키워드 조합기</span>
             </a>
         </nav>
     </aside>
@@ -437,6 +543,31 @@
             } else {
                 item.classList.remove('active');
             }
+        });
+
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            mobileToggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+        }
+
+        mobileToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // Close sidebar on menu item click (mobile)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('active');
+                    mobileToggle.textContent = '☰';
+                }
+            });
         });
     </script>
 </body>

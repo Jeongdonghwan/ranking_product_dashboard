@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수익 시뮬레이터 | 마케팅광장</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="상품 판매 전 예상 수익을 시뮬레이션하세요. 마켓 수수료, 부가세, 광고비를 고려한 정확한 순수익 계산.">
+    <meta name="keywords" content="수익계산, 마진계산, 쿠팡수수료, 스마트스토어, 판매수익, 마케팅광장">
+    <meta name="author" content="마케팅광장">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dashboard.mbizsquare.com/ad-dashboard/profit-simulator">
+
+    <!-- Site Verification -->
+    <meta name="naver-site-verification" content="cc6eb66db82f1cef83861f978e49ca76d7a72caa">
+    <meta name="google-site-verification" content="i3kI5uL7O6tmcojS0WVBql-E5TUPPR1TkZt8Lwe5zyw">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="수익 시뮬레이터 | 마케팅광장">
+    <meta property="og:description" content="상품 판매 전 예상 수익을 시뮬레이션하세요.">
+    <meta property="og:url" content="https://dashboard.mbizsquare.com/ad-dashboard/profit-simulator">
+    <meta property="og:site_name" content="마케팅광장">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/img/favicon.svg">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+    <!-- XLSX for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --success-green: #0f9d58;
+            --warning-orange: #f9ab00;
+            --danger-red: #ea4335;
+            --bg-primary: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--bg-card);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0d8043;
+        }
+
+        .btn-danger {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c5221f;
+        }
+
+        .btn-secondary {
+            background: #f1f3f4;
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #e8eaed;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Input Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+        /* Input Fields */
+        .input-cell input,
+        .input-cell select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: right;
+            transition: border-color 0.2s;
+        }
+
+        .input-cell input:focus,
+        .input-cell select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .input-cell select {
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .input-cell input[type="text"] {
+            text-align: left;
+        }
+
+        .input-cell.name-cell input {
+            min-width: 120px;
+        }
+
+        .input-cell.number-cell input {
+            min-width: 90px;
+        }
+
+        .input-cell.rate-cell input {
+            min-width: 70px;
+        }
+
+        /* Result Cells */
+        .result-cell {
+            font-weight: 600;
+        }
+
+        .result-positive {
+            color: var(--success-green);
+        }
+
+        .result-negative {
+            color: var(--danger-red);
+        }
+
+        .result-warning {
+            color: var(--warning-orange);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-good {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Delete Button */
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger-red);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #fce8e6;
+        }
+
+        /* Selected Row */
+        tr.selected {
+            background: #e8f0fe !important;
+        }
+
+        tr.selected td {
+            background: inherit;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Summary Cards - Looker Studio Style */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            border-left: 4px solid #667eea;
+        }
+
+        .summary-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .summary-card.green {
+            border-left-color: var(--success-green);
+        }
+
+        .summary-card.blue {
+            border-left-color: var(--primary-blue);
+        }
+
+        .summary-card.orange {
+            border-left-color: var(--warning-orange);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .summary-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Row Number */
+        .row-number {
+            width: 40px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            margin-bottom: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-bar {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-value {
+                font-size: 24px;
+            }
+        }
+
+        /* ========================================
+           Mobile Card Layout (768px 이하)
+           ======================================== */
+        @media (max-width: 768px) {
+            /* 테이블 숨기고 카드형으로 전환 */
+            .table-container {
+                overflow-x: visible;
+            }
+
+            table {
+                min-width: unset;
+                width: 100%;
+            }
+
+            /* 테이블 헤더 숨김 */
+            #inputTable thead,
+            #resultTable thead {
+                display: none;
+            }
+
+            /* 테이블 바디를 카드 그리드로 */
+            #inputTable tbody,
+            #resultTable tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            /* 각 행을 카드로 */
+            #inputTable tbody tr,
+            #resultTable tbody tr {
+                display: block;
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 16px;
+                padding-top: 24px;
+                border: 1px solid var(--border-color);
+                position: relative;
+                margin-top: 12px;
+            }
+
+            #inputTable tbody tr.selected,
+            #resultTable tbody tr.selected {
+                border-color: var(--primary-blue);
+                background: #e8f0fe;
+            }
+
+            /* 모든 셀을 블록으로 */
+            #inputTable tbody td,
+            #resultTable tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid #e9ecef;
+                text-align: right;
+                white-space: normal;
+            }
+
+            #inputTable tbody td:last-child,
+            #resultTable tbody td:last-child {
+                border-bottom: none;
+            }
+
+            /* 라벨 추가 (::before) */
+            #inputTable tbody td::before,
+            #resultTable tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-secondary);
+                font-size: 12px;
+                text-align: left;
+                flex-shrink: 0;
+                margin-right: 12px;
+            }
+
+            /* 행 번호 스타일 */
+            #inputTable tbody td.row-number,
+            #resultTable tbody td.row-number {
+                position: absolute;
+                top: -8px;
+                left: 12px;
+                background: var(--primary-blue);
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 0;
+                border: none;
+            }
+
+            #inputTable tbody td.row-number::before,
+            #resultTable tbody td.row-number::before {
+                display: none;
+            }
+
+            /* 입력 필드 스타일 */
+            .input-cell {
+                flex: 1;
+            }
+
+            .input-cell input,
+            .input-cell select {
+                width: 100%;
+                min-width: unset !important;
+                text-align: right;
+            }
+
+            .input-cell.name-cell input {
+                text-align: left;
+            }
+
+            /* 삭제 버튼 숨김 (모바일) */
+            #inputTable tbody td:last-child {
+                display: none;
+            }
+
+            /* 결과값 카드 스타일 */
+            #resultTable tbody td {
+                font-size: 14px;
+            }
+
+            #resultTable tbody td:nth-child(2) {
+                font-weight: 600;
+                font-size: 15px;
+                color: var(--text-primary);
+                padding-bottom: 12px;
+                margin-bottom: 4px;
+            }
+
+            /* 상태 배지 */
+            #resultTable tbody td:last-child {
+                justify-content: flex-end;
+                padding-top: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">☰</button>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <h1 class="logo-text"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:brightness(0) invert(1);">마케팅광장 광고분석</h1>
+            <span class="logo-subtitle">수익 시뮬레이터</span>
+        </div>
+        <div class="header-right">
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
+            <div class="user-info">
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 닉네임</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>메뉴</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="/" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/dashboard.svg" alt=""></span>
+                <span class="label">대시보드</span>
+            </a>
+            <a href="/guide" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/guide.svg" alt=""></span>
+                <span class="label">이용안내</span>
+            </a>
+            <a href="/ad-dashboard" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/chart.svg" alt=""></span>
+                <span class="label">광고분석</span>
+            </a>
+            <a href="/ad-dashboard/coupang" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/cart.svg" alt=""></span>
+                <span class="label">쿠팡광고분석</span>
+            </a>
+            <a href="/ad-dashboard/profit-simulator" class="menu-item active">
+                <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
+                <span class="label">수익 시뮬레이터</span>
+            </a>
+            <a href="/ad-dashboard/ad-efficiency" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
+                <span class="label">손익분기 ROAS</span>
+            </a>
+            <a href="/ad-dashboard/keyword-combiner" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/combine.svg" alt=""></span>
+                <span class="label">키워드 조합기</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><img src="/static/img/icons/money.svg" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;"> 수익 시뮬레이터</h1>
+            <p>상품 판매 전 예상 수익을 시뮬레이션하세요. 마켓 수수료, 부가세, 광고비를 고려한 정확한 순수익을 계산합니다.</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid" id="summaryCards">
+            <div class="summary-card green">
+                <div class="summary-label">총 예상 정산액</div>
+                <div class="summary-value" id="totalSettlement">0원</div>
+                <div class="summary-sub" id="totalSettlementSub">상품 0개</div>
+            </div>
+            <div class="summary-card blue">
+                <div class="summary-label">총 순수익</div>
+                <div class="summary-value" id="totalNetProfit">0원</div>
+                <div class="summary-sub" id="avgNetProfitRate">평균 순수익률 0%</div>
+            </div>
+            <div class="summary-card orange">
+                <div class="summary-label">총 부가세 예상</div>
+                <div class="summary-value" id="totalVat">0원</div>
+                <div class="summary-sub">납부 예상액</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">평균 전체마진율</div>
+                <div class="summary-value" id="avgGrossMarginRate">0%</div>
+                <div class="summary-sub">원가 대비</div>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="addRow()"><img src="/static/img/icons/plus.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 상품 추가</button>
+            <button class="btn btn-success" onclick="exportExcel()"><img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 엑셀 다운로드</button>
+            <button class="btn btn-danger" onclick="clearAll()"><img src="/static/img/icons/trash.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 전체 삭제</button>
+        </div>
+
+        <!-- Input Table -->
+        <div class="card">
+            <h3 class="card-title"><img src="/static/img/icons/edit.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> 상품 입력</h3>
+            <div class="table-container">
+                <table id="inputTable">
+                    <thead>
+                        <tr>
+                            <th class="row-number">#</th>
+                            <th>마켓</th>
+                            <th>상품명</th>
+                            <th>수수료(%)</th>
+                            <th>판매가</th>
+                            <th>매입가</th>
+                            <th>배송비(고객부담)</th>
+                            <th>입고비(물류비)</th>
+                            <th>광고비(선택)</th>
+                            <th>삭제</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inputBody">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Result Table -->
+        <div class="card">
+            <h3 class="card-title"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> 계산 결과</h3>
+            <div class="table-container">
+                <table id="resultTable">
+                    <thead>
+                        <tr>
+                            <th class="row-number">#</th>
+                            <th>상품명</th>
+                            <th>정산금액</th>
+                            <th>마켓수수료</th>
+                            <th>전체마진</th>
+                            <th>전체마진율</th>
+                            <th>부가세</th>
+                            <th>순수익</th>
+                            <th>순수익률</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultBody">
+                        <!-- Dynamic results -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="emptyState">
+                <p>상품을 추가하면 자동으로 수익이 계산됩니다.</p>
+                <button class="btn btn-primary" onclick="addRow()"><img src="/static/img/icons/plus.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 첫 상품 추가하기</button>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="card">
+                <h3 class="card-title"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> 상품별 순수익률 비교</h3>
+                <div class="chart-container">
+                    <canvas id="profitChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title"><img src="/static/img/icons/pie-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> 비용 구조 (선택 상품)</h3>
+                <div class="chart-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ========================================
+        // Constants & State
+        // ========================================
+        const STORAGE_KEY = 'profit_simulator_data';
+        const MARKET_FEES = {
+            '쿠팡': 10.5,
+            '스마트스토어': 5.5,
+            '11번가': 12,
+            'G마켓': 12,
+            '위메프': 10,
+            '기타': 10
+        };
+
+        let products = [];
+        let rowCounter = 0;
+        let profitChart = null;
+        let costChart = null;
+        let selectedRowIndex = 0;
+
+        // ========================================
+        // Initialization
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromStorage();
+            if (products.length === 0) {
+                addRow(); // 최소 1행 추가
+            }
+            initCharts();
+            updateAll();
+            initSidebar();
+        });
+
+        function initSidebar() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('open');
+                sidebarOverlay.classList.toggle('active');
+                mobileToggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+            }
+
+            mobileToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // Active menu
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.toggle('active', item.getAttribute('href') === currentPath);
+            });
+        }
+
+        // ========================================
+        // Number Formatting
+        // ========================================
+        function formatNumber(num) {
+            if (num === null || num === undefined || isNaN(num)) return '0';
+            return Math.round(num).toLocaleString();
+        }
+
+        function parseNumber(str) {
+            if (!str) return 0;
+            return parseInt(String(str).replace(/,/g, '')) || 0;
+        }
+
+        function formatInput(input) {
+            const cursorPos = input.selectionStart;
+            const oldLength = input.value.length;
+            const value = input.value.replace(/[^\d]/g, '');
+            input.value = value ? parseInt(value).toLocaleString() : '';
+            const newLength = input.value.length;
+            const newPos = cursorPos + (newLength - oldLength);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // ========================================
+        // Row Management
+        // ========================================
+        function addRow() {
+            rowCounter++;
+            const id = rowCounter;
+            products.push({
+                id: id,
+                market: '쿠팡',
+                name: '',
+                feeRate: MARKET_FEES['쿠팡'],
+                salePrice: 0,
+                shippingFee: 0,
+                purchasePrice: 0,
+                packingCost: 0,
+                adCost: 0
+            });
+            renderInputTable();
+            updateAll();
+            saveToStorage();
+        }
+
+        function deleteRow(id) {
+            products = products.filter(p => p.id !== id);
+            if (products.length === 0) {
+                addRow();
+            } else {
+                renderInputTable();
+                updateAll();
+                saveToStorage();
+            }
+        }
+
+        function clearAll() {
+            if (confirm('모든 데이터를 삭제하시겠습니까?')) {
+                products = [];
+                rowCounter = 0;
+                localStorage.removeItem(STORAGE_KEY);
+                addRow();
+            }
+        }
+
+        // ========================================
+        // Render Tables
+        // ========================================
+        function renderInputTable() {
+            const tbody = document.getElementById('inputBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (products.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = products.map((p, idx) => `
+                <tr data-id="${p.id}" class="${idx === selectedRowIndex ? 'selected' : ''}">
+                    <td class="row-number" onclick="selectRow(${idx})">${idx + 1}</td>
+                    <td class="input-cell" data-label="마켓">
+                        <select onchange="updateMarket(${p.id}, this.value)" onfocus="selectRow(${idx})">
+                            ${Object.keys(MARKET_FEES).map(m =>
+                                `<option value="${m}" ${p.market === m ? 'selected' : ''}>${m}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td class="input-cell name-cell" data-label="상품명">
+                        <input type="text" value="${p.name}" placeholder="상품명"
+                               onfocus="selectRow(${idx})"
+                               onchange="updateField(${p.id}, 'name', this.value)">
+                    </td>
+                    <td class="input-cell rate-cell" data-label="수수료(%)">
+                        <input type="text" value="${p.feeRate}" placeholder="10.5"
+                               onfocus="selectRow(${idx})"
+                               onchange="updateField(${p.id}, 'feeRate', parseFloat(this.value) || 0)">
+                    </td>
+                    <td class="input-cell number-cell" data-label="판매가">
+                        <input type="text" value="${formatNumber(p.salePrice)}" placeholder="판매가"
+                               onfocus="selectRow(${idx})"
+                               oninput="formatInput(this)"
+                               onchange="updateField(${p.id}, 'salePrice', parseNumber(this.value))">
+                    </td>
+                    <td class="input-cell number-cell" data-label="매입가">
+                        <input type="text" value="${formatNumber(p.purchasePrice)}" placeholder="매입가"
+                               onfocus="selectRow(${idx})"
+                               oninput="formatInput(this)"
+                               onchange="updateField(${p.id}, 'purchasePrice', parseNumber(this.value))">
+                    </td>
+                    <td class="input-cell number-cell" data-label="배송비">
+                        <input type="text" value="${formatNumber(p.shippingFee)}" placeholder="선택"
+                               onfocus="selectRow(${idx})"
+                               oninput="formatInput(this)"
+                               onchange="updateField(${p.id}, 'shippingFee', parseNumber(this.value))">
+                    </td>
+                    <td class="input-cell number-cell" data-label="입고비">
+                        <input type="text" value="${formatNumber(p.packingCost)}" placeholder="선택"
+                               onfocus="selectRow(${idx})"
+                               oninput="formatInput(this)"
+                               onchange="updateField(${p.id}, 'packingCost', parseNumber(this.value))">
+                    </td>
+                    <td class="input-cell number-cell" data-label="광고비">
+                        <input type="text" value="${formatNumber(p.adCost)}" placeholder="선택"
+                               onfocus="selectRow(${idx})"
+                               oninput="formatInput(this)"
+                               onchange="updateField(${p.id}, 'adCost', parseNumber(this.value))">
+                    </td>
+                    <td>
+                        <button class="btn-delete" onclick="deleteRow(${p.id})"><img src="/static/img/icons/trash.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderResultTable() {
+            const tbody = document.getElementById('resultBody');
+            const results = products.map(p => calculateProfit(p));
+
+            tbody.innerHTML = results.map((r, idx) => {
+                const statusClass = r.netProfitRate >= 20 ? 'status-good' :
+                                   (r.netProfitRate >= 0 ? 'status-warning' : 'status-danger');
+                const statusText = r.netProfitRate >= 20 ? '양호' :
+                                  (r.netProfitRate >= 0 ? '보통' : '손실');
+
+                return `
+                    <tr class="${idx === selectedRowIndex ? 'selected' : ''}">
+                        <td class="row-number">${idx + 1}</td>
+                        <td data-label="상품명">${products[idx].name || '-'}</td>
+                        <td class="result-cell" data-label="정산금액">${formatNumber(r.settlement)}원</td>
+                        <td data-label="마켓수수료">${formatNumber(r.marketFee)}원</td>
+                        <td class="result-cell ${r.grossMargin >= 0 ? 'result-positive' : 'result-negative'}" data-label="전체마진">
+                            ${formatNumber(r.grossMargin)}원
+                        </td>
+                        <td data-label="마진율">${r.grossMarginRate.toFixed(1)}%</td>
+                        <td data-label="부가세">${formatNumber(r.vatPayable)}원</td>
+                        <td class="result-cell ${r.netProfit >= 0 ? 'result-positive' : 'result-negative'}" data-label="순수익">
+                            ${formatNumber(r.netProfit)}원
+                        </td>
+                        <td class="result-cell ${r.netProfitRate >= 0 ? 'result-positive' : 'result-negative'}" data-label="순수익률">
+                            ${r.netProfitRate.toFixed(2)}%
+                        </td>
+                        <td data-label="상태"><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ========================================
+        // Calculation
+        // ========================================
+        function calculateProfit(p) {
+            const salePrice = p.salePrice || 0;
+            const shippingFee = p.shippingFee || 0;
+            const feeRate = (p.feeRate || 0) / 100;
+            const purchasePrice = p.purchasePrice || 0;
+            const packingCost = p.packingCost || 0;
+            const adCost = p.adCost || 0;
+
+            // 마켓 수수료
+            const marketFee = salePrice * feeRate;
+
+            // 정산금액
+            const settlement = (salePrice + shippingFee) - marketFee;
+
+            // 부가세 계산
+            const purchaseVAT = (purchasePrice + packingCost) * 0.1;
+            const feeVAT = marketFee * 0.1;
+            const salesVAT = (salePrice + shippingFee) * 0.1;
+            const vatPayable = salesVAT - (purchaseVAT + feeVAT);
+
+            // 전체 마진
+            const totalCost = purchasePrice + packingCost;
+            const totalSales = salePrice + shippingFee;
+            const grossMargin = totalSales - totalCost;
+            const grossMarginRate = totalSales > 0 ? (1 - totalCost / totalSales) * 100 : 0;
+
+            // 순수익
+            const netProfit = settlement - totalCost - adCost - vatPayable;
+            const netProfitRate = settlement > 0 ? (netProfit / settlement) * 100 : 0;
+
+            return {
+                marketFee,
+                settlement,
+                purchaseVAT,
+                feeVAT,
+                salesVAT,
+                vatPayable,
+                grossMargin,
+                grossMarginRate,
+                netProfit,
+                netProfitRate,
+                totalCost,
+                adCost
+            };
+        }
+
+        // ========================================
+        // Update Functions
+        // ========================================
+        function updateField(id, field, value) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product[field] = value;
+                updateAll();
+                saveToStorage();
+            }
+        }
+
+        function updateMarket(id, market) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.market = market;
+                product.feeRate = MARKET_FEES[market];
+                renderInputTable();
+                updateAll();
+                saveToStorage();
+            }
+        }
+
+        function selectRow(idx) {
+            if (selectedRowIndex === idx) return; // 이미 선택된 경우 무시
+            selectedRowIndex = idx;
+            // 선택 상태만 업데이트 (재렌더링 없이)
+            document.querySelectorAll('#inputBody tr').forEach((tr, i) => {
+                tr.classList.toggle('selected', i === idx);
+            });
+            document.querySelectorAll('#resultBody tr').forEach((tr, i) => {
+                tr.classList.toggle('selected', i === idx);
+            });
+            updateCostChart();
+        }
+
+        function updateAll() {
+            renderResultTable();
+            updateSummary();
+            updateCharts();
+        }
+
+        function updateSummary() {
+            const results = products.map(p => calculateProfit(p));
+
+            const totalSettlement = results.reduce((sum, r) => sum + r.settlement, 0);
+            const totalNetProfit = results.reduce((sum, r) => sum + r.netProfit, 0);
+            const totalVat = results.reduce((sum, r) => sum + r.vatPayable, 0);
+            const avgGrossMarginRate = results.length > 0
+                ? results.reduce((sum, r) => sum + r.grossMarginRate, 0) / results.length
+                : 0;
+            const avgNetProfitRate = totalSettlement > 0
+                ? (totalNetProfit / totalSettlement) * 100
+                : 0;
+
+            document.getElementById('totalSettlement').textContent = formatNumber(totalSettlement) + '원';
+            document.getElementById('totalSettlementSub').textContent = `상품 ${products.length}개`;
+            document.getElementById('totalNetProfit').textContent = formatNumber(totalNetProfit) + '원';
+            document.getElementById('avgNetProfitRate').textContent = `평균 순수익률 ${avgNetProfitRate.toFixed(1)}%`;
+            document.getElementById('totalVat').textContent = formatNumber(totalVat) + '원';
+            document.getElementById('avgGrossMarginRate').textContent = avgGrossMarginRate.toFixed(1) + '%';
+        }
+
+        // ========================================
+        // Charts
+        // ========================================
+        function initCharts() {
+            // Profit Chart
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            profitChart = new Chart(profitCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '순수익률 (%)',
+                        data: [],
+                        backgroundColor: [],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cost Chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            costChart = new Chart(costCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['매입+입고', '마켓수수료', '광고비', '부가세', '순수익'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: ['#ea4335', '#f9ab00', '#4285f4', '#9e9e9e', '#0f9d58'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            updateProfitChart();
+            updateCostChart();
+        }
+
+        function updateProfitChart() {
+            if (!profitChart) return;
+            const results = products.map(p => calculateProfit(p));
+            const labels = products.map((p, i) => p.name || `상품 ${i + 1}`);
+            const data = results.map(r => r.netProfitRate);
+            const colors = data.map(d => d >= 20 ? '#0f9d58' : (d >= 0 ? '#f9ab00' : '#ea4335'));
+
+            profitChart.data.labels = labels;
+            profitChart.data.datasets[0].data = data;
+            profitChart.data.datasets[0].backgroundColor = colors;
+            profitChart.update();
+        }
+
+        function updateCostChart() {
+            if (!costChart || products.length === 0) return;
+
+            const p = products[selectedRowIndex] || products[0];
+            const r = calculateProfit(p);
+            const total = r.totalCost + r.marketFee + r.adCost + Math.max(0, r.vatPayable) + Math.max(0, r.netProfit);
+
+            if (total > 0) {
+                costChart.data.datasets[0].data = [
+                    r.totalCost,
+                    r.marketFee,
+                    r.adCost,
+                    Math.max(0, r.vatPayable),
+                    Math.max(0, r.netProfit)
+                ];
+            } else {
+                costChart.data.datasets[0].data = [0, 0, 0, 0, 0];
+            }
+            costChart.update();
+        }
+
+        // ========================================
+        // Storage
+        // ========================================
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                products: products,
+                rowCounter: rowCounter
+            }));
+        }
+
+        function loadFromStorage() {
+            try {
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (data && data.products) {
+                    products = data.products;
+                    rowCounter = data.rowCounter || products.length;
+                    renderInputTable();
+                }
+            } catch (e) {
+                console.error('Failed to load from storage:', e);
+            }
+        }
+
+        // ========================================
+        // Excel Export
+        // ========================================
+        function exportExcel() {
+            const results = products.map(p => calculateProfit(p));
+
+            const exportData = products.map((p, idx) => ({
+                '번호': idx + 1,
+                '마켓': p.market,
+                '상품명': p.name,
+                '수수료율(%)': p.feeRate,
+                '판매가': p.salePrice,
+                '배송비': p.shippingFee,
+                '매입가': p.purchasePrice,
+                '입고비': p.packingCost,
+                '광고비': p.adCost,
+                '정산금액': Math.round(results[idx].settlement),
+                '마켓수수료': Math.round(results[idx].marketFee),
+                '전체마진': Math.round(results[idx].grossMargin),
+                '전체마진율(%)': results[idx].grossMarginRate.toFixed(2),
+                '부가세': Math.round(results[idx].vatPayable),
+                '순수익': Math.round(results[idx].netProfit),
+                '순수익률(%)': results[idx].netProfitRate.toFixed(2)
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '수익 시뮬레이션');
+
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `수익시뮬레이션_${today}.xlsx`);
+        }
+    </script>
+</body>
+</html>

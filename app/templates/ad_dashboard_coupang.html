@@ -1,9 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>쿠팡 광고 분석 대시보드 | Insight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>쿠팡 광고 분석 대시보드 | 마케팅광장</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="쿠팡 광고 키워드 성과 분석, ROAS 최적화, 제외 키워드 자동 추천으로 광고비를 절감하세요. 마케팅광장 무료 광고 분석 도구.">
+    <meta name="keywords" content="쿠팡광고, 쿠팡광고분석, ROAS, 키워드분석, 광고최적화, 마케팅광장">
+    <meta name="author" content="마케팅광장">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dashboard.mbizsquare.com/ad-dashboard/coupang">
+
+    <!-- Site Verification -->
+    <meta name="naver-site-verification" content="cc6eb66db82f1cef83861f978e49ca76d7a72caa">
+    <meta name="google-site-verification" content="i3kI5uL7O6tmcojS0WVBql-E5TUPPR1TkZt8Lwe5zyw">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="쿠팡 광고 분석 대시보드 | 마케팅광장">
+    <meta property="og:description" content="쿠팡 광고 키워드 성과 분석, ROAS 최적화, 제외 키워드 자동 추천으로 광고비를 절감하세요.">
+    <meta property="og:url" content="https://dashboard.mbizsquare.com/ad-dashboard/coupang">
+    <meta property="og:site_name" content="마케팅광장">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="쿠팡 광고 분석 대시보드 | 마케팅광장">
+    <meta name="twitter:description" content="쿠팡 광고 키워드 성과 분석, ROAS 최적화, 제외 키워드 자동 추천으로 광고비를 절감하세요.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/img/favicon.svg">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
@@ -75,14 +103,8 @@
             min-height: 100vh;
         }
 
-        /* Main Content */
-        .main-content {
-            margin-left: 180px;
-            margin-top: 56.5px;
-            min-height: calc(100vh - 56.5px);
-            background: var(--bg-primary);
-            padding: 24px;
-        }
+        /* Main Content - sidebar.css에서 기본 정의됨 */
+        /* 추가 스타일만 정의 */
 
         /* Page Header */
         .page-header {
@@ -665,9 +687,7 @@
 
         /* Tablet Responsive (1024px 이하) */
         @media (max-width: 1024px) {
-            .main-content {
-                padding: 16px;
-            }
+            /* sidebar, main-content는 sidebar.css에서 관리 */
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -676,19 +696,40 @@
 
         /* Mobile Responsive (768px 이하) */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
+            /* sidebar, main-content는 sidebar.css에서 관리 */
 
-            .sidebar.open {
-                transform: translateX(0);
+            /* 수평 오버플로우 방지 */
+            body {
+                overflow-x: hidden;
             }
 
             .main-content {
-                margin-left: 0 !important;
-                padding: 12px;
-                width: 100% !important;
+                overflow-x: hidden;
+            }
+
+            /* Page Header 세로 배치 */
+            .page-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 16px;
+                padding: 16px !important;
+            }
+
+            .page-header-left h1 {
+                font-size: 18px !important;
+            }
+
+            .page-header-left p {
+                font-size: 12px;
+            }
+
+            .page-header-right {
+                width: 100%;
+            }
+
+            .page-header-right .btn {
+                width: 100%;
+                justify-content: center;
             }
 
             .stats-grid {
@@ -699,23 +740,75 @@
                 grid-template-columns: 1fr;
             }
 
+            /* Filter Section 세로 배치 */
             .filter-section {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 12px;
+                padding: 12px !important;
             }
 
-            .search-box {
+            .filter-group {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
                 width: 100%;
             }
 
-            /* 테이블 가로 스크롤 */
-            .card:has(table) {
-                overflow-x: auto;
+            .filter-group .btn {
+                width: 100%;
+                margin-left: 0 !important;
             }
 
-            table {
-                min-width: 600px;
+            .filter-input {
+                width: 100% !important;
+            }
+
+            .search-box {
+                width: 100% !important;
+            }
+
+            /* 테이블 가로 스크롤 - wrapper 사용 */
+            .card:has(table) {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 키워드 테이블 최소 너비 */
+            #keywordTable {
+                min-width: 800px;
+                font-size: 12px;
+            }
+
+            #keywordTable th,
+            #keywordTable td {
+                padding: 8px 6px;
+            }
+
+            /* 키워드 셀 고정 너비 해제 */
+            .keyword-cell {
+                width: auto !important;
+                max-width: 120px !important;
+                min-width: unset !important;
+                font-size: 11px !important;
+            }
+
+            /* Summary 카드 2열 배치 */
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .summary-card {
+                padding: 12px !important;
+            }
+
+            .summary-value {
+                font-size: 20px !important;
+            }
+
+            .summary-label {
+                font-size: 11px !important;
             }
 
             /* 버튼 그룹 세로 배치 */
@@ -723,17 +816,99 @@
             div[style*="display: flex"][style*="gap"] {
                 flex-wrap: wrap;
             }
+
+            /* 모든 버튼 크기 조정 */
+            .btn {
+                padding: 10px 16px !important;
+                font-size: 13px !important;
+            }
+
+            /* 테이블 컨트롤 (검색, 요약) 세로 배치 */
+            .table-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+
+            /* Section 헤더 세로 배치 */
+            .section-header,
+            .card-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+            }
+
+            .card-header > div {
+                width: 100%;
+            }
+
+            .card-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Priority Tab 가로 스크롤 */
+            div[style*="border-bottom: 2px solid"] {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap !important;
+                padding-bottom: 8px;
+            }
+
+            .priority-tab {
+                white-space: nowrap;
+                flex-shrink: 0;
+                font-size: 11px !important;
+                padding: 8px 10px !important;
+            }
+
+            /* 추천 테이블 wrapper */
+            .table-wrapper {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #recommendationTable {
+                min-width: 1200px;
+                font-size: 11px;
+            }
+
+            #recommendationTable th,
+            #recommendationTable td {
+                padding: 6px 4px;
+                white-space: nowrap;
+            }
+
+            /* 추천 섹션 헤더 */
+            #recommendationSection .section-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+            }
+
+            #recommendationSection .section-header > div[style*="display: flex"] {
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+
+            #recommendationSection .section-header .btn {
+                width: 100% !important;
+            }
+
+            /* 차트 높이 조정 */
+            .chart-container {
+                height: 280px !important;
+            }
         }
 
         /* 매우 작은 화면 (480px 이하) */
         @media (max-width: 480px) {
-            .top-header {
-                padding: 8px 12px;
-            }
+            /* top-header padding은 header.css에서 관리 - 여기서 덮어쓰지 않음 */
 
             .header-left h1,
             .header-left .logo-text {
-                font-size: 16px;
+                font-size: 14px;
             }
 
             .card {
@@ -741,26 +916,32 @@
             }
 
             .page-header h1 {
-                font-size: 20px;
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">☰</button>
+
     <!-- Top Header -->
     <header class="top-header">
         <div class="header-left">
-            <h1 class="logo-text">📊 마케팅광장 광고분석</h1>
+            <h1 class="logo-text"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:brightness(0) invert(1);">마케팅광장 광고분석</h1>
             <span class="logo-subtitle">쿠팡광고분석</span>
         </div>
         <div class="header-right">
-            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn">📘 제휴문의</a>
-            <a href="https://mbizsquare.com" target="_blank" class="header-btn">🏢 마케팅광장 바로가기</a>
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
             <div class="user-info">
-                <span class="user-nickname">👤 닉네임</span>
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 닉네임</span>
             </div>
         </div>
     </header>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
@@ -769,20 +950,32 @@
         </div>
         <nav class="sidebar-menu">
             <a href="/" class="menu-item">
-                <span class="icon">🏠</span>
+                <span class="icon"><img src="/static/img/icons/dashboard.svg" alt=""></span>
                 <span class="label">대시보드</span>
             </a>
             <a href="/guide" class="menu-item">
-                <span class="icon">📘</span>
+                <span class="icon"><img src="/static/img/icons/guide.svg" alt=""></span>
                 <span class="label">이용안내</span>
             </a>
             <a href="/ad-dashboard" class="menu-item">
-                <span class="icon">📈</span>
+                <span class="icon"><img src="/static/img/icons/chart.svg" alt=""></span>
                 <span class="label">광고분석</span>
             </a>
             <a href="/ad-dashboard/coupang" class="menu-item active">
-                <span class="icon">🛒</span>
+                <span class="icon"><img src="/static/img/icons/cart.svg" alt=""></span>
                 <span class="label">쿠팡광고분석</span>
+            </a>
+            <a href="/ad-dashboard/profit-simulator" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
+                <span class="label">수익 시뮬레이터</span>
+            </a>
+            <a href="/ad-dashboard/ad-efficiency" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
+                <span class="label">손익분기 ROAS</span>
+            </a>
+            <a href="/ad-dashboard/keyword-combiner" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/combine.svg" alt=""></span>
+                <span class="label">키워드 조합기</span>
             </a>
         </nav>
     </aside>
@@ -792,12 +985,12 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-header-left">
-                <h1>🛒 쿠팡 광고 분석 대시보드</h1>
+                <h1><img src="/static/img/icons/cart.svg" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;"> 쿠팡 광고 분석 대시보드</h1>
                 <p>키워드별 성과 분석 및 ROAS 최적화</p>
             </div>
             <div class="page-header-right">
                 <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #1a73e8; color: white; font-size: 14px; font-weight: 500; transition: all 0.2s;">
-                    <span>📤</span>
+                    <img src="/static/img/icons/upload.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);">
                     <span>쿠팡 광고 파일 업로드</span>
                 </button>
             </div>
@@ -812,7 +1005,7 @@
         <!-- Filter Section -->
             <div class="filter-section">
                 <div class="filter-group">
-                    <span class="filter-label">🔍 ROAS 필터:</span>
+                    <span class="filter-label"><img src="/static/img/icons/search.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> ROAS 필터:</span>
                     <input type="number" id="roasThreshold" class="filter-input" placeholder="예: 50" value="">
                     <span class="filter-label">% 이하</span>
                     <button class="btn btn-secondary" onclick="filterByROAS()">
@@ -822,10 +1015,10 @@
                         초기화
                     </button>
                     <button class="btn btn-primary" onclick="getRecommendations()" style="margin-left: 16px;">
-                        🎯 제외 키워드 추천받기
+                        <img src="/static/img/icons/target.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 제외 키워드 추천받기
                     </button>
                     <button class="btn btn-secondary" onclick="clearAllData()" style="padding: 8px 16px;">
-                        🗑️ 초기화
+                        <img src="/static/img/icons/trash.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 초기화
                     </button>
                 </div>
             </div>
@@ -863,7 +1056,7 @@
             <div class="charts-grid">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">📊 ROAS TOP 10</div>
+                        <div class="card-title"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> ROAS TOP 10</div>
                     </div>
                     <div class="chart-container">
                         <canvas id="roasBarChart"></canvas>
@@ -872,7 +1065,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">💰 광고비 vs 매출액 분포</div>
+                        <div class="card-title"><img src="/static/img/icons/money.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 광고비 vs 매출액 분포</div>
                     </div>
                     <div class="chart-container">
                         <canvas id="scatterChart"></canvas>
@@ -884,7 +1077,7 @@
             <div class="charts-grid">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">💰 매출액 TOP 10 키워드</div>
+                        <div class="card-title"><img src="/static/img/icons/money.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 매출액 TOP 10 키워드</div>
                     </div>
                     <div class="chart-container">
                         <canvas id="revenueTopChart"></canvas>
@@ -893,7 +1086,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">⚠️ 광고비낭비 TOP 10 키워드</div>
+                        <div class="card-title"><img src="/static/img/icons/warning.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 광고비낭비 TOP 10 키워드</div>
                     </div>
                     <div class="chart-container">
                         <canvas id="wasteTopChart"></canvas>
@@ -904,10 +1097,10 @@
             <!-- Keyword Table -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">🔍 키워드 상세 분석</div>
+                    <div class="card-title"><img src="/static/img/icons/search.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 키워드 상세 분석</div>
                     <div>
                         <button class="btn btn-secondary" onclick="downloadExcel()">
-                            <span>📥</span>
+                            <img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;vertical-align:middle;">
                             <span>Excel 다운로드</span>
                         </button>
                     </div>
@@ -957,14 +1150,14 @@
             <!-- Keyword Exclusion Recommendations Section -->
             <div class="section" id="recommendationSection" style="display: none;">
                 <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 class="section-title" style="margin-bottom: 0;">🎯 키워드 제외 추천</h2>
+                    <h2 class="section-title" style="margin-bottom: 0;"><img src="/static/img/icons/target.svg" alt="" style="width:20px;height:20px;vertical-align:middle;"> 키워드 제외 추천</h2>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-secondary" onclick="exportRecommendations()">
-                            <span>📥</span>
+                            <img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;vertical-align:middle;">
                             <span>추천 목록 다운로드</span>
                         </button>
                         <button class="btn btn-danger" onclick="applyExclusions()">
-                            <span>❌</span>
+                            <img src="/static/img/icons/trash.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);">
                             <span>선택 키워드 제외</span>
                         </button>
                     </div>
@@ -1315,11 +1508,15 @@
                 };
             }
 
-            const totalSpend = data.reduce((sum, row) => sum + (row.광고비 || 0), 0);
-            const totalRevenue = data.reduce((sum, row) => sum + (row['총 전환매출액'] || 0), 0);
-            const totalClicks = data.reduce((sum, row) => sum + (row.클릭수 || 0), 0);
-            const avgROAS = data.reduce((sum, row) => sum + (row.ROAS || 0), 0) / data.length;
-            const avgCTR = data.reduce((sum, row) => sum + (row.클릭률 || 0), 0) / data.length;
+            const totalSpend = data.reduce((sum, row) => sum + (parseFloat(row.광고비) || 0), 0);
+            const totalRevenue = data.reduce((sum, row) => sum + (parseFloat(row['총 전환매출액']) || 0), 0);
+            const totalClicks = data.reduce((sum, row) => sum + (parseInt(row.클릭수) || 0), 0);
+            const totalImpressions = data.reduce((sum, row) => sum + (parseInt(row.노출수) || 0), 0);
+
+            // ROAS = (총매출액 / 총광고비) * 100 (정확한 계산)
+            const avgROAS = totalSpend > 0 ? (totalRevenue / totalSpend) * 100 : 0;
+            // CTR = (총클릭수 / 총노출수) * 100 (정확한 계산)
+            const avgCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
 
             return {
                 총광고비: Math.round(totalSpend),
@@ -2253,6 +2450,34 @@
             } else {
                 item.classList.remove('active');
             }
+        });
+
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleMobileSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            mobileToggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+        }
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', toggleMobileSidebar);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', toggleMobileSidebar);
+        }
+
+        // Close sidebar on menu item click (mobile)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('active');
+                    mobileToggle.textContent = '☰';
+                }
+            });
         });
 
         // Clear all data function

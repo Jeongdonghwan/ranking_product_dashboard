@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="partnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffecd2"/>
+      <stop offset="100%" style="stop-color:#fcb69f"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#partnerGrad)"/>
+  <!-- Handshake icon -->
+  <path d="M20 32c0-2 1.5-3.5 3.5-3.5h3l4-4h7l4 4h3c2 0 3.5 1.5 3.5 3.5v8c0 2-1.5 3.5-3.5 3.5h-3l-4 4h-7l-4-4h-3c-2 0-3.5-1.5-3.5-3.5v-8z" fill="#fff" opacity="0.9"/>
+  <circle cx="26" cy="36" r="2.5" fill="#fcb69f"/>
+  <circle cx="38" cy="36" r="2.5" fill="#fcb69f"/>
+  <path d="M29 40c0 0 1.5 2 3 2s3-2 3-2" stroke="#fcb69f" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Chat bubble -->
+  <path d="M42 18h-8c-1.5 0-3 1.5-3 3v6c0 1.5 1.5 3 3 3h1l2 3 2-3h3c1.5 0 3-1.5 3-3v-6c0-1.5-1.5-3-3-3z" fill="#fff"/>
+  <circle cx="36" cy="24" r="1" fill="#fcb69f"/>
+  <circle cx="40" cy="24" r="1" fill="#fcb69f"/>
+</svg>

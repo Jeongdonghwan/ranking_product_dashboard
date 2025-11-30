@@ -93,19 +93,59 @@
 @media (max-width: 768px) {
     .top-header {
         left: 0;
-        padding: 0 16px;
+        padding: 0 8px 0 52px; /* 왼쪽에 토글 버튼 공간 확보 */
+        height: 50px;
+    }
+
+    .header-left {
+        gap: 6px;
+    }
+
+    .logo-text {
+        font-size: 14px;
+        white-space: nowrap;
     }
 
     .logo-subtitle {
         display: none;
     }
 
+    .header-right {
+        gap: 4px;
+    }
+
     .header-btn {
-        padding: 8px 12px;
+        padding: 6px 8px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    /* 버튼 텍스트 숨기고 아이콘만 표시 */
+    .header-btn .btn-text {
+        display: none;
+    }
+
+    .user-info {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-header {
+        padding: 0 6px 0 48px;
+    }
+
+    .logo-text {
         font-size: 13px;
     }
 
-    .header-btn span {
+    .header-btn {
+        padding: 5px 6px;
+        font-size: 10px;
+    }
+
+    /* 극소형 화면에서는 하나의 버튼만 표시 */
+    .header-btn:not(:first-child) {
         display: none;
     }
 }

@@ -143,6 +143,42 @@ def coupang_dashboard():
     return render_template('ad_dashboard_coupang.html', user=user)
 
 
+@ad_bp.route('/ad-dashboard/profit-simulator')
+def profit_simulator():
+    """
+    수익 시뮬레이터 페이지
+
+    Returns:
+        HTML: 수익 시뮬레이터 템플릿
+    """
+    user = get_current_user()
+    return render_template('profit_simulator.html', user=user)
+
+
+@ad_bp.route('/ad-dashboard/ad-efficiency')
+def ad_efficiency():
+    """
+    광고 효율 진단 페이지
+
+    Returns:
+        HTML: 광고 효율 진단 템플릿
+    """
+    user = get_current_user()
+    return render_template('ad_efficiency.html', user=user)
+
+
+@ad_bp.route('/ad-dashboard/keyword-combiner')
+def keyword_combiner():
+    """
+    키워드 조합기 페이지
+
+    Returns:
+        HTML: 키워드 조합기 템플릿
+    """
+    user = get_current_user()
+    return render_template('keyword_combiner.html', user=user)
+
+
 @ad_bp.route('/guide')
 def guide():
     """

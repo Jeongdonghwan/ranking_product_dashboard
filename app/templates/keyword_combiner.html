@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>키워드 조합기 | 마케팅광장</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --primary-green: #34a853;
+            --primary-orange: #ff9800;
+            --primary-purple: #9c27b0;
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Keyword Input Groups */
+        .input-groups {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .keyword-group {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .keyword-group.group-1 { border-top: 4px solid var(--primary-blue); }
+        .keyword-group.group-2 { border-top: 4px solid var(--primary-green); }
+        .keyword-group.group-3 { border-top: 4px solid var(--primary-orange); }
+        .keyword-group.group-4 { border-top: 4px solid var(--primary-purple); }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .group-label {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .group-1 .group-label { color: var(--primary-blue); }
+        .group-2 .group-label { color: var(--primary-green); }
+        .group-3 .group-label { color: var(--primary-orange); }
+        .group-4 .group-label { color: var(--primary-purple); }
+
+        .keyword-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .keyword-textarea {
+            width: 100%;
+            height: 150px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .keyword-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .group-hint {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Rules Section */
+        .rules-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .rules-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--primary-blue);
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .rule-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .rule-checkbox:hover {
+            background: #e8f0fe;
+        }
+
+        .rule-checkbox input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .rule-checkbox.checked {
+            background: #e8f0fe;
+            border: 1px solid var(--primary-blue);
+        }
+
+        /* Options */
+        .options-row {
+            display: flex;
+            gap: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .option-item input {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Action Section */
+        .action-section {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .btn-success {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2d8a47;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .results-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .results-preview {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .results-preview:empty::before {
+            content: '조합된 키워드가 여기에 표시됩니다.';
+            color: var(--text-secondary);
+        }
+
+        .results-more {
+            text-align: center;
+            padding: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .input-groups {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .input-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .rules-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .preset-buttons {
+                width: 100%;
+            }
+
+            .preset-btn {
+                flex: 1;
+            }
+
+            .options-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .action-section {
+                flex-direction: column;
+            }
+
+            .action-section .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .results-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .results-actions .btn {
+                flex: 1;
+                min-width: 100px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">☰</button>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <h1 class="logo-text"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:brightness(0) invert(1);">마케팅광장 광고분석</h1>
+            <span class="logo-subtitle">키워드조합기</span>
+        </div>
+        <div class="header-right">
+            <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
+            <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
+            <div class="user-info">
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 닉네임</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>메뉴</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="/" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/dashboard.svg" alt=""></span>
+                <span class="label">대시보드</span>
+            </a>
+            <a href="/guide" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/guide.svg" alt=""></span>
+                <span class="label">이용안내</span>
+            </a>
+            <a href="/ad-dashboard" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/chart.svg" alt=""></span>
+                <span class="label">광고분석</span>
+            </a>
+            <a href="/ad-dashboard/coupang" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/cart.svg" alt=""></span>
+                <span class="label">쿠팡광고분석</span>
+            </a>
+            <a href="/ad-dashboard/profit-simulator" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
+                <span class="label">수익 시뮬레이터</span>
+            </a>
+            <a href="/ad-dashboard/ad-efficiency" class="menu-item">
+                <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
+                <span class="label">손익분기 ROAS</span>
+            </a>
+            <a href="/ad-dashboard/keyword-combiner" class="menu-item active">
+                <span class="icon"><img src="/static/img/icons/combine.svg" alt=""></span>
+                <span class="label">키워드 조합기</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><img src="/static/img/icons/combine.svg" alt="" style="width:28px;height:28px;vertical-align:middle;"> 키워드 조합기</h1>
+            <p>4개 그룹에 키워드를 입력하고 조합 규칙을 선택하여 모든 경우의 수를 생성합니다.</p>
+        </div>
+
+        <!-- Keyword Input Groups -->
+        <div class="input-groups">
+            <div class="keyword-group group-1">
+                <div class="group-header">
+                    <span class="group-label"><img src="/static/img/icons/tag.svg" alt="" style="width:16px;height:16px;"> 키워드 1</span>
+                    <span class="keyword-count" id="count1">0개</span>
+                </div>
+                <textarea class="keyword-textarea" id="keywords1" placeholder="예: 서울&#10;부산&#10;대구&#10;인천" oninput="updateCount(1)"></textarea>
+                <div class="group-hint">예: 지역명 (줄바꿈으로 구분)</div>
+            </div>
+
+            <div class="keyword-group group-2">
+                <div class="group-header">
+                    <span class="group-label"><img src="/static/img/icons/tag.svg" alt="" style="width:16px;height:16px;"> 키워드 2</span>
+                    <span class="keyword-count" id="count2">0개</span>
+                </div>
+                <textarea class="keyword-textarea" id="keywords2" placeholder="예: 맛집&#10;카페&#10;음식점" oninput="updateCount(2)"></textarea>
+                <div class="group-hint">예: 업종명 (줄바꿈으로 구분)</div>
+            </div>
+
+            <div class="keyword-group group-3">
+                <div class="group-header">
+                    <span class="group-label"><img src="/static/img/icons/tag.svg" alt="" style="width:16px;height:16px;"> 키워드 3</span>
+                    <span class="keyword-count" id="count3">0개</span>
+                </div>
+                <textarea class="keyword-textarea" id="keywords3" placeholder="예: 추천&#10;인기&#10;베스트" oninput="updateCount(3)"></textarea>
+                <div class="group-hint">예: 수식어 (줄바꿈으로 구분)</div>
+            </div>
+
+            <div class="keyword-group group-4">
+                <div class="group-header">
+                    <span class="group-label"><img src="/static/img/icons/tag.svg" alt="" style="width:16px;height:16px;"> 키워드 4</span>
+                    <span class="keyword-count" id="count4">0개</span>
+                </div>
+                <textarea class="keyword-textarea" id="keywords4" placeholder="예: 2024&#10;최신" oninput="updateCount(4)"></textarea>
+                <div class="group-hint">예: 연도/기타 (줄바꿈으로 구분)</div>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="rules-section">
+            <div class="rules-header">
+                <span class="rules-title"><img src="/static/img/icons/settings.svg" alt="" style="width:18px;height:18px;"> 조합 규칙 선택</span>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="selectPreset('basic')">기본 조합</button>
+                    <button class="preset-btn" onclick="selectPreset('all')">전순서 조합</button>
+                    <button class="preset-btn" onclick="selectPreset('clear')">선택 해제</button>
+                </div>
+            </div>
+
+            <div class="rules-grid" id="rulesGrid">
+                <!-- 2개 조합 -->
+                <label class="rule-checkbox"><input type="checkbox" value="1,2"> 1+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,1"> 2+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,3"> 1+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,1"> 3+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,4"> 1+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,1"> 4+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,3"> 2+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,2"> 3+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,4"> 2+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,2"> 4+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,4"> 3+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,3"> 4+3</label>
+                <!-- 3개 조합 -->
+                <label class="rule-checkbox"><input type="checkbox" value="1,2,3"> 1+2+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,3,2"> 1+3+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,1,3"> 2+1+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,3,1"> 2+3+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,1,2"> 3+1+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,2,1"> 3+2+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,2,4"> 1+2+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,4,2"> 1+4+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,1,4"> 2+1+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,4,1"> 2+4+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,1,2"> 4+1+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,2,1"> 4+2+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,3,4"> 1+3+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,4,3"> 1+4+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,1,4"> 3+1+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,4,1"> 3+4+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,1,3"> 4+1+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,3,1"> 4+3+1</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,3,4"> 2+3+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="2,4,3"> 2+4+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,2,4"> 3+2+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="3,4,2"> 3+4+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,2,3"> 4+2+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="4,3,2"> 4+3+2</label>
+                <!-- 4개 조합 -->
+                <label class="rule-checkbox"><input type="checkbox" value="1,2,3,4"> 1+2+3+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,2,4,3"> 1+2+4+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,3,2,4"> 1+3+2+4</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,3,4,2"> 1+3+4+2</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,4,2,3"> 1+4+2+3</label>
+                <label class="rule-checkbox"><input type="checkbox" value="1,4,3,2"> 1+4+3+2</label>
+            </div>
+
+            <div class="options-row">
+                <label class="option-item">
+                    <input type="checkbox" id="optSpace" checked>
+                    키워드 사이 공백 추가
+                </label>
+                <label class="option-item">
+                    <input type="checkbox" id="optDedupe" checked>
+                    중복 키워드 자동 제거
+                </label>
+            </div>
+        </div>
+
+        <!-- Action Section -->
+        <div class="action-section">
+            <button class="btn btn-primary" onclick="combineKeywords()">
+                <img src="/static/img/icons/combine.svg" alt="" style="width:18px;height:18px;filter:brightness(0) invert(1);"> 키워드 조합하기
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">
+                <img src="/static/img/icons/trash.svg" alt="" style="width:18px;height:18px;"> 전체 초기화
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="results-header">
+                <span class="results-title"><img src="/static/img/icons/list.svg" alt="" style="width:18px;height:18px;"> 조합 결과</span>
+                <span class="results-count" id="resultsCount">총 0개 키워드</span>
+                <div class="results-actions">
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">
+                        <img src="/static/img/icons/copy.svg" alt="" style="width:16px;height:16px;"> 복사
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadCSV()">
+                        <img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;"> CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadTXT()">
+                        <img src="/static/img/icons/download.svg" alt="" style="width:16px;height:16px;"> TXT
+                    </button>
+                </div>
+            </div>
+            <div class="results-preview" id="resultsPreview"></div>
+            <div class="results-more" id="resultsMore" style="display:none;"></div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let allResults = [];
+
+        // Update keyword count
+        function updateCount(groupNum) {
+            const textarea = document.getElementById(`keywords${groupNum}`);
+            const keywords = textarea.value.split('\n').filter(k => k.trim() !== '');
+            document.getElementById(`count${groupNum}`).textContent = `${keywords.length}개`;
+        }
+
+        // Get keywords from group
+        function getKeywords(groupNum) {
+            const textarea = document.getElementById(`keywords${groupNum}`);
+            return textarea.value.split('\n').map(k => k.trim()).filter(k => k !== '');
+        }
+
+        // Cartesian product
+        function cartesianProduct(arrays) {
+            if (arrays.length === 0) return [[]];
+            return arrays.reduce((acc, arr) => {
+                const result = [];
+                acc.forEach(a => {
+                    arr.forEach(b => {
+                        result.push([...a, b]);
+                    });
+                });
+                return result;
+            }, [[]]);
+        }
+
+        // Combine keywords
+        function combineKeywords() {
+            const groups = [getKeywords(1), getKeywords(2), getKeywords(3), getKeywords(4)];
+            const addSpace = document.getElementById('optSpace').checked;
+            const dedupe = document.getElementById('optDedupe').checked;
+            const separator = addSpace ? ' ' : '';
+
+            // Get selected rules
+            const selectedRules = [];
+            document.querySelectorAll('#rulesGrid input[type="checkbox"]:checked').forEach(cb => {
+                const rule = cb.value.split(',').map(n => parseInt(n));
+                selectedRules.push(rule);
+            });
+
+            if (selectedRules.length === 0) {
+                alert('조합 규칙을 하나 이상 선택해주세요.');
+                return;
+            }
+
+            const results = new Set();
+
+            selectedRules.forEach(rule => {
+                const groupsToUse = rule.map(idx => groups[idx - 1]).filter(g => g.length > 0);
+
+                if (groupsToUse.length === rule.length) {
+                    const combinations = cartesianProduct(groupsToUse);
+                    combinations.forEach(combo => {
+                        const combined = combo.join(separator);
+                        if (dedupe) {
+                            results.add(combined);
+                        } else {
+                            results.add(combined + '_' + results.size); // Make unique for non-dedupe
+                        }
+                    });
+                }
+            });
+
+            allResults = dedupe ? Array.from(results) : Array.from(results).map(r => r.replace(/_\d+$/, ''));
+
+            // Display results
+            displayResults();
+        }
+
+        // Display results
+        function displayResults() {
+            const preview = document.getElementById('resultsPreview');
+            const more = document.getElementById('resultsMore');
+            const count = document.getElementById('resultsCount');
+
+            count.textContent = `총 ${allResults.length}개 키워드`;
+
+            if (allResults.length === 0) {
+                preview.textContent = '';
+                more.style.display = 'none';
+                return;
+            }
+
+            const displayCount = Math.min(allResults.length, 100);
+            preview.textContent = allResults.slice(0, displayCount).join('\n');
+
+            if (allResults.length > 100) {
+                more.textContent = `... 외 ${allResults.length - 100}개 더 있음 (다운로드하여 확인)`;
+                more.style.display = 'block';
+            } else {
+                more.style.display = 'none';
+            }
+        }
+
+        // Preset selection
+        function selectPreset(type) {
+            const checkboxes = document.querySelectorAll('#rulesGrid input[type="checkbox"]');
+
+            if (type === 'clear') {
+                checkboxes.forEach(cb => cb.checked = false);
+            } else if (type === 'basic') {
+                checkboxes.forEach(cb => cb.checked = false);
+                // Select 1+2, 1+2+3
+                checkboxes.forEach(cb => {
+                    if (cb.value === '1,2' || cb.value === '1,2,3') {
+                        cb.checked = true;
+                    }
+                });
+            } else if (type === 'all') {
+                checkboxes.forEach(cb => cb.checked = true);
+            }
+
+            updateCheckboxStyles();
+        }
+
+        // Update checkbox styles
+        function updateCheckboxStyles() {
+            document.querySelectorAll('.rule-checkbox').forEach(label => {
+                const cb = label.querySelector('input');
+                if (cb.checked) {
+                    label.classList.add('checked');
+                } else {
+                    label.classList.remove('checked');
+                }
+            });
+        }
+
+        // Add event listeners to checkboxes
+        document.querySelectorAll('#rulesGrid input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', updateCheckboxStyles);
+        });
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            if (allResults.length === 0) {
+                alert('복사할 키워드가 없습니다.');
+                return;
+            }
+
+            navigator.clipboard.writeText(allResults.join('\n')).then(() => {
+                alert(`${allResults.length}개 키워드가 클립보드에 복사되었습니다.`);
+            });
+        }
+
+        // Download CSV
+        function downloadCSV() {
+            if (allResults.length === 0) {
+                alert('다운로드할 키워드가 없습니다.');
+                return;
+            }
+
+            const csv = 'keyword\n' + allResults.join('\n');
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `keywords_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        }
+
+        // Download TXT
+        function downloadTXT() {
+            if (allResults.length === 0) {
+                alert('다운로드할 키워드가 없습니다.');
+                return;
+            }
+
+            const blob = new Blob([allResults.join('\n')], { type: 'text/plain;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `keywords_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+        }
+
+        // Clear all
+        function clearAll() {
+            if (!confirm('모든 입력과 결과를 초기화하시겠습니까?')) return;
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`keywords${i}`).value = '';
+                document.getElementById(`count${i}`).textContent = '0개';
+            }
+
+            selectPreset('clear');
+            allResults = [];
+            displayResults();
+        }
+
+        // Mobile toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            mobileToggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+        }
+
+        mobileToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>

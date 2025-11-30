@@ -203,7 +203,11 @@
 #homeBottomBanner:empty,
 #generalGridBanners:empty,
 #coupangGridBanners:empty {
-    display: none;
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
 }
 
 /* Large banner containers */
@@ -213,6 +217,12 @@
     max-width: 2264px;
     margin: 20px auto;
     text-align: center;
+}
+
+#homeTopBanner:empty,
+#homeBottomBanner:empty {
+    display: none !important;
+    margin: 0 !important;
 }
 
 .banner-link {
@@ -233,8 +243,8 @@
 }
 
 /* Grid banner container - 홈페이지 2x2 그리드 (상단/하단 배너의 절반 크기) */
-#homeGridBanners {
-    display: grid !important;
+#homeGridBanners:not(:empty) {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 120px);
     gap: 24px;
@@ -275,7 +285,7 @@
 
 /* Responsive grid banners */
 @media (max-width: 1399px) {
-    #homeGridBanners {
+    #homeGridBanners:not(:empty) {
         grid-template-columns: repeat(2, 1fr);
         max-width: calc(100vw - 228px);  /* 180px sidebar + 48px padding */
         padding: 0 24px;
@@ -288,7 +298,7 @@
 }
 
 @media (max-width: 768px) {
-    #homeGridBanners {
+    #homeGridBanners:not(:empty) {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(4, 100px);
         padding: 0 16px;

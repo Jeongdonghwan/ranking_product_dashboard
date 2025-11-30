@@ -214,3 +214,27 @@ __pycache__/
 # pytest 캐시
 .pytest_cache/
 tests/__pycache__/
+
+# ========================================
+# Node.js / Playwright 테스트 관련
+# ========================================
+
+# Node.js
+node_modules/
+package-lock.json
+package.json
+
+# Playwright 테스트 스크립트
+test_*.js
+playwright-report/
+test-results/
+
+# Windows 임시 파일
+nul
+NUL
+
+# 임시/디버그 파일
+*.tmp
+*.temp
+debug_*.js
+debug_*.py

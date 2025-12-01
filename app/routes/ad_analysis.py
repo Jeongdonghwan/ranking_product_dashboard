@@ -118,6 +118,7 @@ def before_request():
         return None
     
     # 운영 모드에서는 세션 체크 수행
+    print('cookie session: ', request.cookies)
     userId = session.get('userId')
     if not userId:
         logger.warning(f"[인증 실패] 세션에 userId가 없습니다: {request.path}")

@@ -10,6 +10,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 from dotenv import load_dotenv
+import hashlib
 
 # 환경변수 로드 (override=True로 .env 파일 값 우선)
 load_dotenv(override=True)
@@ -35,6 +36,8 @@ def create_app():
     app.config.from_object(config_class)
     app.config['SECRET_KEY'] = "WJDEHDGHKS"
     app.config['SESSION_COOKIE_NAME'] = 'session'
+    app.config['SESSION_DIGEST_METHOD'] = hashlib.sha1
+    app.config['SESSION_KEY_DERIVATION'] = 'hmac'
 
     # 추가 초기화 (폴더 생성 등)
     config_class.init_app(app)

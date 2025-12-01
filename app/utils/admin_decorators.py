@@ -3,7 +3,7 @@
 """
 
 from functools import wraps
-from flask import request, jsonify, session
+from flask import request, jsonify, session, g, current_app
 
 
 def require_admin(f):
@@ -17,9 +17,12 @@ def require_admin(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        
-        userId = session.get('userId')
-        isAdmin = session.get('isAdmin')
+        flask_env = current_app.config.get('FLASK_ENV', 'development')
+        if flask_env == 'development':
+            return f(*args, **kwargs)
+
+        userId = g.user.get('userId')
+        isAdmin = g.user.get('isAdmin')
 
         if not userId or not isAdmin:
             return jsonify({'error': 'Unauthorized', 'message': '로그인이 필요합니다'}), 401

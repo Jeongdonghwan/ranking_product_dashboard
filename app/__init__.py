@@ -33,6 +33,7 @@ def create_app():
     # 환경별 설정 로드
     config_class = get_config()
     app.config.from_object(config_class)
+    app.secret_key = "WJDEHDGHKS"
 
     # 추가 초기화 (폴더 생성 등)
     config_class.init_app(app)

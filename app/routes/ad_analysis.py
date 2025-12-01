@@ -13,6 +13,7 @@ from flask import (
     session, redirect, url_for, send_file, current_app
 )
 from werkzeug.utils import secure_filename
+import flask
 
 from app.services.ad_analyzer import AdAnalyzer
 from app.services.ai_insights import AIInsights
@@ -22,6 +23,9 @@ from app.utils.helpers import (
     create_error_response, create_success_response,
     ensure_directory_exists
 )
+
+
+from itsdangerous import URLSafeTimedSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +127,31 @@ def before_request():
     userId = session.get('userId')
     if not userId:
         logger.warning(f"[인증 실패] 세션에 userId가 없습니다: {request.path}")
-        return redirect('https://mbizsquare.com/#/login')
+        COOKIE_VALUE = request.cookies.get('session')
+        SECRET_KEY = 'WJDEHDGHKS'
+        SALT = 'cookie-session' # Flask 기본값
+
+        # 2. 해독 시도
+        print(f"Flask 버전: {flask.__version__}")
+        serializer = URLSafeTimedSerializer(
+            secret_key=SECRET_KEY,
+            salt=SALT,
+            serializer=flask.json.tag.TaggedJSONSerializer(),
+            signer_kwargs={'key_derivation': 'hmac', 'digest_method': 'sha1'} 
+            # 주의: Flask 2.0 이상은 기본이 sha1입니다. 혹시 메인이 sha256 등을 쓰는지 확인 필요.
+        )
+
+        try:
+            data = serializer.loads(COOKIE_VALUE)
+            print("✅ 성공! 세션 데이터:", data)
+        except Exception as e:
+            print("❌ 실패! 정확한 에러 원인:", e)
+            # 여기서 BadSignature가 뜨면 키/Salt 불일치
+            # BadTimeSignature가 뜨면 시간 문제 등 구체적으로 나옵니다.
+
+
+        # return redirect('https://mbizsquare.com/#/login')
+    
     
 
 # ========================================

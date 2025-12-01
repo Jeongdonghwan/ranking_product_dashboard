@@ -138,7 +138,7 @@ def before_request():
 
     try:
         data = serializer.loads(COOKIE_VALUE)
-        if data.userId :
+        if 'userId' in data :
             g.user = data
         else:
             return redirect('https://mbizsquare.com/#/login')

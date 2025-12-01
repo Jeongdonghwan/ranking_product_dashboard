@@ -1,7 +1,6 @@
 """
 광고 분석 API 라우트
 - 17개 엔드포인트 구현
-- JWT 인증 및 세션 관리
 - 파일 업로드 및 데이터 처리
 """
 
@@ -17,9 +16,6 @@ from werkzeug.utils import secure_filename
 
 from app.services.ad_analyzer import AdAnalyzer
 from app.services.ai_insights import AIInsights
-from app.utils.main_session_auth import (
-    get_current_user, get_current_user_id, is_authenticated
-)
 from app.utils.db_utils import execute_query, execute_insert, execute_update, DatabaseError
 from app.utils.helpers import (
     allowed_file, clean_filename, get_unique_filename,
@@ -28,6 +24,19 @@ from app.utils.helpers import (
 )
 
 logger = logging.getLogger(__name__)
+
+# ========================================
+# 임시 인증 함수 (TODO: 추후 재설계)
+# ========================================
+def get_current_user():
+    user = {
+        'userId': session.get('userId'),
+        'userNicknm': session.get('userNicknm')
+    }
+    return user
+    
+def get_current_user_id():
+    return session.get('userId')
 
 # Blueprint 생성
 ad_bp = Blueprint('ad_analysis', __name__)
@@ -84,6 +93,36 @@ def normalize_columns(df):
 
     return df
 
+
+
+@ad_bp.before_request
+def before_request():
+    """
+    요청 전 인증 체크
+    
+    - 개발 모드에서는 세션 체크를 건너뜀
+    - 정적 파일 요청도 세션 체크 제외
+    """
+    # 정적 파일 요청은 세션 체크 제외
+    if request.path.startswith('/static/'):
+        return None
+    
+    # 개발 모드 체크 (DEBUG 모드이거나 FLASK_ENV가 development인 경우)
+    is_debug_mode = current_app.config.get('DEBUG', False)
+    flask_env = current_app.config.get('FLASK_ENV', os.getenv('FLASK_ENV', 'development'))
+    is_development = flask_env == 'development' or is_debug_mode
+    
+    # 개발 모드이면 세션 체크 건너뛰기
+    if is_development:
+        logger.debug(f"[개발 모드] 세션 체크 건너뛰기: {request.path}")
+        return None
+    
+    # 운영 모드에서는 세션 체크 수행
+    userId = session.get('userId')
+    if not userId:
+        logger.warning(f"[인증 실패] 세션에 userId가 없습니다: {request.path}")
+        return redirect('https://mbizsquare.com/#/login')
+    
 
 # ========================================
 # 1. 메인 페이지 및 인증

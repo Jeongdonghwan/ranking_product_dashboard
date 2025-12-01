@@ -66,8 +66,6 @@ def create_app():
     # 에러 핸들러 등록
     register_error_handlers(app)
 
-    # 글로벌 인증 체크 (메인 프로젝트 세션 공유)
-    register_auth_middleware(app)
 
     # 헬스체크 엔드포인트
     if app.config.get('HEALTH_CHECK_ENABLED', True):
@@ -221,27 +219,3 @@ def register_error_handlers(app):
     app.logger.info("에러 핸들러 등록 완료")
 
 
-def register_auth_middleware(app):
-    """
-    메인 프로젝트 세션 공유 인증 미들웨어 등록
-
-    모든 요청에 대해 메인 프로젝트(mbizsquare.com)의 세션을 확인하여
-    인증되지 않은 사용자를 메인 로그인 페이지로 리다이렉트합니다.
-
-    제외 경로:
-        - /health: 헬스체크
-        - /static/*: 정적 파일
-        - /admin/*: 관리자 영역 (별도 인증)
-        - /api/banners/public/*: 공개 배너 API
-
-    Args:
-        app: Flask 앱 인스턴스
-    """
-    from app.utils.main_session_auth import check_auth_before_request
-
-    @app.before_request
-    def before_request():
-        """글로벌 인증 체크"""
-        return check_auth_before_request()
-
-    app.logger.info("메인 프로젝트 세션 인증 미들웨어 등록 완료")

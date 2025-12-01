@@ -5,49 +5,9 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, redirect, url_for
 from werkzeug.utils import secure_filename
 from app.services.banner_service import BannerService
-from app.services.admin_auth_service import AdminAuthService
 from app.utils.admin_decorators import require_admin
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
-
-
-@admin_bp.route('/login', methods=['GET'])
-def login_page():
-    """관리자 로그인 페이지"""
-    return render_template('admin/login.html')
-
-
-@admin_bp.route('/login', methods=['POST'])
-def login():
-    """관리자 로그인 처리"""
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    if not username or not password:
-        return jsonify({'success': False, 'message': '아이디와 비밀번호를 입력하세요'}), 400
-
-    result = AdminAuthService.login(username, password)
-
-    if result['success']:
-        # 쿠키에 토큰 저장
-        response = make_response(jsonify(result))
-        response.set_cookie('admin_token', result['token'], max_age=8*3600, httponly=True, samesite='Lax')
-        return response
-    else:
-        return jsonify(result), 401
-
-
-@admin_bp.route('/logout', methods=['GET', 'POST'])
-def logout():
-    """로그아웃"""
-    token = request.cookies.get('admin_token')
-    if token:
-        AdminAuthService.logout(token)
-
-    response = make_response(redirect(url_for('admin.login_page')))
-    response.delete_cookie('admin_token')
-    return response
 
 
 @admin_bp.route('/banners', methods=['GET'])

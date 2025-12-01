@@ -1439,7 +1439,7 @@
             <a href="http://pf.kakao.com/_DZwYn" target="_blank" class="header-btn"><img src="/static/img/icons/guide.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">제휴문의</span></a>
             <a href="https://mbizsquare.com" target="_blank" class="header-btn"><img src="/static/img/icons/dashboard.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> <span class="btn-text">바로가기</span></a>
             <div class="user-info">
-                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> {{ (user.get('username') or user.get('user_id', 'User')) if user else '닉네임' }}</span>
+                <span class="user-nickname"><img src="/static/img/icons/calculator.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> {{ session.get('userNicknm', '닉네임') }}</span>
             </div>
         </div>
     </header>
@@ -1471,7 +1471,7 @@
             </a>
             <a href="/ad-dashboard/profit-simulator" class="menu-item">
                 <span class="icon"><img src="/static/img/icons/calculator.svg" alt=""></span>
-                <span class="label">수익 시뮬레이터</span>
+                <span class="label">마진계산기</span>
             </a>
             <a href="/ad-dashboard/ad-efficiency" class="menu-item">
                 <span class="icon"><img src="/static/img/icons/target.svg" alt=""></span>
@@ -1526,7 +1526,7 @@
                 <div class="card" style="margin-bottom: 16px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <span style="font-weight: 600; color: var(--text-primary); margin-right: 8px;">📊 데이터 관리:</span>
+                            <span style="font-weight: 600; color: var(--text-primary); margin-right: 8px;"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 데이터 관리:</span>
 
                             <!-- 템플릿 다운로드 드롭다운 -->
                             <div style="position: relative; display: inline-block;">
@@ -1535,7 +1535,7 @@
                                 </button>
                                 <div id="templateDropdown" class="hidden" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; min-width: 180px; margin-top: 4px;">
                                     <a href="/api/ad-analysis/template/unified" style="display: block; padding: 10px 16px; color: var(--text-primary); text-decoration: none;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='white'">
-                                        📋 통합 템플릿 (권장)
+                                        <img src="/static/img/icons/clipboard.svg" alt="" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"> 통합 템플릿 (권장)
                                     </a>
                                 </div>
                             </div>
@@ -1547,12 +1547,12 @@
 
                             <!-- 수기 입력 버튼 -->
                             <button class="btn btn-success" onclick="openManualInputModal()" style="padding: 8px 16px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border: none;">
-                                ✏️ 수동 입력
+                                <img src="/static/img/icons/edit.svg" alt="" style="width:16px;height:16px;vertical-align:middle;filter:brightness(0) invert(1);"> 수동 입력
                             </button>
 
                             <!-- 대시보드 초기화 버튼 -->
                             <button class="btn btn-secondary" onclick="clearAllData()" style="padding: 8px 16px;">
-                                🗑️ 초기화
+                                <img src="/static/img/icons/trash.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 초기화
                             </button>
                         </div>
 
@@ -1565,7 +1565,7 @@
 
                             <!-- 불러오기 버튼 (계정 연동 전까지 숨김)
                             <button class="btn btn-secondary" onclick="openLoadAnalysisModal()" style="padding: 8px 16px;">
-                                📂 불러오기
+                                <img src="/static/img/icons/folder.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> 불러오기
                             </button>
                             -->
 
@@ -1579,7 +1579,7 @@
 
                 <!-- Top Summary Section - 8 Key Metrics -->
                 <div class="summary-section">
-                    <h3 style="margin-bottom: 15px; font-size: 18px; color: var(--text-primary);">📊 핵심 지표 요약</h3>
+                    <h3 style="margin-bottom: 15px; font-size: 18px; color: var(--text-primary);"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"> 핵심 지표 요약</h3>
                     <div class="summary-grid">
                         <div class="summary-card">
                             <div class="summary-label">총 비용</div>
@@ -1632,7 +1632,7 @@
 
                     <!-- 계산 공식 설명 -->
                     <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 6px; font-size: 11px; color: #5f6368; line-height: 1.6;">
-                        <strong>📐 계산 공식:</strong><br>
+                        <strong><img src="/static/img/icons/calculator.svg" alt="" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"> 계산 공식:</strong><br>
                         • ROAS = (매출 ÷ 비용) × 100<br>
                         • CTR = (클릭수 ÷ 노출수) × 100<br>
                         • CVR = (전환수 ÷ 클릭수) × 100
@@ -1709,7 +1709,7 @@
                     <!-- 리드형 캠페인 성과 (CPA 숫자 표시) -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">👥 리드형 캠페인 성과</div>
+                            <div class="card-title"><img src="/static/img/icons/users.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 리드형 캠페인 성과</div>
                         </div>
                         <div style="padding: 20px; text-align: center;">
                             <div style="font-size: 14px; color: #666; margin-bottom: 8px;">평균 리드당 비용 (CPA)</div>
@@ -1744,7 +1744,7 @@
                     <!-- Chart 3: 예산 배분 (Pie Chart) -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">💰 캠페인별 예산 배분</div>
+                            <div class="card-title"><img src="/static/img/icons/dollar-sign.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 캠페인별 예산 배분</div>
                         </div>
                         <div class="chart-container" style="height: 280px;">
                             <canvas id="budgetPieChart"></canvas>
@@ -1754,8 +1754,8 @@
                     <!-- Chart 4: 전환 퍼널 -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">🔻 전환 퍼널</div>
-                            <span id="impressionsEstimatedBadge" class="badge badge-warning" style="display: none;">⚠️ 노출수 추정됨</span>
+                            <div class="card-title"><img src="/static/img/icons/filter.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 전환 퍼널</div>
+                            <span id="impressionsEstimatedBadge" class="badge badge-warning" style="display: none;"><img src="/static/img/icons/alert-triangle.svg" alt="" style="width:12px;height:12px;vertical-align:middle;"> 노출수 추정됨</span>
                         </div>
                         <div class="chart-container" style="height: 280px;">
                             <canvas id="conversionFunnelChart"></canvas>
@@ -1807,13 +1807,13 @@
             <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
 
             <!-- Section: Creative Analysis -->
-            <h2 style="margin: 40px 0 16px; font-size: 20px; color: var(--text-primary); font-weight: 600; padding: 12px 20px; background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 4px solid #ffc107; border-radius: 8px;">⭐ 광고 핵심 분석</h2>
+            <h2 style="margin: 40px 0 16px; font-size: 20px; color: var(--text-primary); font-weight: 600; padding: 12px 20px; background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 4px solid #ffc107; border-radius: 8px;"><img src="/static/img/icons/star.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:8px;"> 광고 핵심 분석</h2>
 
             <!-- Page: Creative Analysis -->
             <div id="page-creatives" class="page-content">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">🎨 소재 성과 분석</div>
+                        <div class="card-title"><img src="/static/img/icons/layout.svg" alt="" style="width:18px;height:18px;vertical-align:middle;"> 소재 성과 분석</div>
                         <div class="card-subtitle">광고 소재별 ROAS 및 전환율 순위</div>
                     </div>
 
@@ -1823,7 +1823,7 @@
                             <!-- ROAS TOP 10 -->
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title" style="font-size: 16px;">📊 ROAS TOP 10 소재</div>
+                                    <div class="card-title" style="font-size: 16px;"><img src="/static/img/icons/bar-chart.svg" alt="" style="width:16px;height:16px;vertical-align:middle;"> ROAS TOP 10 소재</div>
                                 </div>
                                 <table class="data-table">
                                     <thead>
@@ -1908,7 +1908,7 @@
                     <!-- Empty State -->
                     <div id="creativesEmptyState" class="hidden">
                         <div style="text-align: center; padding: 60px 20px;">
-                            <div style="font-size: 48px; margin-bottom: 16px;">🎨</div>
+                            <div style="font-size: 48px; margin-bottom: 16px;"><img src="/static/img/icons/layout.svg" alt="" style="width:48px;height:48px;"></div>
                             <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
                                 소재 분석을 위한 데이터가 필요합니다
                             </div>
@@ -1922,6 +1922,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Footer -->
+            <footer style="background: #f8f9fa; border-top: 1px solid #e0e0e0; padding: 12px 20px; margin-top: 40px; font-size: 11px; color: #888; text-align: center; line-height: 1.6;">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <p style="margin: 0 0 4px 0;"><span style="font-weight: 600; color: #555;">에이치코</span> ㅣ 대표: 정동환 ㅣ 사업자등록번호: 280-26-00396 ㅣ 통신판매업: 2023-경기하남-0304</p>
+                    <p style="margin: 0 0 4px 0;">경기도 하남시 조정대로 45, F318 ㅣ 대표번호: 1566-3046 ㅣ E-mail: jdhwan227@naver.com</p>
+                    <p style="margin: 0; color: #aaa;">© 2025 에이치코. All rights reserved.</p>
+                </div>
+            </footer>
 
     </main>
 
@@ -2059,7 +2068,7 @@
                 currentDailyData = null;
                 currentCampaignData = null;
                 console.log('[STORAGE] All data cleared');
-                alert('✅ 데이터가 삭제되었습니다');
+                alert('[완료] 데이터가 삭제되었습니다');
 
                 // Reload page to reset UI
                 location.reload();
@@ -2298,10 +2307,10 @@
                 // Download
                 const fileName = `광고분석_${new Date().toISOString().slice(0, 10)}.xlsx`;
                 XLSX.writeFile(wb, fileName);
-                alert('✅ Excel 파일이 다운로드되었습니다.');
+                alert('[완료] Excel 파일이 다운로드되었습니다.');
             } catch (error) {
                 console.error('[exportToExcel] Error:', error);
-                alert('❌ Excel 생성 실패: ' + error.message);
+                alert('[오류] Excel 생성 실패: ' + error.message);
             }
         }
 
@@ -2583,7 +2592,7 @@
 
                             setTimeout(() => {
                                 LoadingState.hide();
-                                alert('✅ 업로드 및 분석 완료! 누적 데이터: ' + mergedDailyData.length + '행');
+                                alert('[완료] 업로드 및 분석 완료! 누적 데이터: ' + mergedDailyData.length + '행');
                             }, 300);
                         }, 100);
                     } else {
@@ -2604,17 +2613,17 @@
 
                         setTimeout(() => {
                             LoadingState.hide();
-                            alert('✅ 업로드 및 분석 완료! 누적 데이터: ' + mergedDailyData.length + '행');
+                            alert('[완료] 업로드 및 분석 완료! 누적 데이터: ' + mergedDailyData.length + '행');
                         }, 300);
                     }
                 } else {
                     LoadingState.hide();
-                    alert('❌ 업로드 실패: ' + (result.error || '알 수 없는 오류'));
+                    alert('[오류] 업로드 실패: ' + (result.error || '알 수 없는 오류'));
                 }
             } catch (error) {
                 LoadingState.hide();
                 console.error('[DEBUG] Upload error:', error);
-                alert('❌ 업로드 중 오류가 발생했습니다 상단의 제휴문의를 통해 문의해주세요 : ' + error.message);
+                alert('[오류] 업로드 중 오류가 발생했습니다 상단의 제휴문의를 통해 문의해주세요 : ' + error.message);
             }
         }
 
@@ -3563,7 +3572,7 @@
                         class="btn btn-secondary"
                         style="padding: 4px 10px; font-size: 12px; ${hasMemo ? 'background: var(--accent-green); color: white;' : ''}"
                         title="${hasMemo ? '메모 있음 (클릭하여 수정)' : '메모 추가'}">
-                        ${hasMemo ? '📝✓' : '📝'}
+                        ${hasMemo ? '<img src="/static/img/icons/edit.svg" alt="" style="width:12px;height:12px;vertical-align:middle;' + (hasMemo ? 'filter:brightness(0) invert(1);' : '') + '">✓' : '<img src="/static/img/icons/edit.svg" alt="" style="width:12px;height:12px;vertical-align:middle;">'}
                     </button>
                 `;
 
@@ -3898,30 +3907,30 @@
             if (adType === 'lead') {
                 // Lead campaign - judge by CPA and CVR
                 if (cpa > 0 && cpa <= 30000) {
-                    return `✅ <strong>우수한 성과!</strong> 전환당 비용 ${cpa.toLocaleString()}원으로 목표 달성 중입니다. 전환율 ${cvr.toFixed(1)}%를 유지하며 예산 확대를 고려하세요.`;
+                    return `[우수] <strong>우수한 성과!</strong> 전환당 비용 ${cpa.toLocaleString()}원으로 목표 달성 중입니다. 전환율 ${cvr.toFixed(1)}%를 유지하며 예산 확대를 고려하세요.`;
                 } else if (cpa > 30000 && cpa <= 50000) {
                     if (cvr < 2.0) {
-                        return `⚠️ 전환율 ${cvr.toFixed(1)}%로 낮습니다. 랜딩페이지 개선 또는 타겟팅 조정을 권장합니다.`;
+                        return `[주의] 전환율 ${cvr.toFixed(1)}%로 낮습니다. 랜딩페이지 개선 또는 타겟팅 조정을 권장합니다.`;
                     } else {
-                        return `✅ 양호한 성과입니다. 전환당 ${cpa.toLocaleString()}원을 유지하고 있습니다.`;
+                        return `[양호] 양호한 성과입니다. 전환당 ${cpa.toLocaleString()}원을 유지하고 있습니다.`;
                     }
                 } else if (cpa > 50000) {
-                    return `❌ 전환당 비용 ${cpa.toLocaleString()}원으로 목표 대비 높습니다. 타겟팅 재검토 또는 광고 소재 변경을 고려하세요.`;
+                    return `[개선필요] 전환당 비용 ${cpa.toLocaleString()}원으로 목표 대비 높습니다. 타겟팅 재검토 또는 광고 소재 변경을 고려하세요.`;
                 } else {
-                    return `⚠️ 데이터가 부족합니다. 충분한 전환 데이터 수집 후 재평가가 필요합니다.`;
+                    return `[주의] 데이터가 부족합니다. 충분한 전환 데이터 수집 후 재평가가 필요합니다.`;
                 }
             } else {
                 // Sales campaign - judge by ROAS
                 if (roas >= 4.0) {
-                    return `✅ <strong>우수한 성과!</strong> ROAS ${roasPercent}%로 목표 초과달성 중입니다. 예산을 늘려 더 많은 수익을 창출하세요.`;
+                    return `[우수] <strong>우수한 성과!</strong> ROAS ${roasPercent}%로 목표 초과달성 중입니다. 예산을 늘려 더 많은 수익을 창출하세요.`;
                 } else if (roas >= 3.0) {
                     if (ctr < 2.0) {
-                        return `⚠️ 클릭률 ${ctr.toFixed(1)}%로 낮습니다. 광고 소재 개선 또는 타겟팅 조정을 권장합니다.`;
+                        return `[주의] 클릭률 ${ctr.toFixed(1)}%로 낮습니다. 광고 소재 개선 또는 타겟팅 조정을 권장합니다.`;
                     } else {
-                        return `✅ 양호한 성과입니다. ROAS ${roasPercent}%를 유지하며 예산 확대를 고려하세요.`;
+                        return `[양호] 양호한 성과입니다. ROAS ${roasPercent}%를 유지하며 예산 확대를 고려하세요.`;
                     }
                 } else {
-                    return `❌ ROAS ${roasPercent}%로 목표 미달입니다. 캠페인 전면 재검토 또는 일시 중지를 고려하세요.`;
+                    return `[개선필요] ROAS ${roasPercent}%로 목표 미달입니다. 캠페인 전면 재검토 또는 일시 중지를 고려하세요.`;
                 }
             }
         }
@@ -4004,7 +4013,7 @@
                     // Update data summary badge
                     updateDataSummaryBadge();
 
-                    alert(`✅ 업로드 완료! (${manualDataBuffer.length}건) 누적 데이터: ${mergedDailyData.length}행`);
+                    alert(`[완료] 업로드 완료! (${manualDataBuffer.length}건) 누적 데이터: ${mergedDailyData.length}행`);
                     closeManualInputModal();
 
                     // Switch to overview FIRST
@@ -4327,7 +4336,7 @@
 
             localStorage.setItem(analysisKey, JSON.stringify(savedAnalysis));
 
-            alert('✅ 분석이 저장되었습니다!');
+            alert('[완료] 분석이 저장되었습니다!');
             closeSaveAnalysisModal();
             loadSavedAnalysesList();
         }
@@ -4375,10 +4384,10 @@
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-primary" onclick="loadSavedAnalysis('${analysis.key}')" style="padding: 6px 12px; font-size: 13px;">
-                            📂 불러오기
+                            <img src="/static/img/icons/folder.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 불러오기
                         </button>
                         <button class="btn btn-secondary" onclick="deleteSavedAnalysis('${analysis.key}')" style="padding: 6px 12px; font-size: 13px; background: var(--accent-red); color: white;">
-                            🗑️ 삭제
+                            <img src="/static/img/icons/trash.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 삭제
                         </button>
                     </div>
                 </div>
@@ -4404,7 +4413,7 @@
             const metrics = calculateMetrics(savedAnalysis.data);
             displayAllData(metrics, savedAnalysis.data);
 
-            alert(`✅ "${savedAnalysis.name}" 분석을 불러왔습니다.`);
+            alert(`[완료] "${savedAnalysis.name}" 분석을 불러왔습니다.`);
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4419,7 +4428,7 @@
             }
 
             localStorage.removeItem(key);
-            alert('✅ 분석이 삭제되었습니다.');
+            alert('[완료] 분석이 삭제되었습니다.');
             loadSavedAnalysesList();
         }
 
@@ -4492,22 +4501,22 @@
                 let trendColor = '';
 
                 if (Math.abs(change) < 0.1) {
-                    trendIcon = '➡️';
+                    trendIcon = '→';
                     trendColor = 'var(--text-secondary)';
                 } else if (change > 0) {
                     if (metric.better === 'higher') {
-                        trendIcon = '📈';
+                        trendIcon = '▲';
                         trendColor = 'var(--accent-green)';
                     } else {
-                        trendIcon = '📉';
+                        trendIcon = '▼';
                         trendColor = 'var(--accent-red)';
                     }
                 } else {
                     if (metric.better === 'higher') {
-                        trendIcon = '📉';
+                        trendIcon = '▼';
                         trendColor = 'var(--accent-red)';
                     } else {
-                        trendIcon = '📈';
+                        trendIcon = '▲';
                         trendColor = 'var(--accent-green)';
                     }
                 }
@@ -4552,7 +4561,7 @@
             };
 
             localStorage.setItem(goalKey, JSON.stringify(goalData));
-            alert('✅ 목표가 저장되었습니다!');
+            alert('[완료] 목표가 저장되었습니다!');
 
             // Display budget pacing
             displayBudgetPacing(month);
@@ -4740,7 +4749,7 @@
         // Open Campaign Memo Modal
         function openCampaignMemoModal(campaignName) {
             currentCampaignName = campaignName;
-            document.getElementById('memoModalTitle').textContent = `📝 ${campaignName} 메모`;
+            document.getElementById('memoModalTitle').innerHTML = `<img src="/static/img/icons/edit.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"> ${campaignName} 메모`;
 
             // Load existing memo
             const memoKey = `campaign_memo_${campaignName}`;
@@ -4765,10 +4774,10 @@
 
             if (memoText) {
                 localStorage.setItem(memoKey, memoText);
-                alert('✅ 메모가 저장되었습니다!');
+                alert('[완료] 메모가 저장되었습니다!');
             } else {
                 localStorage.removeItem(memoKey);
-                alert('✅ 메모가 삭제되었습니다.');
+                alert('[완료] 메모가 삭제되었습니다.');
             }
 
             closeCampaignMemoModal();
@@ -4830,8 +4839,8 @@
             </div>
 
             <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button class="btn btn-primary" onclick="addManualData()">➕ 추가</button>
-                <button class="btn btn-success" onclick="submitManualData()">✅ 완료 (<span id="manualDataCount">0</span>건)</button>
+                <button class="btn btn-primary" onclick="addManualData()"><img src="/static/img/icons/plus.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 추가</button>
+                <button class="btn btn-success" onclick="submitManualData()"><img src="/static/img/icons/check.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 완료 (<span id="manualDataCount">0</span>건)</button>
                 <button class="btn btn-secondary" onclick="closeManualInputModal()">취소</button>
             </div>
 
@@ -4845,7 +4854,7 @@
     <!-- Save Analysis Modal (계정 연동 전까지 숨김)
     <div id="saveAnalysisModal" class="modal hidden">
         <div class="modal-content" style="max-width: 500px;">
-            <h3 style="margin-bottom: 20px;">💾 분석 저장하기</h3>
+            <h3 style="margin-bottom: 20px;"><img src="/static/img/icons/save.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"> 분석 저장하기</h3>
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">분석 이름 *</label>
@@ -4858,7 +4867,7 @@
             </div>
 
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-primary" onclick="confirmSaveAnalysis()">💾 저장</button>
+                <button class="btn btn-primary" onclick="confirmSaveAnalysis()"><img src="/static/img/icons/save.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 저장</button>
                 <button class="btn btn-secondary" onclick="closeSaveAnalysisModal()">취소</button>
             </div>
         </div>
@@ -4868,7 +4877,7 @@
     <!-- Load Analysis Modal (계정 연동 전까지 숨김)
     <div id="loadAnalysisModal" class="modal hidden">
         <div class="modal-content" style="max-width: 600px;">
-            <h3 style="margin-bottom: 20px;">📂 저장된 분석 불러오기</h3>
+            <h3 style="margin-bottom: 20px;"><img src="/static/img/icons/folder.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"> 저장된 분석 불러오기</h3>
 
             <div id="savedAnalysesList" style="max-height: 400px; overflow-y: auto;">
             </div>
@@ -4883,7 +4892,7 @@
     <!-- Campaign Memo Modal -->
     <div id="campaignMemoModal" class="modal hidden">
         <div class="modal-content" style="max-width: 500px;">
-            <h3 style="margin-bottom: 20px;" id="memoModalTitle">📝 캠페인 메모</h3>
+            <h3 style="margin-bottom: 20px;" id="memoModalTitle"><img src="/static/img/icons/edit.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"> 캠페인 메모</h3>
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">메모</label>
@@ -4891,7 +4900,7 @@
             </div>
 
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-primary" onclick="saveCampaignMemo()">💾 저장</button>
+                <button class="btn btn-primary" onclick="saveCampaignMemo()"><img src="/static/img/icons/save.svg" alt="" style="width:14px;height:14px;vertical-align:middle;filter:brightness(0) invert(1);"> 저장</button>
                 <button class="btn btn-secondary" onclick="closeCampaignMemoModal()">취소</button>
             </div>
         </div>

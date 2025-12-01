@@ -14,7 +14,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @require_admin
 def banners_page():
     """배너 관리 페이지"""
-    return render_template('admin/banners.html', admin=request.admin_info)
+    return render_template('admin/banners.html')
 
 
 @admin_bp.route('/api/banners/<banner_type>', methods=['GET'])

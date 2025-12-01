@@ -11,6 +11,8 @@ from flask_cors import CORS
 from flask_session import Session
 from dotenv import load_dotenv
 import hashlib
+from flask.sessions import SecureCookieSessionInterface
+from itsdangerous import URLSafeTimedSerializer
 
 # 환경변수 로드 (override=True로 .env 파일 값 우선)
 load_dotenv(override=True)
@@ -18,6 +20,23 @@ load_dotenv(override=True)
 # Config 임포트
 from config import get_config
 
+class SHA1SessionInterface(SecureCookieSessionInterface):
+    def get_signing_serializer(self, app):
+        if not app.secret_key:
+            return None
+        
+        # 여기서 SHA1을 강제 적용합니다 (아까 진단 스크립트와 동일한 원리)
+        signer_kwargs = dict(
+            key_derivation='hmac',
+            digest_method=hashlib.sha1
+        )
+        
+        return URLSafeTimedSerializer(
+            app.secret_key,
+            salt=app.config.get('SESSION_COOKIE_SALT', 'cookie-session'),
+            serializer=self.serializer,
+            signer_kwargs=signer_kwargs
+        )
 
 def create_app():
     """
@@ -35,9 +54,7 @@ def create_app():
     config_class = get_config()
     app.config.from_object(config_class)
     app.config['SECRET_KEY'] = "WJDEHDGHKS"
-    app.config['SESSION_COOKIE_NAME'] = 'session'
-    app.config['SESSION_DIGEST_METHOD'] = hashlib.sha1
-    app.config['SESSION_KEY_DERIVATION'] = 'hmac'
+    app.session_interface = SHA1SessionInterface()
 
     # 추가 초기화 (폴더 생성 등)
     config_class.init_app(app)

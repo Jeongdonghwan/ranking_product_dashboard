@@ -10,7 +10,7 @@ import numpy as np
 import logging
 from flask import (
     Blueprint, render_template, request, jsonify,
-    session, redirect, url_for, send_file, current_app
+    session, redirect, url_for, send_file, current_app, g
 )
 from werkzeug.utils import secure_filename
 import flask
@@ -124,35 +124,27 @@ def before_request():
     # 운영 모드에서는 세션 체크 수행
     print('cookie session: ', request.cookies)
     print('secret_key: ', current_app.config.get('SECRET_KEY'))
-    userId = session.get('userId')
-    if not userId:
-        logger.warning(f"[인증 실패] 세션에 userId가 없습니다: {request.path}")
-        COOKIE_VALUE = request.cookies.get('session')
-        SECRET_KEY = 'WJDEHDGHKS'
-        SALT = 'cookie-session' # Flask 기본값
 
-        # 2. 해독 시도
-        print(f"Flask 버전: {flask.__version__}")
-        serializer = URLSafeTimedSerializer(
-            secret_key=SECRET_KEY,
-            salt=SALT,
-            serializer=flask.json.tag.TaggedJSONSerializer(),
-            signer_kwargs={'key_derivation': 'hmac', 'digest_method': 'sha1'} 
-            # 주의: Flask 2.0 이상은 기본이 sha1입니다. 혹시 메인이 sha256 등을 쓰는지 확인 필요.
-        )
+    COOKIE_VALUE = request.cookies.get('session')
+    SECRET_KEY = current_app.config.get('SECRET_KEY')
+    SALT = 'cookie-session' # Flask 기본값
 
-        try:
-            data = serializer.loads(COOKIE_VALUE)
-            print("✅ 성공! 세션 데이터:", data)
-        except Exception as e:
-            print("❌ 실패! 정확한 에러 원인:", e)
-            # 여기서 BadSignature가 뜨면 키/Salt 불일치
-            # BadTimeSignature가 뜨면 시간 문제 등 구체적으로 나옵니다.
+    serializer = URLSafeTimedSerializer(
+        secret_key=SECRET_KEY,
+        salt=SALT,
+        serializer=flask.json.tag.TaggedJSONSerializer(),
+        signer_kwargs={'key_derivation': 'hmac', 'digest_method': 'sha1'} 
+    )
 
-
-        # return redirect('https://mbizsquare.com/#/login')
-    
-    
+    try:
+        data = serializer.loads(COOKIE_VALUE)
+        if data.userId :
+            g.user = data
+        else:
+            return redirect('https://mbizsquare.com/#/login')
+    except Exception as e:
+        print("❌ 실패! 정확한 에러 원인:", e)
+        return redirect('https://mbizsquare.com/#/login')
 
 # ========================================
 # 1. 메인 페이지 및 인증

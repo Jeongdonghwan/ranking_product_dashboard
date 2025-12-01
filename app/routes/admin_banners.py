@@ -14,6 +14,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @require_admin
 def banners_page():
     """배너 관리 페이지"""
+    # g.user.get('userId') .. 관리자는 관리자 아이디가 필요할경우에 그냥 하드코딩해도 된다.. admin 으로 박아버려도 됨
     return render_template('admin/banners.html')
 
 

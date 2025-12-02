@@ -674,6 +674,11 @@
             color: #636e72;
         }
 
+        .priority-none {
+            background: #f5f5f5;
+            color: #999;
+        }
+
         .text-danger {
             color: #ea4335;
             font-weight: 600;
@@ -2247,8 +2252,9 @@
                     'critical': '<span class="priority-badge priority-critical">🔴 즉시제외</span>',
                     'high': '<span class="priority-badge priority-high">🟠 조속히제외</span>',
                     'medium': '<span class="priority-badge priority-medium">🟡 검토필요</span>',
-                    'low': '<span class="priority-badge priority-low">🟢 모니터링</span>'
-                }[rec.priority];
+                    'low': '<span class="priority-badge priority-low">🟢 모니터링</span>',
+                    'null': '<span class="priority-badge priority-none">⚪ 데이터부족</span>'
+                }[rec.priority] || '<span class="priority-badge priority-none">⚪ 데이터부족</span>';
 
                 return `
                     <tr>

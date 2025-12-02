@@ -40,5 +40,18 @@ CREATE TABLE IF NOT EXISTS banner_analytics (
     INDEX idx_event_type (event_type, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='배너 분석 로그';
 
+-- 3. 기존 테이블에 mobile_image_url 컬럼 추가 (이미 있으면 무시)
+-- ALTER TABLE banners ADD COLUMN IF NOT EXISTS mobile_image_url VARCHAR(500) DEFAULT NULL COMMENT '모바일용 이미지 (선택, 없으면 모바일에서 숨김)' AFTER image_url;
+-- MariaDB에서는 IF NOT EXISTS가 안될 수 있으므로 아래 방식 사용:
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'banners' AND COLUMN_NAME = 'mobile_image_url') = 0,
+    'ALTER TABLE banners ADD COLUMN mobile_image_url VARCHAR(500) DEFAULT NULL COMMENT "모바일용 이미지" AFTER image_url',
+    'SELECT 1'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 -- 완료 메시지
 SELECT '✅ 배너 관리 시스템 데이터베이스 스키마 생성 완료' AS status;

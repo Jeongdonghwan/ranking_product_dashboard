@@ -277,20 +277,24 @@ class BannerService:
         """
         try:
             with get_db_cursor(commit=True) as cursor:
-                # 이미지 URL 가져오기
-                cursor.execute("SELECT image_url FROM banners WHERE id = %s", (banner_id,))
+                # 이미지 URL 가져오기 (데스크톱 + 모바일)
+                cursor.execute("SELECT image_url, mobile_image_url FROM banners WHERE id = %s", (banner_id,))
                 result = cursor.fetchone()
 
                 if result:
-                    # 파일 삭제
-                    BannerService._delete_banner_image(result['image_url'])
+                    # 데스크톱 이미지 파일 삭제
+                    if result.get('image_url'):
+                        BannerService._delete_banner_image(result['image_url'])
+                    # 모바일 이미지 파일 삭제
+                    if result.get('mobile_image_url'):
+                        BannerService._delete_banner_image(result['mobile_image_url'])
 
                 # DB 삭제
                 cursor.execute("DELETE FROM banners WHERE id = %s", (banner_id,))
                 return cursor.rowcount > 0
         except Exception as e:
             current_app.logger.error(f"delete_banner error: {e}")
-            raise DatabaseError(f"배너 삭제 실패: {str(e)}")
+            return False
 
     @staticmethod
     def reorder_banners(banner_type, order_list):

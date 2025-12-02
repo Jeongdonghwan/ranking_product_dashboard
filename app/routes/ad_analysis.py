@@ -30,6 +30,16 @@ from itsdangerous import URLSafeTimedSerializer
 logger = logging.getLogger(__name__)
 
 # ========================================
+# 제외 키워드 판정 상수
+# ========================================
+EXCLUDE_MIN_SPEND = 5000      # 최소 광고비 (원)
+EXCLUDE_MIN_CLICKS = 10       # 최소 클릭수
+EXCLUDE_CPC_CRITICAL = 500    # CPC 심각 기준 (원)
+EXCLUDE_CPC_VERY_HIGH = 800   # CPC 매우 높음 기준 (원)
+EXCLUDE_CLICKS_CRITICAL = 30  # 전환없음 즉시제외 클릭수
+EXCLUDE_CLICKS_HIGH = 15      # 전환없음 조속히제외 클릭수
+
+# ========================================
 # 임시 인증 함수 (TODO: 추후 재설계)
 # ========================================
 def get_current_user():
@@ -953,25 +963,64 @@ def coupang_recommendations():
             # 총점 계산
             score = profitability_score + efficiency_score + scale_risk_score
 
-            # === Phase 2: 새로운 우선순위 결정 (4단계) ===
-            # 특별 케이스: ROAS 0% + 지출 중간 이상 + CPC 150원 초과 = 즉시 제외
-            if revenue == 0 and spend > spend_percentiles['p50'] and cpc > 150:
+            # === Phase 3: 개선된 우선순위 결정 (조건 기반) ===
+            # 0단계: 데이터 부족 판정
+            if spend < EXCLUDE_MIN_SPEND and clicks < EXCLUDE_MIN_CLICKS:
+                priority = None
+                priority_label = '데이터 부족'
+                reasons.append('데이터 부족')
+            # 1단계: 고CPC + 저ROAS → 즉시제외 (광고비 무관)
+            elif cpc >= EXCLUDE_CPC_CRITICAL and roas < 100:
                 priority = 'critical'
                 priority_label = '즉시 제외'
-            # ROAS 0% + 지출 중간 이상 + CPC 150원 이하 = 조속히 제외
-            elif revenue == 0 and spend > spend_percentiles['p50'] and cpc <= 150:
-                priority = 'high'
-                priority_label = '조속히 제외'
-            elif score >= 70:
-                # 심각한 비효율 (손실 + 고지출)
-                priority = 'high'
-                priority_label = '조속히 제외'
-            elif score >= 40:
-                # 목표 미달 (개선 필요)
+                reasons.append(f'고CPC({cpc:.0f}원) + 저ROAS')
+            elif cpc >= EXCLUDE_CPC_VERY_HIGH and roas < 200:
+                priority = 'critical'
+                priority_label = '즉시 제외'
+                reasons.append(f'초고CPC({cpc:.0f}원) + 저ROAS')
+            # 2단계: 전환없음 (ROAS 0%)
+            elif revenue == 0:
+                if clicks >= EXCLUDE_CLICKS_CRITICAL:
+                    priority = 'critical'
+                    priority_label = '즉시 제외'
+                    reasons.append(f'{clicks}클릭 전환없음')
+                elif clicks >= EXCLUDE_CLICKS_HIGH:
+                    priority = 'high'
+                    priority_label = '조속히 제외'
+                    reasons.append(f'{clicks}클릭 전환없음')
+                else:
+                    priority = 'medium'
+                    priority_label = '검토 필요'
+                    reasons.append('전환없음 검토')
+            # 3단계: ROAS 1~100% (손실)
+            elif roas < 100:
+                if spend >= spend_percentiles['p75']:
+                    priority = 'critical'
+                    priority_label = '즉시 제외'
+                    reasons.append('저ROAS + 고지출')
+                elif spend >= spend_percentiles['p50']:
+                    priority = 'high'
+                    priority_label = '조속히 제외'
+                    reasons.append('저ROAS + 중지출')
+                else:
+                    priority = 'medium'
+                    priority_label = '검토 필요'
+            # 4단계: ROAS 100~200% (저조)
+            elif roas < 200:
+                if spend >= spend_percentiles['p75']:
+                    priority = 'high'
+                    priority_label = '조속히 제외'
+                    reasons.append('저조ROAS + 고지출')
+                else:
+                    priority = 'medium'
+                    priority_label = '검토 필요'
+            # 5단계: ROAS 200~300% (목표 근접)
+            elif roas < 300:
                 priority = 'medium'
                 priority_label = '검토 필요'
+                reasons.append('ROAS 개선필요')
+            # 6단계: ROAS 300%+ (양호)
             else:
-                # ROAS >= 300% 대부분 여기 포함
                 priority = 'low'
                 priority_label = '모니터링'
 
@@ -1023,16 +1072,21 @@ def coupang_recommendations():
         total_waste = sum(r['waste'] for r in recommendations)
         total_opportunity_loss = sum(r['opportunity_loss'] for r in recommendations)
 
+        # 데이터 부족 키워드 분리
+        insufficient_data = [r for r in recommendations if r['priority'] is None]
+        valid_recommendations = [r for r in recommendations if r['priority'] is not None]
+
         summary = {
             'total_waste': int(total_waste),
             'total_opportunity_loss': int(total_opportunity_loss),
-            'keywords_to_exclude': len(recommendations),
+            'keywords_to_exclude': len(valid_recommendations),
             'potential_savings': f"{(total_waste / total_spend * 100):.1f}%" if total_spend > 0 else "0%",
-            'critical_priority': len([r for r in recommendations if r['priority'] == 'critical']),
-            'high_priority': len([r for r in recommendations if r['priority'] == 'high']),
-            'medium_priority': len([r for r in recommendations if r['priority'] == 'medium']),
-            'low_priority': len([r for r in recommendations if r['priority'] == 'low']),
-            'avg_score': int(sum(r['score'] for r in recommendations) / len(recommendations)) if recommendations else 0
+            'critical_priority': len([r for r in valid_recommendations if r['priority'] == 'critical']),
+            'high_priority': len([r for r in valid_recommendations if r['priority'] == 'high']),
+            'medium_priority': len([r for r in valid_recommendations if r['priority'] == 'medium']),
+            'low_priority': len([r for r in valid_recommendations if r['priority'] == 'low']),
+            'insufficient_data': len(insufficient_data),
+            'avg_score': int(sum(r['score'] for r in valid_recommendations) / len(valid_recommendations)) if valid_recommendations else 0
         }
 
         logger.info(f'Generated {len(recommendations)} recommendations (avg score: {summary["avg_score"]}, total waste: {total_waste:.0f}원)')

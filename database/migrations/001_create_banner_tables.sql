@@ -3,6 +3,9 @@
 -- ========================================
 -- 배너 관리 시스템 데이터베이스 스키마
 -- 생성일: 2024-11-20
+-- 수정일: 2024-12-02 (불필요한 admin 테이블 제거)
+--
+-- 참고: 관리자 인증은 기존 세션의 g.user.get('userId') == 'admin' 사용
 
 -- 1. 배너 테이블
 CREATE TABLE IF NOT EXISTS banners (
@@ -23,27 +26,7 @@ CREATE TABLE IF NOT EXISTS banners (
     INDEX idx_dates (start_date, end_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='배너 정보';
 
--- 2. 관리자 계정 테이블
-CREATE TABLE IF NOT EXISTS admin_users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL COMMENT '관리자 아이디',
-    password_hash VARCHAR(255) NOT NULL COMMENT 'bcrypt 해시 비밀번호',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='관리자 계정';
-
--- 3. 관리자 세션 테이블
-CREATE TABLE IF NOT EXISTS admin_sessions (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    admin_id INT NOT NULL COMMENT '관리자 ID',
-    session_token VARCHAR(64) UNIQUE NOT NULL COMMENT '세션 토큰 (UUID)',
-    expires_at TIMESTAMP NOT NULL COMMENT '만료 시간 (8시간)',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-    FOREIGN KEY (admin_id) REFERENCES admin_users(id) ON DELETE CASCADE,
-    INDEX idx_token (session_token),
-    INDEX idx_expires (expires_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='관리자 세션';
-
--- 4. 배너 클릭/노출 로그 테이블
+-- 2. 배너 클릭/노출 로그 테이블
 CREATE TABLE IF NOT EXISTS banner_analytics (
     id INT PRIMARY KEY AUTO_INCREMENT,
     banner_id INT NOT NULL COMMENT '배너 ID',

@@ -234,9 +234,12 @@
 .banner-image {
     width: 100%;
     height: auto;
+    aspect-ratio: 8 / 1;  /* 대형 배너 비율 */
+    min-height: 100px;  /* 최소 높이 보장 */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    object-fit: cover;
 }
 
 .banner-image:hover {
@@ -275,13 +278,14 @@
 
 .grid-banner-item img {
     width: 100%;
-    height: 100px;
+    height: auto;
+    aspect-ratio: 4 / 1;  /* 더 넓은 배너 비율 (가로형) */
+    min-height: 80px;  /* 최소 높이 보장 */
     display: block;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    object-fit: contain;
-    background: #f5f7fa;
+    object-fit: cover;
 }
 
 /* Responsive grid banners */
@@ -292,15 +296,27 @@
 }
 
 @media (max-width: 768px) {
+    #homeTopBanner,
+    #homeBottomBanner {
+        padding: 0 16px;
+        margin: 12px auto;
+    }
+
+    .banner-image {
+        aspect-ratio: 5 / 1;  /* 모바일: 더 넓게 */
+        min-height: 60px;
+    }
+
     #homeGridBanners:not(:empty) {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        grid-template-columns: 1fr;  /* 모바일: 1열로 변경 (더 크게 보임) */
+        gap: 12px;
         padding: 0 16px;
         margin: 8px auto 12px;
     }
 
     .grid-banner-item img {
-        height: 60px;
+        aspect-ratio: 5 / 1;  /* 모바일: 더 넓은 배너 */
+        min-height: 60px;
     }
 }
 

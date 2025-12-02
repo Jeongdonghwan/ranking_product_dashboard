@@ -52,9 +52,14 @@
             </div>
             <form id="uploadForm" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label>이미지 파일</label>
+                    <label>데스크톱 이미지 (필수)</label>
                     <input type="file" id="imageFile" name="image" accept="image/*" required>
                     <small id="sizeGuide">권장 크기: 970x90px</small>
+                </div>
+                <div class="form-group">
+                    <label>모바일 이미지 (선택)</label>
+                    <input type="file" id="mobileImageFile" name="mobile_image" accept="image/*">
+                    <small>없으면 모바일에서 배너가 숨겨집니다</small>
                 </div>
                 <div class="form-group">
                     <label>배너 제목</label>
@@ -105,8 +110,13 @@
             <form id="editForm">
                 <input type="hidden" id="editBannerId">
                 <div class="form-group">
-                    <label>이미지 변경 (선택)</label>
+                    <label>데스크톱 이미지 변경 (선택)</label>
                     <input type="file" id="editImageFile" name="image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>모바일 이미지 변경 (선택)</label>
+                    <input type="file" id="editMobileImageFile" name="mobile_image" accept="image/*">
+                    <small>없으면 모바일에서 배너가 숨겨집니다</small>
                 </div>
                 <div class="form-group">
                     <label>배너 제목</label>

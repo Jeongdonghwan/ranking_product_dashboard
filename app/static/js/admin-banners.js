@@ -107,7 +107,13 @@ function displayBanners(banners) {
 
     listEl.innerHTML = banners.map(banner => `
         <div class="banner-item" data-id="${banner.id}">
-            <img src="${banner.image_url}" alt="${banner.title}" class="banner-preview">
+            <div class="banner-previews">
+                <img src="${banner.image_url}" alt="${banner.title}" class="banner-preview" title="데스크톱">
+                ${banner.mobile_image_url
+                    ? `<img src="${banner.mobile_image_url}" alt="${banner.title} (모바일)" class="banner-preview banner-preview-mobile" title="모바일">`
+                    : '<span class="no-mobile">모바일 이미지 없음</span>'
+                }
+            </div>
             <div class="banner-info">
                 <h4>
                     ${banner.title}
@@ -242,6 +248,12 @@ function initForms() {
         const imageFile = document.getElementById('editImageFile').files[0];
         if (imageFile) {
             formData.append('image', imageFile);
+        }
+
+        // 모바일 이미지 추가
+        const mobileImageFile = document.getElementById('editMobileImageFile').files[0];
+        if (mobileImageFile) {
+            formData.append('mobile_image', mobileImageFile);
         }
 
         formData.append('title', document.getElementById('editTitle').value);

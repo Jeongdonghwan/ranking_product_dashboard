@@ -39,6 +39,13 @@ def create_banner():
         if file.filename == '':
             return jsonify({'success': False, 'message': '파일이 선택되지 않았습니다'}), 400
 
+        # 모바일 이미지 체크 (선택)
+        mobile_file = None
+        if 'mobile_image' in request.files:
+            mobile_file = request.files['mobile_image']
+            if mobile_file.filename == '':
+                mobile_file = None
+
         # 데이터 파싱
         data = {
             'banner_type': request.form.get('banner_type'),
@@ -50,8 +57,8 @@ def create_banner():
             'end_date': request.form.get('end_date') or None
         }
 
-        # 배너 생성
-        banner_id = BannerService.create_banner(data, file)
+        # 배너 생성 (모바일 이미지 포함)
+        banner_id = BannerService.create_banner(data, file, mobile_file)
 
         return jsonify({'success': True, 'banner_id': banner_id, 'message': '배너가 생성되었습니다'})
 
@@ -68,6 +75,7 @@ def update_banner(banner_id):
     try:
         data = {}
         file = None
+        mobile_file = None
 
         # JSON 또는 form-data 처리
         if request.is_json:
@@ -84,13 +92,19 @@ def update_banner(banner_id):
                     else:
                         data[key] = value or None
 
-            # 파일이 있으면 가져오기
+            # 데스크톱 이미지 파일이 있으면 가져오기
             if 'image' in request.files:
                 file = request.files['image']
                 if file.filename == '':
                     file = None
 
-        success = BannerService.update_banner(banner_id, data, file)
+            # 모바일 이미지 파일이 있으면 가져오기
+            if 'mobile_image' in request.files:
+                mobile_file = request.files['mobile_image']
+                if mobile_file.filename == '':
+                    mobile_file = None
+
+        success = BannerService.update_banner(banner_id, data, file, mobile_file)
 
         if success:
             return jsonify({'success': True, 'message': '배너가 수정되었습니다'})

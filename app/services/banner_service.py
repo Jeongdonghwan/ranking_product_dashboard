@@ -26,6 +26,7 @@ class BannerService:
                     'banner_type': 'home_top',
                     'title': '홈 상단 배너 샘플',
                     'image_url': '/static/images/mock/banner_970x90.png',
+                    'mobile_image_url': None,  # 모바일 이미지 없음 = 모바일에서 숨김
                     'link_url': 'https://example.com',
                     'position_order': 1,
                     'click_count': 120,
@@ -38,6 +39,7 @@ class BannerService:
                     'banner_type': 'home_grid',
                     'title': f'홈 그리드 배너 {i}',
                     'image_url': '/static/images/mock/banner_200x60.png',
+                    'mobile_image_url': None,
                     'link_url': f'https://example.com/grid{i}',
                     'position_order': i,
                     'click_count': 10 + i,
@@ -50,6 +52,7 @@ class BannerService:
                     'banner_type': 'home_bottom',
                     'title': '홈 하단 배너 샘플',
                     'image_url': '/static/images/mock/banner_728x90.png',
+                    'mobile_image_url': None,
                     'link_url': 'https://example.com',
                     'position_order': 1,
                     'click_count': 85,
@@ -62,6 +65,7 @@ class BannerService:
                     'banner_type': 'grid_general',
                     'title': f'일반+메타 배너 {i}',
                     'image_url': '/static/images/mock/banner_200x60.png',
+                    'mobile_image_url': None,
                     'link_url': f'https://example.com/general{i}',
                     'position_order': i,
                     'click_count': 5 + i,
@@ -74,6 +78,7 @@ class BannerService:
                     'banner_type': 'grid_coupang',
                     'title': f'쿠팡 배너 {i}',
                     'image_url': '/static/images/mock/banner_200x60.png',
+                    'mobile_image_url': None,
                     'link_url': f'https://example.com/coupang{i}',
                     'position_order': i,
                     'click_count': 15 + i,
@@ -97,7 +102,7 @@ class BannerService:
         try:
             with get_db_cursor() as cursor:
                 query = """
-                    SELECT id, banner_type, title, image_url, link_url, position_order,
+                    SELECT id, banner_type, title, image_url, mobile_image_url, link_url, position_order,
                            click_count, impression_count
                     FROM banners
                     WHERE banner_type = %s
@@ -128,7 +133,7 @@ class BannerService:
             with get_db_cursor() as cursor:
                 if banner_type:
                     query = """
-                        SELECT id, banner_type, title, image_url, link_url, position_order,
+                        SELECT id, banner_type, title, image_url, mobile_image_url, link_url, position_order,
                                is_active, start_date, end_date, click_count, impression_count,
                                created_at, updated_at
                         FROM banners
@@ -138,7 +143,7 @@ class BannerService:
                     cursor.execute(query, (banner_type,))
                 else:
                     query = """
-                        SELECT id, banner_type, title, image_url, link_url, position_order,
+                        SELECT id, banner_type, title, image_url, mobile_image_url, link_url, position_order,
                                is_active, start_date, end_date, click_count, impression_count,
                                created_at, updated_at
                         FROM banners
@@ -164,18 +169,20 @@ class BannerService:
                 'start_date': None,
                 'end_date': None,
                 'created_at': '2025-11-20 12:00:00',
-                'updated_at': '2025-11-20 12:00:00'
+                'updated_at': '2025-11-20 12:00:00',
+                'mobile_image_url': banner.get('mobile_image_url')
             })
         return base_data
 
     @staticmethod
-    def create_banner(data, file):
+    def create_banner(data, file, mobile_file=None):
         """
         배너 생성
 
         Args:
             data: 배너 정보 딕셔너리
-            file: 업로드 파일 객체
+            file: 업로드 파일 객체 (데스크톱용)
+            mobile_file: 모바일용 이미지 파일 (선택)
 
         Returns:
             int: 생성된 배너 ID
@@ -183,17 +190,21 @@ class BannerService:
         try:
             # 파일 저장
             image_url = BannerService._save_banner_image(file)
+            mobile_image_url = None
+            if mobile_file:
+                mobile_image_url = BannerService._save_banner_image(mobile_file)
 
             with get_db_cursor(commit=True) as cursor:
                 query = """
-                    INSERT INTO banners (banner_type, title, image_url, link_url,
+                    INSERT INTO banners (banner_type, title, image_url, mobile_image_url, link_url,
                                        position_order, is_active, start_date, end_date)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
                 cursor.execute(query, (
                     data['banner_type'],
                     data['title'],
                     image_url,
+                    mobile_image_url,
                     data.get('link_url'),
                     data.get('position_order', 0),
                     data.get('is_active', True),
@@ -206,14 +217,15 @@ class BannerService:
             raise DatabaseError(f"배너 생성 실패: {str(e)}")
 
     @staticmethod
-    def update_banner(banner_id, data, file=None):
+    def update_banner(banner_id, data, file=None, mobile_file=None):
         """
         배너 수정
 
         Args:
             banner_id: 배너 ID
             data: 수정할 정보 딕셔너리
-            file: 새 이미지 파일 (선택)
+            file: 새 이미지 파일 (선택, 데스크톱용)
+            mobile_file: 새 모바일 이미지 파일 (선택)
 
         Returns:
             bool: 성공 여부
@@ -224,11 +236,16 @@ class BannerService:
                 image_url = BannerService._save_banner_image(file)
                 data['image_url'] = image_url
 
+            # 모바일 이미지 파일이 있으면 새로 저장
+            if mobile_file:
+                mobile_image_url = BannerService._save_banner_image(mobile_file)
+                data['mobile_image_url'] = mobile_image_url
+
             # 업데이트할 필드 동적 생성
             update_fields = []
             values = []
 
-            for key in ['banner_type', 'title', 'image_url', 'link_url',
+            for key in ['banner_type', 'title', 'image_url', 'mobile_image_url', 'link_url',
                        'position_order', 'is_active', 'start_date', 'end_date']:
                 if key in data:
                     update_fields.append(f"{key} = %s")

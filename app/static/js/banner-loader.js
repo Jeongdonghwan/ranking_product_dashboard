@@ -12,6 +12,11 @@ const ROLLING_CONFIG = {
 // 롤링 배너 상태 관리
 const rollingBannerStates = {};
 
+// 모바일 체크 (768px 이하)
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
 async function loadBanners(bannerType, containerId) {
     try {
         const response = await fetch(`/api/banners/${bannerType}`, {
@@ -53,9 +58,20 @@ function displayBanners(banners, containerId, bannerType) {
 
 /**
  * 그리드 배너 표시 (홈페이지 2x2)
+ * 모바일에서 mobile_image_url이 없는 배너는 숨김
  */
 function displayGridBanners(banners, container) {
-    container.innerHTML = banners
+    // 모바일에서는 mobile_image_url이 있는 배너만 표시
+    const filteredBanners = isMobile()
+        ? banners.filter(banner => banner.mobile_image_url)
+        : banners;
+
+    if (filteredBanners.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+
+    container.innerHTML = filteredBanners
         .map(banner => createGridBanner(banner))
         .join('');
     container.style.removeProperty('display');
@@ -63,9 +79,21 @@ function displayGridBanners(banners, container) {
 
 /**
  * 대형 배너 표시 (홈페이지 상단/하단)
+ * 모바일에서 mobile_image_url이 없으면 숨김
  */
 function displayLargeBanner(banner, container) {
     if (!banner) return;
+
+    // 모바일인데 모바일 이미지가 없으면 배너 숨김
+    if (isMobile() && !banner.mobile_image_url) {
+        container.style.display = 'none';
+        return;
+    }
+
+    // 모바일이면 모바일 이미지, 아니면 데스크톱 이미지 사용
+    const imageUrl = isMobile() && banner.mobile_image_url
+        ? banner.mobile_image_url
+        : banner.image_url;
 
     container.innerHTML = `
         <a href="${banner.link_url || '#'}"
@@ -73,7 +101,7 @@ function displayLargeBanner(banner, container) {
            rel="noopener noreferrer"
            onclick="trackClick(${banner.id})"
            class="banner-link">
-            <img src="${banner.image_url}"
+            <img src="${imageUrl}"
                  alt="${banner.title}"
                  class="banner-image"
                  loading="lazy">
@@ -84,15 +112,21 @@ function displayLargeBanner(banner, container) {
 
 /**
  * 그리드 배너 HTML 생성
+ * 모바일이면 mobile_image_url 사용 (이미 필터링됨)
  */
 function createGridBanner(banner) {
+    // 모바일이면 모바일 이미지 사용
+    const imageUrl = isMobile() && banner.mobile_image_url
+        ? banner.mobile_image_url
+        : banner.image_url;
+
     return `
         <a href="${banner.link_url || '#'}"
            target="_blank"
            rel="noopener noreferrer"
            onclick="trackClick(${banner.id})"
            class="grid-banner-item">
-            <img src="${banner.image_url}"
+            <img src="${imageUrl}"
                  alt="${banner.title}"
                  loading="lazy">
         </a>
@@ -334,6 +368,24 @@ if (document.getElementById('generalGridBanners')) {
 if (document.getElementById('coupangGridBanners')) {
     loadBanners('grid_coupang', 'coupangGridBanners');
 }
+
+// 화면 리사이즈 시 배너 다시 로드 (debounce 적용)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        // 홈 대시보드 배너 다시 로드
+        if (document.getElementById('homeTopBanner')) {
+            loadBanners('home_top', 'homeTopBanner');
+        }
+        if (document.getElementById('homeGridBanners')) {
+            loadBanners('home_grid', 'homeGridBanners');
+        }
+        if (document.getElementById('homeBottomBanner')) {
+            loadBanners('home_bottom', 'homeBottomBanner');
+        }
+    }, 250);
+});
 
 // 페이지 언로드 시 인터벌 정리
 window.addEventListener('beforeunload', () => {

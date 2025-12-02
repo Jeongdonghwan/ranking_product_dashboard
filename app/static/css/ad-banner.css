@@ -215,7 +215,7 @@
 #homeBottomBanner {
     width: 100%;
     max-width: 2264px;
-    margin: 16px auto 8px;  /* 하단 마진 축소 */
+    margin: 8px auto 4px;  /* 마진 축소 */
     text-align: center;
     padding: 0 24px;
 }
@@ -233,13 +233,12 @@
 
 .banner-image {
     width: 100%;
-    height: auto;
-    aspect-ratio: 8 / 1;  /* 대형 배너 비율 */
-    min-height: 100px;  /* 최소 높이 보장 */
+    height: 120px;  /* 고정 높이 */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
     object-fit: cover;
+    object-position: center;
 }
 
 .banner-image:hover {
@@ -250,8 +249,8 @@
 #homeGridBanners:not(:empty) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin: 8px auto 16px;  /* 상단 배너와 간격 줄임 */
+    gap: 8px;  /* 간격 축소: 16px → 8px */
+    margin: 4px auto 8px;  /* 마진 축소 */
     width: 100%;
     max-width: 2264px;
     padding: 0 24px;
@@ -266,10 +265,13 @@
     margin: 20px auto;
 }
 
-/* 그리드 배너 아이템 - 홈 상단 배너(.banner-image)와 동일 스타일 */
+/* 그리드 배너 아이템 - 고정 높이 방식 */
 .grid-banner-item {
     display: block;
     width: 100%;
+    height: 140px;  /* 고정 높이 */
+    overflow: hidden;
+    border-radius: 8px;
 }
 
 .grid-banner-item:hover img {
@@ -278,14 +280,12 @@
 
 .grid-banner-item img {
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 1;  /* 더 넓은 배너 비율 (가로형) */
-    min-height: 80px;  /* 최소 높이 보장 */
+    height: 100%;
     display: block;
-    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
     object-fit: cover;
+    object-position: center;
 }
 
 /* Responsive grid banners */
@@ -298,25 +298,43 @@
 @media (max-width: 768px) {
     #homeTopBanner,
     #homeBottomBanner {
-        padding: 0 16px;
-        margin: 12px auto;
+        padding: 0 12px;
+        margin: 4px auto;
     }
 
     .banner-image {
-        aspect-ratio: 5 / 1;  /* 모바일: 더 넓게 */
-        min-height: 60px;
+        height: 80px;  /* 모바일 고정 높이 */
     }
 
     #homeGridBanners:not(:empty) {
-        grid-template-columns: 1fr;  /* 모바일: 1열로 변경 (더 크게 보임) */
-        gap: 12px;
-        padding: 0 16px;
-        margin: 8px auto 12px;
+        grid-template-columns: 1fr;  /* 모바일: 1열 */
+        gap: 6px;  /* 간격 축소: 12px → 6px */
+        padding: 0 12px;
+        margin: 4px auto 8px;
     }
 
-    .grid-banner-item img {
-        aspect-ratio: 5 / 1;  /* 모바일: 더 넓은 배너 */
-        min-height: 60px;
+    .grid-banner-item {
+        height: 80px;  /* 모바일 고정 높이 */
+    }
+}
+
+@media (max-width: 480px) {
+    #homeTopBanner,
+    #homeBottomBanner {
+        padding: 0 8px;
+    }
+
+    .banner-image {
+        height: 70px;
+    }
+
+    #homeGridBanners:not(:empty) {
+        gap: 4px;  /* 더 좁게 */
+        padding: 0 8px;
+    }
+
+    .grid-banner-item {
+        height: 70px;
     }
 }
 

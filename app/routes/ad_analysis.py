@@ -10,7 +10,7 @@ import numpy as np
 import logging
 from flask import (
     Blueprint, render_template, request, jsonify,
-    session, redirect, url_for, send_file, current_app, g
+    session, redirect, url_for, send_file, send_from_directory, current_app, g
 )
 from werkzeug.utils import secure_filename
 import flask
@@ -44,13 +44,13 @@ EXCLUDE_CLICKS_HIGH = 15      # 전환없음 조속히제외 클릭수
 # ========================================
 def get_current_user():
     user = {
-        'userId': session.get('userId'),
-        'userNicknm': session.get('userNicknm')
+        'userId': session.get('userId', 'test'),
+        'userNicknm': session.get('userNicknm', 'testNicknm')
     }
     return user
     
 def get_current_user_id():
-    return session.get('userId')
+    return session.get('userId', 'test')
 
 # Blueprint 생성
 ad_bp = Blueprint('ad_analysis', __name__)
@@ -117,8 +117,8 @@ def before_request():
     - 개발 모드에서는 세션 체크를 건너뜀
     - 정적 파일 요청도 세션 체크 제외
     """
-    # 정적 파일 요청은 세션 체크 제외
-    if request.path.startswith('/static/'):
+    # 정적 파일 및 공개 페이지는 세션 체크 제외
+    if request.path.startswith('/static/') or request.path.startswith('/landing'):
         return None
     
     # 개발 모드 체크 (DEBUG 모드이거나 FLASK_ENV가 development인 경우)
@@ -129,6 +129,7 @@ def before_request():
     # 개발 모드이면 세션 체크 건너뛰기
     if is_development:
         logger.debug(f"[개발 모드] 세션 체크 건너뛰기: {request.path}")
+        g.user = {'userId': 'test', 'userNicknm': 'testNicknm'}
         return None
     
     # 운영 모드에서는 세션 체크 수행
@@ -157,6 +158,20 @@ def before_request():
 # ========================================
 # 1. 메인 페이지 및 인증
 # ========================================
+
+@ad_bp.route('/landing')
+def landing():
+    """
+    랜딩페이지 (공개, 로그인 불필요)
+
+    쿠팡 광고 대시보드 홍보 랜딩페이지
+    카카오톡 오픈채팅방 유입 목적
+
+    Returns:
+        HTML: 랜딩페이지
+    """
+    return send_from_directory('static/landing', 'index.html')
+
 
 @ad_bp.route('/')
 def index():

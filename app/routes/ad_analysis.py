@@ -109,7 +109,7 @@ def normalize_columns(df):
 
 
 
-@ad_bp.before_request
+@ad_bp.before_app_request
 def before_request():
     """
     요청 전 인증 체크

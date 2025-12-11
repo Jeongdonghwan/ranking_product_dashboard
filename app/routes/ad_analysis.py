@@ -146,6 +146,9 @@ def before_request():
 
     try:
         data = serializer.loads(COOKIE_VALUE)
+        print(data)
+        print(COOKIE_VALUE)
+        print(SECRET_KEY)
         if 'userId' in data :
             g.user = data
             print('g.user: ', g.user)

@@ -146,6 +146,7 @@ def before_request():
 
     try:
         data = serializer.loads(COOKIE_VALUE)
+        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
         print(data)
         print(COOKIE_VALUE)
         print(SECRET_KEY)

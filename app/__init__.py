@@ -96,6 +96,12 @@ def create_app():
             """헬스체크 엔드포인트"""
             return {'status': 'ok', 'service': 'insight'}, 200
 
+    # 네이버 사이트 소유권 확인 파일 (인증 불필요)
+    @app.route('/naver5c5df9165d15c739c9d6c9a94a4bc39a.html')
+    def naver_verification():
+        """네이버 검색 어드바이저 사이트 소유권 확인"""
+        return 'naver-site-verification: naver5c5df9165d15c739c9d6c9a94a4bc39a.html', 200, {'Content-Type': 'text/html'}
+
     # 시작 로그
     app.logger.info("=" * 60)
     app.logger.info(f"Flask App 시작: {app.config['FLASK_ENV'] if 'FLASK_ENV' in app.config else os.getenv('FLASK_ENV', 'development')} 모드")

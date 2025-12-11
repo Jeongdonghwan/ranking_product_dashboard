@@ -2,7 +2,7 @@
 관리자 권한 데코레이터
 """
 
-from functools import wraps
+from functools import wraps, os
 from flask import request, jsonify, session, g, current_app
 
 
@@ -17,7 +17,7 @@ def require_admin(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        flask_env = current_app.config.get('FLASK_ENV', 'development')
+        flask_env = current_app.config.get('FLASK_ENV', os.getenv('FLASK_ENV', 'development'))
         print('???????????????????', flask_env)
         if flask_env == 'development':
             return f(*args, **kwargs)

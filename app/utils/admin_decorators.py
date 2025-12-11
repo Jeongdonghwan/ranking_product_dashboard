@@ -23,7 +23,7 @@ def require_admin(f):
 
         userId = g.user.get('userId')
         isAdmin = g.user.get('isAdmin')
-
+        print('************************', userId, isAdmin, not userId, not isAdmin)
         if not userId or not isAdmin:
             return jsonify({'error': 'Unauthorized', 'message': '로그인이 필요합니다'}), 401
 

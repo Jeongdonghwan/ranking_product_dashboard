@@ -102,6 +102,32 @@ def create_app():
         """네이버 검색 어드바이저 사이트 소유권 확인"""
         return 'naver-site-verification: naver5c5df9165d15c739c9d6c9a94a4bc39a.html', 200, {'Content-Type': 'text/html'}
 
+    # 사이트맵 (검색엔진용)
+    @app.route('/sitemap.xml')
+    def sitemap():
+        """사이트맵 - 검색엔진 크롤링용"""
+        sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://dashboard.mbizsquare.com/landing</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>'''
+        return sitemap_xml, 200, {'Content-Type': 'application/xml'}
+
+    # robots.txt (검색엔진 크롤링 안내)
+    @app.route('/robots.txt')
+    def robots():
+        """robots.txt - 검색엔진 크롤링 규칙"""
+        robots_txt = '''User-agent: *
+Allow: /landing
+Allow: /sitemap.xml
+Disallow: /
+
+Sitemap: https://dashboard.mbizsquare.com/sitemap.xml'''
+        return robots_txt, 200, {'Content-Type': 'text/plain'}
+
     # 시작 로그
     app.logger.info("=" * 60)
     app.logger.info(f"Flask App 시작: {app.config['FLASK_ENV'] if 'FLASK_ENV' in app.config else os.getenv('FLASK_ENV', 'development')} 모드")

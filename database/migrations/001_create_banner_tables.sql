@@ -10,7 +10,7 @@
 -- 1. 배너 테이블
 CREATE TABLE IF NOT EXISTS banners (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    banner_type ENUM('home_top', 'home_bottom', 'home_grid', 'grid_general', 'grid_coupang') NOT NULL COMMENT '배너 타입',
+    banner_type ENUM('home_top', 'home_bottom', 'home_grid', 'grid_general', 'grid_coupang', 'grid_profit', 'grid_efficiency', 'grid_keyword') NOT NULL COMMENT '배너 타입',
     title VARCHAR(255) NOT NULL COMMENT '배너 제목 (관리용)',
     image_url VARCHAR(500) NOT NULL COMMENT '업로드된 이미지 경로 (데스크톱용)',
     mobile_image_url VARCHAR(500) DEFAULT NULL COMMENT '모바일용 이미지 (선택, 없으면 모바일에서 숨김)',

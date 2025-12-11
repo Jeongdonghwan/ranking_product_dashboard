@@ -44,7 +44,7 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS banners (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            banner_type ENUM('home_top', 'home_bottom', 'home_grid', 'grid_general', 'grid_coupang') NOT NULL,
+            banner_type ENUM('home_top', 'home_bottom', 'home_grid', 'grid_general', 'grid_coupang', 'grid_profit', 'grid_efficiency', 'grid_keyword') NOT NULL,
             title VARCHAR(255) NOT NULL,
             image_url VARCHAR(500) NOT NULL,
             link_url VARCHAR(500) DEFAULT NULL,

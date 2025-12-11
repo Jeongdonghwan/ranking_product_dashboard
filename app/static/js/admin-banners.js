@@ -31,6 +31,24 @@ const BANNER_INFO = {
         size: '1644×250px',
         maxCount: 6,
         layout: '자동 롤링'
+    },
+    grid_profit: {
+        title: '순마진계산기 롤링 배너',
+        size: '1644×150px',
+        maxCount: 6,
+        layout: '자동 롤링'
+    },
+    grid_efficiency: {
+        title: '손익분기ROAS 롤링 배너',
+        size: '1644×150px',
+        maxCount: 6,
+        layout: '자동 롤링'
+    },
+    grid_keyword: {
+        title: '키워드조합기 롤링 배너',
+        size: '1644×150px',
+        maxCount: 6,
+        layout: '자동 롤링'
     }
 };
 

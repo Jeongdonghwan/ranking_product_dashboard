@@ -47,8 +47,10 @@ function displayBanners(banners, containerId, bannerType) {
     if (bannerType === 'home_grid') {
         // 홈페이지 2x2 그리드 (4개만 사용)
         displayGridBanners(banners.slice(0, 4), container);
-    } else if (bannerType === 'grid_general' || bannerType === 'grid_coupang') {
-        // 일반/쿠팡 대시보드 대형 롤링 배너 (최대 6개)
+    } else if (bannerType === 'grid_general' || bannerType === 'grid_coupang' ||
+               bannerType === 'grid_profit' || bannerType === 'grid_efficiency' ||
+               bannerType === 'grid_keyword') {
+        // 일반/쿠팡/순마진/손익분기/키워드 대시보드 대형 롤링 배너 (최대 6개)
         displayRollingBanner(banners.slice(0, ROLLING_CONFIG.maxBanners), container, containerId);
     } else if (bannerType === 'home_top' || bannerType === 'home_bottom') {
         // 홈페이지 대형 배너 (1개)
@@ -367,6 +369,21 @@ if (document.getElementById('generalGridBanners')) {
 // ad_dashboard_coupang.html용
 if (document.getElementById('coupangGridBanners')) {
     loadBanners('grid_coupang', 'coupangGridBanners');
+}
+
+// profit_simulator.html (순마진계산기)용
+if (document.getElementById('profitBanners')) {
+    loadBanners('grid_profit', 'profitBanners');
+}
+
+// ad_efficiency.html (손익분기ROAS)용
+if (document.getElementById('efficiencyBanners')) {
+    loadBanners('grid_efficiency', 'efficiencyBanners');
+}
+
+// keyword_combiner.html (키워드조합기)용
+if (document.getElementById('keywordBanners')) {
+    loadBanners('grid_keyword', 'keywordBanners');
 }
 
 // 화면 리사이즈 시 배너 다시 로드 (debounce 적용)

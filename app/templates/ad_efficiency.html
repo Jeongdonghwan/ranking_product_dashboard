@@ -43,6 +43,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/header.css">
     <link rel="stylesheet" href="/static/css/sidebar.css">
+    <link rel="stylesheet" href="/static/css/ad-banner.css">
 
     <style>
         :root {
@@ -719,6 +720,9 @@
             <p>캠페인, 상품별 ROAS를 분석하고 손익분기점을 진단합니다. 수익을 내려면 최소 얼마의 ROAS가 필요한지 확인하세요.</p>
         </div>
 
+        <!-- 배너 영역 -->
+        <div id="efficiencyBanners"></div>
+
         <!-- Summary Cards -->
         <div class="summary-grid" id="summaryCards">
             <div class="summary-card green">
@@ -1356,5 +1360,8 @@
             XLSX.writeFile(wb, `광고효율진단_${today}.xlsx`);
         }
     </script>
+
+    <!-- 배너 로더 스크립트 -->
+    <script src="/static/js/banner-loader.js"></script>
 </body>
 </html>

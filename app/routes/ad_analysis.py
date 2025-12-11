@@ -133,7 +133,7 @@ def before_request():
         return None
     
     # 운영 모드에서는 세션 체크 수행
-    COOKIE_VALUE = request.cookies.get('session')
+    COOKIE_VALUE = request.cookies.get('mbiz_session')
     SECRET_KEY = current_app.config.get('SECRET_KEY')
     SALT = 'cookie-session' # Flask 기본값
 

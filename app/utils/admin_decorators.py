@@ -1,8 +1,8 @@
 """
 관리자 권한 데코레이터
 """
-
-from functools import wraps, os
+import os
+from functools import wraps
 from flask import request, jsonify, session, g, current_app
 
 

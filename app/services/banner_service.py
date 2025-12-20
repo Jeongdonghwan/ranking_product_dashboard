@@ -7,8 +7,7 @@
 
 import os
 import uuid
-from datetime import datetime, date
-from werkzeug.utils import secure_filename
+from datetime import datetime
 from flask import current_app
 from app.utils.db_utils import get_db_cursor, DatabaseError
 
@@ -411,9 +410,9 @@ class BannerService:
         if not file:
             raise ValueError("파일이 제공되지 않았습니다")
 
-        # 파일 확장자 검증
-        filename = secure_filename(file.filename)
-        ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+        # 파일 확장자 검증 (원본 파일명에서 추출 - 한글 파일명 지원)
+        original_filename = file.filename
+        ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else ''
 
         if ext not in current_app.config['ALLOWED_BANNER_EXTENSIONS']:
             raise ValueError(f"허용되지 않는 파일 형식입니다: {ext}")

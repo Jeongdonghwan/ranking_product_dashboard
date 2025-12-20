@@ -308,7 +308,10 @@
         margin: 4px auto;
     }
 
-    /* .banner-image height 제거 - aspect-ratio가 자동 처리 */
+    /* 홈 대형 배너 모바일 비율 */
+    .banner-image {
+        aspect-ratio: 350 / 150;  /* 모바일 대형 배너 비율 (2.33:1) */
+    }
 
     #homeGridBanners:not(:empty) {
         grid-template-columns: 1fr;  /* 모바일: 1열 */
@@ -317,7 +320,10 @@
         margin: 4px auto 8px;
     }
 
-    /* .grid-banner-item height 제거 - aspect-ratio가 자동 처리 */
+    /* 홈 그리드 배너 모바일 비율 */
+    .grid-banner-item {
+        aspect-ratio: 350 / 100;  /* 모바일 그리드 배너 비율 (3.5:1) */
+    }
 }
 
 @media (max-width: 480px) {

@@ -454,7 +454,7 @@
 @media (max-width: 768px) {
     .rolling-banner-container {
         max-width: calc(100vw - 48px);
-        /* height 제거 - aspect-ratio가 자동 처리 */
+        aspect-ratio: 350 / 150;  /* 모바일 배너 비율 (2.33:1) */
         max-height: 150px;
         margin: 16px auto;
     }

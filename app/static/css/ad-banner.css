@@ -233,7 +233,7 @@
 
 .banner-image {
     width: 100%;
-    aspect-ratio: 970 / 90;  /* 반응형: 컨테이너 너비에 비례해 높이 자동 조절 */
+    aspect-ratio: 1644 / 250;  /* PC 배너 비율 (6.58:1) */
     max-height: 250px;
     min-height: 60px;
     border-radius: 8px;
@@ -271,7 +271,7 @@
 .grid-banner-item {
     display: block;
     width: 100%;
-    aspect-ratio: 200 / 60;  /* 반응형: 컨테이너 너비에 비례해 높이 자동 조절 */
+    aspect-ratio: 800 / 140;  /* 그리드 배너 비율 (5.71:1) */
     max-height: 140px;
     min-height: 50px;
     overflow: hidden;
@@ -343,7 +343,7 @@
     position: relative;
     width: 100%;
     max-width: 2264px;
-    aspect-ratio: 970 / 90;  /* 반응형: 컨테이너 너비에 비례해 높이 자동 조절 */
+    aspect-ratio: 1644 / 250;  /* PC 롤링 배너 비율 (6.58:1) */
     max-height: 250px;
     min-height: 60px;
     margin: 20px auto;

@@ -153,6 +153,7 @@ function trackClick(bannerId) {
 
 /**
  * 롤링 배너 표시 (일반/쿠팡 대시보드)
+ * 모바일에서 mobile_image_url이 없는 배너는 숨김
  */
 function displayRollingBanner(banners, container, containerId) {
     if (!banners || banners.length === 0) {
@@ -160,18 +161,33 @@ function displayRollingBanner(banners, container, containerId) {
         return;
     }
 
+    // 모바일에서는 mobile_image_url이 있는 배너만 표시
+    const filteredBanners = isMobile()
+        ? banners.filter(banner => banner.mobile_image_url)
+        : banners;
+
+    if (filteredBanners.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+
     // 1개만 있으면 롤링 없이 표시
-    if (banners.length === 1) {
+    if (filteredBanners.length === 1) {
+        const banner = filteredBanners[0];
+        const imageUrl = isMobile() && banner.mobile_image_url
+            ? banner.mobile_image_url
+            : banner.image_url;
+
         container.innerHTML = `
             <div class="rolling-banner-container">
                 <div class="rolling-banner-wrapper">
                     <div class="rolling-banner-item active">
-                        <a href="${banners[0].link_url || '#'}"
+                        <a href="${banner.link_url || '#'}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           onclick="trackClick(${banners[0].id})">
-                            <img src="${banners[0].image_url}"
-                                 alt="${banners[0].title}"
+                           onclick="trackClick(${banner.id})">
+                            <img src="${imageUrl}"
+                                 alt="${banner.title}"
                                  loading="lazy">
                         </a>
                     </div>
@@ -182,27 +198,33 @@ function displayRollingBanner(banners, container, containerId) {
         return;
     }
 
-    // 롤링 배너 HTML 생성
-    const bannersHTML = banners
-        .map((banner, index) => `
-            <div class="rolling-banner-item ${index === 0 ? 'active' : ''}" data-index="${index}">
-                <a href="${banner.link_url || '#'}"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   onclick="trackClick(${banner.id})">
-                    <img src="${banner.image_url}"
-                         alt="${banner.title}"
-                         loading="${index === 0 ? 'eager' : 'lazy'}">
-                </a>
-            </div>
-        `)
+    // 롤링 배너 HTML 생성 (모바일이면 모바일 이미지 사용)
+    const bannersHTML = filteredBanners
+        .map((banner, index) => {
+            const imageUrl = isMobile() && banner.mobile_image_url
+                ? banner.mobile_image_url
+                : banner.image_url;
+
+            return `
+                <div class="rolling-banner-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+                    <a href="${banner.link_url || '#'}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       onclick="trackClick(${banner.id})">
+                        <img src="${imageUrl}"
+                             alt="${banner.title}"
+                             loading="${index === 0 ? 'eager' : 'lazy'}">
+                    </a>
+                </div>
+            `;
+        })
         .join('');
 
     // 인디케이터 HTML 생성
     const indicatorsHTML = ROLLING_CONFIG.showIndicators
         ? `
             <div class="rolling-indicators">
-                ${banners
+                ${filteredBanners
                     .map((_, index) => `
                         <div class="rolling-indicator ${index === 0 ? 'active' : ''}"
                              data-index="${index}"
@@ -224,7 +246,7 @@ function displayRollingBanner(banners, container, containerId) {
     container.style.removeProperty('display');
 
     // 롤링 시작
-    initRollingBanner(containerId, banners.length);
+    initRollingBanner(containerId, filteredBanners.length);
 }
 
 /**

@@ -155,8 +155,8 @@ def before_request():
                 'name': '',
                 'userNicknm': ''
             }
-            # if request.path == '/' : return None
-            # if request.path.startswith('/guide'): return None
+            if request.path == '/' : return None
+            if request.path.startswith('/guide'): return None
             return redirect('https://mbizsquare.com/#/login')
     except Exception as e:
         print("❌ 실패! 정확한 에러 원인:", e)

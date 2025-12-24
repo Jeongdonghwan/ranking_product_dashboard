@@ -118,8 +118,11 @@ def before_request():
     - 정적 파일 요청도 세션 체크 제외
     """
     # 정적 파일 및 공개 페이지는 세션 체크 제외
-    if request.path.startswith('/static/') or request.path.startswith('/landing'):
-        return None
+    if request.path.startswith('/static/') : return None
+    if request.path.startswith('/landing'): return None
+    if request.path.startswith(''): return None
+    if request.path.startswith('/guide'): return None
+        
     
     # 개발 모드 체크 (DEBUG 모드이거나 FLASK_ENV가 development인 경우)
     is_debug_mode = current_app.config.get('DEBUG', False)

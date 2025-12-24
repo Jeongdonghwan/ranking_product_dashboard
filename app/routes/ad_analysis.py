@@ -120,10 +120,7 @@ def before_request():
     # 정적 파일 및 공개 페이지는 세션 체크 제외
     if request.path.startswith('/static/') : return None
     if request.path.startswith('/landing'): return None
-    if request.path.startswith(''): return None
-    if request.path.startswith('/guide'): return None
         
-    
     # 개발 모드 체크 (DEBUG 모드이거나 FLASK_ENV가 development인 경우)
     is_debug_mode = current_app.config.get('DEBUG', False)
     flask_env = current_app.config.get('FLASK_ENV', os.getenv('FLASK_ENV', 'development'))
@@ -153,6 +150,13 @@ def before_request():
             g.user = data
             print('g.user: ', g.user)
         else:
+            g.user = {
+                'userId': '',
+                'name': '',
+                'userNicknm': ''
+            }
+            if request.path.startswith('') : return None
+            if request.path.startswith('/guide'): return None
             return redirect('https://mbizsquare.com/#/login')
     except Exception as e:
         print("❌ 실패! 정확한 에러 원인:", e)

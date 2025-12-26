@@ -146,7 +146,12 @@ def before_request():
     # 정적 파일 및 공개 페이지는 세션 체크 제외
     if request.path.startswith('/static/') : return None
     if request.path.startswith('/landing'): return None
-        
+
+    # 소셜 미디어 봇이면 홈 페이지 세션 체크 건너뛰기 (OG 메타태그용)
+    user_agent = request.headers.get('User-Agent', '')
+    if request.path == '/' and is_social_bot(user_agent):
+        return None  # index()에서 og_only.html 반환
+
     # 개발 모드 체크 (DEBUG 모드이거나 FLASK_ENV가 development인 경우)
     is_debug_mode = current_app.config.get('DEBUG', False)
     flask_env = current_app.config.get('FLASK_ENV', os.getenv('FLASK_ENV', 'development'))

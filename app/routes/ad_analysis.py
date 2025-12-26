@@ -30,6 +30,32 @@ from itsdangerous import URLSafeTimedSerializer
 logger = logging.getLogger(__name__)
 
 # ========================================
+# 소셜 미디어 봇 감지
+# ========================================
+BOT_USER_AGENTS = [
+    'facebookexternalhit',  # Facebook
+    'Facebot',              # Facebook
+    'Twitterbot',           # Twitter
+    'LinkedInBot',          # LinkedIn
+    'Slackbot',             # Slack
+    'TelegramBot',          # Telegram
+    'WhatsApp',             # WhatsApp
+    'kakaotalk-scrap',      # KakaoTalk
+    'Discordbot',           # Discord
+    'Pinterest',            # Pinterest
+    'Googlebot',            # Google
+    'bingbot',              # Bing
+    'Yeti',                 # Naver
+]
+
+def is_social_bot(user_agent_string):
+    """소셜 미디어 봇인지 확인 (OG 태그 크롤러)"""
+    if not user_agent_string:
+        return False
+    ua_lower = user_agent_string.lower()
+    return any(bot.lower() in ua_lower for bot in BOT_USER_AGENTS)
+
+# ========================================
 # 제외 키워드 판정 상수
 # ========================================
 EXCLUDE_MIN_SPEND = 5000      # 최소 광고비 (원)
@@ -188,6 +214,11 @@ def index():
     Returns:
         HTML: 홈 대시보드 템플릿
     """
+    # 소셜 미디어 봇(OG 크롤러)이면 메타태그만 있는 페이지 반환
+    user_agent = request.headers.get('User-Agent', '')
+    if is_social_bot(user_agent):
+        return render_template('og_only.html')
+
     # 메인 프로젝트 세션에서 사용자 정보 가져오기
     user = get_current_user()
 

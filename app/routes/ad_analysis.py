@@ -33,19 +33,32 @@ logger = logging.getLogger(__name__)
 # 소셜 미디어 봇 감지
 # ========================================
 BOT_USER_AGENTS = [
+    # 글로벌 소셜/메신저
     'facebookexternalhit',  # Facebook
     'Facebot',              # Facebook
-    'Twitterbot',           # Twitter
+    'Twitterbot',           # Twitter/X
     'LinkedInBot',          # LinkedIn
     'Slackbot',             # Slack
     'TelegramBot',          # Telegram
     'WhatsApp',             # WhatsApp
-    'kakaotalk-scrap',      # KakaoTalk
     'Discordbot',           # Discord
     'Pinterest',            # Pinterest
+
+    # 검색엔진
     'Googlebot',            # Google
     'bingbot',              # Bing
-    'Yeti',                 # Naver
+
+    # 네이버 관련
+    'Yeti',                 # Naver 검색
+    'naver.me',             # Naver 공통 식별자
+    'NaverBot',             # Naver 봇
+    'WorksOgCrawler',       # Naver Works OG 크롤러
+    'naverbookmarkcrawler', # Naver 북마크
+    'scrapbook-scraper',    # 스크랩북
+
+    # 카카오/다음 관련
+    'kakaotalk-scrap',      # KakaoTalk
+    'Daumoa',               # Daum 검색
 ]
 
 def is_social_bot(user_agent_string):

@@ -106,13 +106,29 @@ def create_app():
     @app.route('/sitemap.xml')
     def sitemap():
         """사이트맵 - 검색엔진 크롤링용"""
-        sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+        base_url = 'https://dashboard.mbizsquare.com'
+        pages = [
+            {'loc': '/', 'changefreq': 'daily', 'priority': '1.0'},
+            {'loc': '/landing', 'changefreq': 'weekly', 'priority': '1.0'},
+            {'loc': '/ad-dashboard', 'changefreq': 'daily', 'priority': '0.9'},
+            {'loc': '/ad-dashboard/coupang', 'changefreq': 'daily', 'priority': '0.9'},
+            {'loc': '/ad-dashboard/ad-efficiency', 'changefreq': 'weekly', 'priority': '0.8'},
+            {'loc': '/ad-dashboard/profit-simulator', 'changefreq': 'weekly', 'priority': '0.8'},
+            {'loc': '/ad-dashboard/keyword-combiner', 'changefreq': 'weekly', 'priority': '0.8'},
+            {'loc': '/guide', 'changefreq': 'monthly', 'priority': '0.7'},
+        ]
+
+        urls_xml = '\n'.join([
+            f'''    <url>
+        <loc>{base_url}{p['loc']}</loc>
+        <changefreq>{p['changefreq']}</changefreq>
+        <priority>{p['priority']}</priority>
+    </url>''' for p in pages
+        ])
+
+        sitemap_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://dashboard.mbizsquare.com/landing</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+{urls_xml}
 </urlset>'''
         return sitemap_xml, 200, {'Content-Type': 'application/xml'}
 
@@ -121,9 +137,11 @@ def create_app():
     def robots():
         """robots.txt - 검색엔진 크롤링 규칙"""
         robots_txt = '''User-agent: *
-Allow: /landing
-Allow: /sitemap.xml
-Disallow: /
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /logout
 
 Sitemap: https://dashboard.mbizsquare.com/sitemap.xml'''
         return robots_txt, 200, {'Content-Type': 'text/plain'}

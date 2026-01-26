@@ -64,7 +64,7 @@ class ProductionConfig:
 
     # 파일 업로드 설정
     UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', '/app/uploads')
-    MAX_CONTENT_LENGTH = int(os.getenv('MAX_FILE_SIZE_MB', 10)) * 1024 * 1024
+    MAX_CONTENT_LENGTH = int(os.getenv('MAX_FILE_SIZE_MB', 50)) * 1024 * 1024
     ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'csv'}
 
     # 배너 업로드 설정

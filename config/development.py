@@ -51,7 +51,7 @@ class DevelopmentConfig:
 
     # 파일 업로드 설정
     UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', 'uploads')
-    MAX_CONTENT_LENGTH = int(os.getenv('MAX_FILE_SIZE_MB', 10)) * 1024 * 1024  # MB to bytes
+    MAX_CONTENT_LENGTH = int(os.getenv('MAX_FILE_SIZE_MB', 50)) * 1024 * 1024  # MB to bytes
     ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'csv'}
 
     # 배너 업로드 설정
